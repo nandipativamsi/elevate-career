@@ -11,11 +11,11 @@ const Resource = new Schema({
     },
     likes: {
         type: String,
-        default: Date.now 
+        required:true 
     },
     dislikes: {
         type: String,
-        default: Date.now 
+        required:true 
     },
     comments:
     { 
