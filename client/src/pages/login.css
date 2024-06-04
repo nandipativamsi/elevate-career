@@ -1,0 +1,85 @@
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /**height: 100vh;*/
+  background-color: #ffffff;
+}
+.login-header {
+  color:#cfa24e;
+  text-align: center;
+}
+.login-form {
+  padding: 20px;
+  border-radius: 5px;
+  width: 300px;
+  text-align: center;
+}
+
+.login-form h2 {
+  margin-bottom: 20px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+}
+
+.login-button {
+  width: 100%;
+  padding: 10px;
+  background-color: #000000;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.register-button {
+  width: 100%;
+  padding: 10px;
+  background-color: #ededed;
+  color: rgb(0, 0, 0);
+  border: none;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.login-button:hover {
+  background-color: #cfa24e;
+}
+
+.signup-link {
+  margin-top: 15px;
+  display: block;
+}
+
+.signup-link a {
+  text-decoration: none;
+  color: #007bff;
+}
+
+.signup-link a:hover {
+  text-decoration: underline;
+}
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
