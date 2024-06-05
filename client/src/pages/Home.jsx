@@ -9,6 +9,12 @@ import featureImg1 from '../assets/feature1.jpg'
 import featureImg2 from '../assets/feature2.jpg'
 import featureImg3 from '../assets/feature3.jpg'
 
+
+import React,{ useEffect } from 'react';
+import { withRouter } from 'react-router-dom';
+import { ACCESS_TOKEN_NAME, API_BASE_URL } from '../constants/apiConstants';
+import axios from 'axios'
+
 function HomePage() {
   return (
     <div>
@@ -108,4 +114,26 @@ function HomePage() {
   );
 }
 
-export default HomePage;
+function Home(props) {
+    useEffect(() => {
+        axios.get(API_BASE_URL+'/user/me', { headers: { 'token': localStorage.getItem(ACCESS_TOKEN_NAME) }})
+        .then(function (response) {
+            if(response.status !== 200){
+              redirectToLogin()
+            }
+        })
+        .catch(function (error) {
+          redirectToLogin()
+        });
+      },[])
+    function redirectToLogin() {
+    props.history.push('/login');
+    }
+    return(
+        <div className="mt-2">
+            Home page content
+        </div>
+    )
+}
+
+export default withRouter(Home);
