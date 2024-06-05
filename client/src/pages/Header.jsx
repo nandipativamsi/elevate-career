@@ -19,7 +19,7 @@ function Header(props) {
                     <button className="btn btn-danger" onClick={() => handleLogout()}>Logout</button>
                 </div>
             )
-        }
+        } 
     }
     function handleLogout() {
         localStorage.removeItem(ACCESS_TOKEN_NAME)
