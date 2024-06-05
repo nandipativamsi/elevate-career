@@ -21,7 +21,8 @@ function App() {
         <div>
           <Switch>
             <Route path="/" exact={true}>
-              <LoginForm showError={updateErrorMessage} updateTitle={updateTitle}/>
+              <Home />
+              {/* <LoginForm showError={updateErrorMessage} updateTitle={updateTitle}/> */}
             </Route>
             <Route path="/register">
               <RegistrationForm showError={updateErrorMessage} updateTitle={updateTitle}/>
