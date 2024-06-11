@@ -5,6 +5,7 @@ import LoginForm from './pages/Login';
 import RegistrationForm from './pages/register';
 import Home from './pages/Home';
 import PrivateRoute from './utils/PrivateRoutes';
+
 import {
   BrowserRouter as Router,
   Switch,

@@ -1,4 +1,3 @@
-import React from 'react';
 import { withRouter } from "react-router-dom";
 import { ACCESS_TOKEN_NAME } from '../constants/apiConstants';
 import './header.css'; 
@@ -41,7 +40,7 @@ function Header(props) {
                 <ul>
                 <li><a href="/">Home</a></li>
                 <li><a href="/help-center">Help Center</a></li>
-                <li><a href="/login-signup">Login / Signup</a></li>
+                <li><a href="/login">Login / Signup</a></li>
                 </ul>
             </nav>
         </header>
