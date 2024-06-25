@@ -157,6 +157,7 @@
 .reachout-container{
   position: relative;
   margin-top: 4rem;
+  padding-top: 4rem;
 }
 .reachout-box {
   width: 100%;
@@ -176,6 +177,7 @@
   justify-content: center;
   align-items: flex-start;
   flex-direction: column;
+  gap: 10px;
 }
 .reachout-text-container h1{
   font-weight: bolder;
@@ -184,4 +186,14 @@
   width: 35%;
   position: absolute;
   top: 0;
+}
+.reachout-info{
+  flex-direction: column;
+  padding: 2rem;
+}
+.reachout-email{
+  border-right: 1px solid black;
+}
+.email-phone div{
+  padding: 1rem;
 }

@@ -21,8 +21,8 @@ function HomePage() {
       <header className="py-5 bg-image">
         <div className="hero-text">
           <div className="text-center">
-            <h4>ONE STEP TOWARDS</h4>
-            <h1 className="bolder-text">EXCELLENCE!!</h1>
+            <h4 className='fs-5'>ONE STEP TOWARDS</h4>
+            <h1 className="fw-bolder fs-1">EXCELLENCE!!</h1>
           </div>
         </div>
       </header>
@@ -30,7 +30,7 @@ function HomePage() {
       <section className="py-5">
         <div>
           <div className="col-lg-12 text-center common-tittle">
-            <h2>WHAT ARE YOUR STEPS??</h2>
+            <h2 className='fw-bold'>WHAT ARE YOUR STEPS??</h2>
           </div>
         </div>
         <div className="row-container">
@@ -64,7 +64,7 @@ function HomePage() {
         <div className="features-container">
           <div className="row">
             <div className="col-lg-12 text-center common-tittle">
-              <h2>FEATURES AT ELEVATE CAREER</h2>
+              <h2 className='fw-bold'>FEATURES AT ELEVATE CAREER</h2>
             </div>
           </div>
           <div className="flex-container box-container">
@@ -94,7 +94,7 @@ function HomePage() {
         </div>
       </section>
 
-      <section className="py-5 reachout-container">
+      <section className="reachout-container">
         <div className="reachout-box flex-container">
           <div className="reachout-image-container flex-container">
             <img className="reachout-image" src={reachoutImg} alt="a girl working with laptop" />
@@ -106,25 +106,16 @@ function HomePage() {
           </div>
         </div>
 
-        <div className="reachout-info align-text-center">
+        <div className="reachout-info flex-container align-text-center">
           <div>
-            <h4>HOW TO REACH US</h4>
+            <h5 className='fw-bold'>HOW TO REACH US</h5>
           </div>
-          <div>
-            <div>contact@elevatecareer.com</div>
+          <div className='flex-container email-phone'>
+            <div className='reachout-email'>contact@elevatecareer.com</div>
             <div>+1 (123) 456-7890</div>
           </div>
         </div>
       </section>
-      {/* <footer className="py-5 bg-light">
-        <div className="container">
-          <div className="row">
-            <div className="col-lg-12 text-center">
-              <p className="m-0">Copyright &copy; Elevate Career 2024</p>
-            </div>
-          </div>
-        </div>
-      </footer> */}
     </div>
   );
 }
