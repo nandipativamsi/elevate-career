@@ -4,6 +4,7 @@ import Footer from './pages/footer';
 import LoginForm from './pages/Login';
 import RegistrationForm from './pages/register';
 import Home from './pages/Home';
+import PostJob from './pages/postJob';
 import PrivateRoute from './utils/PrivateRoutes';
 
 import {
@@ -11,7 +12,7 @@ import {
   Switch,
   Route
 } from "react-router-dom";
-import AlertComponent from './pages/AlertComponent';  
+import AlertComponent from './pages/AlertComponent'; 
 function App() {
   const [title, updateTitle] = useState(null);
   const [errorMessage, updateErrorMessage] = useState(null);
@@ -30,6 +31,9 @@ function App() {
             </Route>
             <Route path="/login">
               <LoginForm showError={updateErrorMessage} updateTitle={updateTitle}/>
+            </Route>
+            <Route path="/alumni">
+              <PostJob/>
             </Route>
             <Route path="/home">
               <Home/>

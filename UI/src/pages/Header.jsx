@@ -41,6 +41,7 @@ function Header(props) {
                 <li><a href="/">Home</a></li>
                 <li><a href="/help-center">Help Center</a></li>
                 <li><a href="/login">Login / Signup</a></li>
+                <li><a href="/alumni">Add Alumni</a></li>
                 </ul>
             </nav>
         </header>
