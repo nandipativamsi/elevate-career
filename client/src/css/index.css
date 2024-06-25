@@ -32,3 +32,9 @@
   justify-content: center;
   align-items: center;
 }
+.bolder-text{
+  font-weight: bolder;
+}
+.align-text-center{
+  text-align: center;
+}
