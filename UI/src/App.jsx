@@ -4,7 +4,12 @@ import Footer from './pages/footer';
 import LoginForm from './pages/Login';
 import RegistrationForm from './pages/register';
 import Home from './pages/Home';
-import PostJob from './pages/postJob';
+import AddJob from './pages/AddJob';
+import ViewJobs from './pages/ViewJobs';
+import AddEvent from './pages/AddEvent';
+import ViewEvents from './pages/ViewEvents';
+import AddResource from './pages/AddResource';
+import ViewResources from './pages/ViewResources';
 import PrivateRoute from './utils/PrivateRoutes';
 
 import {
@@ -32,9 +37,12 @@ function App() {
             <Route path="/login">
               <LoginForm showError={updateErrorMessage} updateTitle={updateTitle}/>
             </Route>
-            <Route path="/alumni">
-              <PostJob/>
-            </Route>
+            <Route path="/addJob"><AddJob/></Route>
+            <Route path="/viewJobs"><ViewJobs/></Route>
+            <Route path="/addEvent"><AddEvent/></Route>
+            <Route path="/viewEvents"><ViewEvents/></Route>
+            <Route path="/addResource"><AddResource/></Route>
+            <Route path="/viewResources"><ViewResources/></Route>
             <Route path="/home">
               <Home/>
             </Route>

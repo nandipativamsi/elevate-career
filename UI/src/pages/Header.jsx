@@ -2,6 +2,7 @@ import { withRouter } from "react-router-dom";
 import { ACCESS_TOKEN_NAME } from '../constants/apiConstants';
 import './header.css'; 
 import logo from '../assets/logo.png'; 
+
 function Header(props) {
     const capitalize = (s) => {
         if (typeof s !== 'string') return ''
@@ -41,10 +42,17 @@ function Header(props) {
                 <li><a href="/">Home</a></li>
                 <li><a href="/help-center">Help Center</a></li>
                 <li><a href="/login">Login / Signup</a></li>
-                <li><a href="/alumni">Add Alumni</a></li>
+                <li><a href="/addJob">Add Job</a></li>
+                <li><a href="/viewJobs">Jobs</a></li>
+                <li><a href="/addEvent">Add Event</a></li>
+                <li><a href="/viewEvents">Events</a></li>
+                <li><a href="/addResource">Add Resource</a></li>
+                <li><a href="/viewResources">Resources</a></li>
+                
                 </ul>
             </nav>
         </header>
     )
 }
+
 export default withRouter(Header);

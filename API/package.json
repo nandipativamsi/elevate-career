@@ -10,10 +10,14 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "apollo-server-express": "^3.13.0",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
+    "fs": "^0.0.1-security",
+    "graphql": "^16.9.0",
+    "mongodb": "^6.7.0",
     "mongoose": "^8.4.0",
     "nodemon": "^3.1.0"
   }

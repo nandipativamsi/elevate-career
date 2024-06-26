@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-const JobForm = () => {
+const AddJob = () => {
     const [formData, setFormData] = useState({
         jobType: '',
         title: '',
@@ -34,16 +34,42 @@ const JobForm = () => {
         return Object.keys(newErrors).length === 0;
     };
 
+
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+        
         if (validate()) {
-            console.log(formData);
             try {
-                if(await axios.post('http://localhost:3000/postJob', formData))
-                {
-                    alert('Job created successfully!');
-                }
+                const query = `
+                    mutation addJob($job: JobInput!) {
+                        addJob(job: $job) {
+                            _id
+                        }
+                    }
+                `;
                 
+                const response = await fetch('http://localhost:3000/graphql', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        query,
+                        variables: {
+                            job: formData
+                        }
+                    }),
+                });
+    
+                const responseData = await response.json();
+    
+                if (responseData.errors) {
+                    throw new Error(responseData.errors[0].message);
+                }
+    
+                alert('Job created successfully!');
+    
                 setFormData({
                     jobType: '',
                     title: '',
@@ -60,6 +86,7 @@ const JobForm = () => {
             }
         }
     };
+    
 
     return (
         <form onSubmit={handleSubmit}>
@@ -67,8 +94,8 @@ const JobForm = () => {
                 <label>Job Type</label>
                 <select name="jobType" value={formData.jobType} onChange={handleChange}>
                     <option value="">Select job type</option>
-                    <option value="Full time">Full time</option>
-                    <option value="Part time">Part time</option>
+                    <option value="FullTime">Full time</option>
+                    <option value="PartTime">Part time</option>
                     <option value="Contract">Contract</option>
                     <option value="Seasonal">Seasonal</option>
                 </select>
@@ -78,7 +105,7 @@ const JobForm = () => {
                 <label>Work Type</label>
                 <select name="workType" value={formData.workType} onChange={handleChange}>
                     <option value="">Select work type</option>
-                    <option value="In-person">In-person</option>
+                    <option value="OnSite">On-Site</option>
                     <option value="Hybrid">Hybrid</option>
                     <option value="Remote">Remote</option>
                 </select>
@@ -103,4 +130,4 @@ const JobForm = () => {
     );
 };
 
-export default JobForm;
+export default AddJob; 

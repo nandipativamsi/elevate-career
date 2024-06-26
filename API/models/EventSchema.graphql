@@ -1,0 +1,31 @@
+   scalar GraphQLDate
+   
+   type Event {
+    _id: ID
+    title: String!
+    description: String!
+    date: String!
+    location: String!
+    attendees: String
+    postedBy: String
+    limit: String!
+  }
+
+   input EventInput {
+    title: String!
+    description: String!
+    date: GraphQLDate!
+    location: String!
+    attendees: String
+    postedBy: String
+    limit: String!
+  }
+  
+  type Query {
+    eventList: [Event!]!
+  }
+  
+  type Mutation {
+    addEvent(event: EventInput!): Event!
+  }
+  
