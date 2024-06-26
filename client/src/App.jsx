@@ -4,7 +4,11 @@ import Footer from './pages/footer';
 import LoginForm from './pages/Login';
 import RegistrationForm from './pages/register';
 import Home from './pages/Home';
+import JobBoard from './pages/jobBoard'
 import PrivateRoute from './utils/PrivateRoutes';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap-icons/font/bootstrap-icons.css';
+
 
 import {
   BrowserRouter as Router,
@@ -33,6 +37,9 @@ function App() {
             </Route>
             <Route path="/home">
               <Home/>
+            </Route>
+            <Route path="/jobboard">
+              <JobBoard/>
             </Route>
           </Switch>
           <AlertComponent errorMessage={errorMessage} hideError={updateErrorMessage}/>

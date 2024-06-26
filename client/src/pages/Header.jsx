@@ -39,6 +39,7 @@ function Header(props) {
             <nav className="navigation">
                 <ul>
                 <li><a href="/">Home</a></li>
+                <li><a href="/jobboard">Job Board</a></li>
                 <li><a href="/help-center">Help Center</a></li>
                 <li><a href="/login">Login / Signup</a></li>
                 </ul>

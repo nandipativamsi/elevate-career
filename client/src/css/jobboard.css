@@ -1,0 +1,60 @@
+.jobboard-hero-section{
+    padding: 0 3rem;
+    width: 100%;
+    gap: 2rem;;
+}
+
+.jobboard-hero-image-container{
+    width: 30%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+.jobboard-hero-image-container img{
+    width: 100%;
+}
+.jobboard-hero-text-container{
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.dropdowns-container {
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+  }
+  
+  .dropdown-col {
+    margin-bottom: 20px;
+  }
+  
+  .dropdown-wrapper {
+    position: relative;
+  }
+  
+  .dropdown-input {
+    width: 100%;
+    padding-right: 30px; 
+    border: 1px solid #ccc; 
+    border-radius: 4px;
+    height: 40px; 
+    background-color: #fff; 
+    -webkit-appearance: none; 
+    -moz-appearance: none;
+    appearance: none;
+    padding-left: 10px; 
+  }
+  
+  .dropdown-icon {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    pointer-events: none; 
+    color: #888; 
+  }
+  
