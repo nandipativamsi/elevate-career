@@ -1,12 +1,13 @@
 import { Form, Row, Col } from 'react-bootstrap';
 import heroImg from '../assets/jobBoardHero.png'
+import jobPostingImg from '../assets/job-posting-image.jpeg'
 import "../css/jobboard.css"
 export default function jobBoard() {
     return (
         <div>
             <section className="py-5 jobboard-hero-section flex-container">
                 <div className="jobboard-hero-image-container">
-                    <img src={heroImg} alt="a photo of a girl" />
+                    <img src={heroImg} alt="person-with-hiring-sign-by-window" />
                 </div>
                 <div className="jobboard-hero-text-container">
                     <h1 className='fw-bold'>JOBS BOARD</h1>
@@ -53,7 +54,23 @@ export default function jobBoard() {
                         </Col>
                     </Row>
                 </Form>
+
+                <div className="job-list flex-container">
+                    <div className="job-box flex-container">
+                        <div className="job-posting-image">
+                            <img src={jobPostingImg} alt="" />
+                        </div>
+                        <div className='job-posting-text'>
+                            <p className="job-title"> Video Editor - Youtube / Instagram</p>
+                            <p className="company-name">TDG Scaling</p>
+                            <p className="location-jobtype">Canada <span>(Remote)</span></p>
+                            <p className="job-salary">CA $45,000</p>
+                        </div>
+                    </div>
+                </div>
             </section>
+
+
         </div>
     )
 }
