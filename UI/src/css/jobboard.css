@@ -1,0 +1,127 @@
+.jobboard-hero-section {
+  padding: 0 3rem;
+  width: 100%;
+  gap: 2rem;
+  ;
+}
+
+.jobboard-hero-image-container {
+  width: 30%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.jobboard-hero-image-container img {
+  width: 100%;
+  height: auto;
+
+}
+
+.jobboard-hero-text-container {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.dropdowns-container {
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.dropdown-col {
+  margin-bottom: 20px;
+}
+
+.dropdown-wrapper {
+  position: relative;
+}
+
+.dropdown-input {
+  width: 100%;
+  padding-right: 30px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  height: 40px;
+  background-color: #fff;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  padding-left: 10px;
+}
+
+.dropdown-icon {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: #888;
+}
+
+.job-list {
+  flex-direction: column;
+  width: 100%;
+  gap: 1rem;
+}
+
+.job-box {
+  background-color: #F1EFE7;
+  width: 45%;
+  justify-content: flex-start;
+  padding: 1.5rem;
+  gap: 1.5rem;
+}
+
+.job-posting-image {
+  width: 30%;
+}
+
+.job-posting-image img {
+  width: 100%;
+  height: auto;
+}
+.job-posting-text{
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: flex-start;
+}
+.job-title,
+.company-name,
+.location-jobtype,
+.job-salary {
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .jobboard-hero-section {
+    flex-direction: column;
+  }
+
+  .jobboard-hero-image-container {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .jobboard-hero-text-container {
+    width: 100%;
+    align-items: center;
+  }
+
+
+  .job-box {
+    flex-direction: column;
+    width: 80%;
+    justify-content: center;
+  }
+  .job-posting-image {
+    width: 100%;
+  }
+  .job-posting-text{
+    
+  }
+}

@@ -1,0 +1,47 @@
+enum JobType {
+  FullTime
+  PartTime
+  Seasonal
+  Contract
+}
+
+enum WorkType {
+  Hybrid
+  Remote
+  OnSite
+}
+
+type Job {
+  _id: ID!
+  jobType: JobType!
+  title: String!
+  description: String!
+  company: String!
+  location: String!
+  postedBy: String
+  applications: String
+  experience: String!
+  salary: String!
+  workType: WorkType!
+}
+
+input JobInput {
+  jobType: JobType!
+  title: String!
+  description: String!
+  company: String!
+  location: String!
+  postedBy: String
+  applications: String
+  experience: String!
+  salary: String!
+  workType: WorkType!
+}
+
+type Query {
+  jobList: [Job!]!
+}
+    
+type Mutation {
+  addJob(job: JobInput!): Job!
+}
