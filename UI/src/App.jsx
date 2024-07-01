@@ -10,7 +10,11 @@ import AddEvent from './pages/AddEvent';
 import ViewEvents from './pages/ViewEvents';
 import AddResource from './pages/AddResource';
 import ViewResources from './pages/ViewResources';
+import JobBoard from './pages/jobBoard';
 import PrivateRoute from './utils/PrivateRoutes';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap-icons/font/bootstrap-icons.css';
+
 
 import {
   BrowserRouter as Router,
@@ -45,6 +49,9 @@ function App() {
             <Route path="/viewResources"><ViewResources/></Route>
             <Route path="/home">
               <Home/>
+            </Route>
+            <Route path="/jobboard">
+              <JobBoard/>
             </Route>
           </Switch>
           <AlertComponent errorMessage={errorMessage} hideError={updateErrorMessage}/>
