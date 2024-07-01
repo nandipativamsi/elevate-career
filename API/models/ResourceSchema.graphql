@@ -1,0 +1,38 @@
+scalar GraphQLDate
+
+type Comment {
+    userID: String
+    comment: String
+}
+
+type Resource {
+    _id: ID!
+    title: String!
+    description: String!
+    likes: String
+    dislikes: String
+    comments: [Comment]
+    postedBy: String
+}
+
+input CommentInput {
+    userID: String
+    comment: String
+}
+
+input ResourceInput {
+    title: String!
+    description: String!
+    likes: String
+    dislikes: String
+    comments: [CommentInput]
+    postedBy: String
+}
+
+type Query {
+    resourceList: [Resource!]!
+}
+
+type Mutation {
+    addResource(resource: ResourceInput!): Resource!
+}
