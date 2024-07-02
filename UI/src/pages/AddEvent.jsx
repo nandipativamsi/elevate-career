@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 
+
 const AddEvent = () => {
     const [formData, setFormData] = useState({
         title: '',
@@ -77,8 +78,9 @@ const AddEvent = () => {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
+        <form className="AddNewForm" onSubmit={handleSubmit}>
             <div>
+            <h2 className='form-heading'>Create New Event</h2>
                 <label>Title</label>
                 <input
                     type="text"
@@ -90,8 +92,7 @@ const AddEvent = () => {
             </div>
             <div>
                 <label>Description</label>
-                <input
-                    type="text"
+                <textarea
                     name="description"
                     value={formData.description}
                     onChange={handleChange}

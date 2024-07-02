@@ -9,7 +9,7 @@ const { GraphQLScalarType } = require('graphql');
 const { Kind } = require('graphql/language');
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 5500;
 const URI = process.env.MONGODB_URI;
 
 
@@ -92,6 +92,7 @@ let database, JobsCollection, EventsCollection, ResourcesCollection;
         },
         addResource: async (_, { resource }) => {
           resource._id = new ObjectId();
+          validateResource(resource);
           resource.likes = "0";
           resource.dislikes = "0";
           resource.comments = []; 
@@ -133,6 +134,14 @@ const validateJob = (job) => {
 };
 
 const validateEvent = (event) => {
+  let errors = [];
+
+  if (errors.length > 0) {
+    throw new UserInputError('Invalid input(s)', { errors });
+  }
+};
+
+const validateResource = (resource) => {
   let errors = [];
 
   if (errors.length > 0) {
