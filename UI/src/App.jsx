@@ -5,7 +5,7 @@ import LoginForm from './pages/Login';
 import RegistrationForm from './pages/register';
 import Home from './pages/Home';
 import AddJob from './pages/AddJob';
-import ViewJobs from './pages/ViewJobs';
+import AddNew from './pages/AddNew';
 import AddEvent from './pages/AddEvent';
 import ViewEvents from './pages/ViewEvents';
 import AddResource from './pages/AddResource';
@@ -42,7 +42,7 @@ function App() {
               <LoginForm showError={updateErrorMessage} updateTitle={updateTitle}/>
             </Route>
             <Route path="/addJob"><AddJob/></Route>
-            <Route path="/viewJobs"><ViewJobs/></Route>
+            <Route path="/addNew"><AddNew/></Route>
             <Route path="/addEvent"><AddEvent/></Route>
             <Route path="/viewEvents"><ViewEvents/></Route>
             <Route path="/addResource"><AddResource/></Route>
@@ -50,9 +50,7 @@ function App() {
             <Route path="/home">
               <Home/>
             </Route>
-            <Route path="/jobboard">
-              <JobBoard/>
-            </Route>
+            <Route path="/jobboard"><JobBoard/></Route>
           </Switch>
           <AlertComponent errorMessage={errorMessage} hideError={updateErrorMessage}/>
         </div>

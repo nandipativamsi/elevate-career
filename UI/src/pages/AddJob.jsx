@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+
 
 const AddJob = () => {
     const [formData, setFormData] = useState({
@@ -33,8 +33,6 @@ const AddJob = () => {
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
-
-
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -89,8 +87,9 @@ const AddJob = () => {
     
 
     return (
-        <form onSubmit={handleSubmit}>
+        <form className="AddNewForm" onSubmit={handleSubmit}>
             <div>
+                <h2 className='form-heading'>Create New Job</h2>
                 <label>Job Type</label>
                 <select name="jobType" value={formData.jobType} onChange={handleChange}>
                     <option value="">Select job type</option>
@@ -112,7 +111,7 @@ const AddJob = () => {
                 {errors.workType && <span style={{ color: 'red' }}>{errors.workType}</span>}
             </div>
             {Object.keys(formData).map((field) => (
-                (field !== 'jobType' && field !== 'workType') && (
+                (field !== 'jobType' && field !== 'workType' && field !== 'description') && (
                     <div key={field}>
                         <label>{field.charAt(0).toUpperCase() + field.slice(1)}</label>
                         <input
@@ -125,9 +124,18 @@ const AddJob = () => {
                     </div>
                 )
             ))}
+            <div>
+                <label>Description</label>
+                <textarea
+                    name="description"
+                    value={formData.description}
+                    onChange={handleChange}
+                />
+                {errors.description && <span style={{ color: 'red' }}>{errors.description}</span>}
+            </div>
             <button type="submit">Create Job</button>
         </form>
     );
 };
 
-export default AddJob; 
+export default AddJob;

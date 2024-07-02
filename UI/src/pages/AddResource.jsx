@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 
+
 const AddResource = () => {
     const [formData, setFormData] = useState({
         title: '',
@@ -71,8 +72,9 @@ const AddResource = () => {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
+        <form className="AddNewForm" onSubmit={handleSubmit}>
             <div>
+            <h2 className='form-heading'>Create New Resource</h2>
                 <label>Title</label>
                 <input
                     type="text"
@@ -84,8 +86,7 @@ const AddResource = () => {
             </div>
             <div>
                 <label>Description</label>
-                <input
-                    type="text"
+                <textarea
                     name="description"
                     value={formData.description}
                     onChange={handleChange}

@@ -1,0 +1,89 @@
+.AddNewForm {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f2efe8;
+}
+
+.form-heading {
+    margin-top: 5px;
+    margin-bottom: 15px;
+    color: #966100;
+    text-align: center;
+}
+
+.AddNewForm div {
+    margin-bottom: 15px;
+}
+
+.AddNewForm label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.AddNewForm input[type="text"],
+.AddNewForm input[type="date"],
+.AddNewForm select,
+.AddNewForm textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.AddNewForm textarea {
+    height: 200px;
+    resize: vertical;
+}
+
+.AddNewForm button[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    background-color: black;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.AddNewForm button[type="submit"]:hover {
+    background-color: #966100;
+}
+
+.AddNewForm span {
+    color: red;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.form-page {
+    padding: 20px;
+    max-width: 600px;
+    margin: auto;
+}
+
+.form-dropdown {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    align-items: center;
+}
+
+.form-dropdown label {
+    margin-right: 10px;
+}
+
+.form-dropdown select {
+    padding: 5px;
+    font-size: 17px;
+}
+
+h3 {
+    margin-right: 12px;
+}
