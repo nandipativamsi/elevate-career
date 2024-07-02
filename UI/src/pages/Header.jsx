@@ -43,11 +43,8 @@ function Header(props) {
                 <li><a href="/jobboard">Job Board</a></li>
                 <li><a href="/help-center">Help Center</a></li>
                 <li><a href="/login">Login / Signup</a></li>
-                <li><a href="/addJob">Add Job</a></li>
-                <li><a href="/viewJobs">Jobs</a></li>
-                <li><a href="/addEvent">Add Event</a></li>
+                <li><a href="/addNew">Add New</a></li>
                 <li><a href="/viewEvents">Events</a></li>
-                <li><a href="/addResource">Add Resource</a></li>
                 <li><a href="/viewResources">Resources</a></li>
                 
                 </ul>
