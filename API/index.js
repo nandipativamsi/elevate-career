@@ -43,12 +43,10 @@ function isAuthenticated(req, res, next) {
 }
 
 // Apply the middleware to routes that need protection
-app.use('/api/addJob', isAuthenticated);
-app.use('/api/viewJobs', isAuthenticated);
-app.use('/api/addEvent', isAuthenticated);
-app.use('/api/viewEvents', isAuthenticated);
-app.use('/api/addResource', isAuthenticated);
-app.use('/api/viewResources', isAuthenticated);
+app.use('/addNew', isAuthenticated);
+app.use('/jobboard', isAuthenticated);
+app.use('/viewEvents', isAuthenticated);
+app.use('/viewResources', isAuthenticated);
 
 // Route to get current user
 app.get('/api/current_user', (req, res) => {
