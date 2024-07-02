@@ -1,0 +1,65 @@
+enum roleType {
+  Student
+  Alumni
+  Admin
+}
+
+enum educationType {
+  Graduation
+  Masters
+  Diploma
+  Degree
+}
+
+enum statusType {
+  Active
+  Inactive
+  Blocked
+  Deleted
+}
+
+type User{
+  _id: ID!
+  name : String!
+  email : String!
+  password : String!
+  role : roleType!
+  contactNumber : String!
+  education : educationType!
+  yearOfGraduation : String!
+  workExperience: String!
+  connections: String
+  skills: String
+  interests: String
+  linkedInURL: String
+  gitHubURL: String
+  socialMediaURL: String
+  status: statusType
+}
+
+input UserInput{
+  name : String!
+  email : String!
+  password : String!
+  role : roleType!
+  contactNumber : String!
+  education : educationType!
+  yearOfGraduation : String!
+  workExperience: String!
+}
+
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+type AuthPayload {
+  token: String!
+  user: User!
+}
+
+type Mutation {
+  addUser(user: UserInput!): User!
+  login(credentials: LoginInput!): AuthPayload!
+  logout: Boolean!
+}
