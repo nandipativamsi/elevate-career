@@ -4,9 +4,9 @@
   "description": "Elevate Career",
   "type": "module",
   "scripts": {
-    "start:client": "cd API && npm start",
+    "start:server": "cd API && npm start",
     "start": "npm-run-all --parallel start:server start:client",
-    "start:server": "cd UI && npm run dev"
+    "start:client": "cd UI && npm run dev"
   },
   "author": "",
   "license": "ISC",
