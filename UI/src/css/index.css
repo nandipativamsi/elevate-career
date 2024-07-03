@@ -19,13 +19,15 @@
 }
 
 .my-btn:hover {
-  background-color: #45a049;
+  background-color: #966100;
 }
 
-.common-tittle {
+.common-tittle{
+  margin-bottom: 2rem;
+}
+.common-tittle h2{
   font-size: 2rem;
   font-weight: bold;
-  margin-bottom: 2rem;
 }
 .flex-container{
   display: flex;
@@ -37,4 +39,12 @@
 }
 .align-text-center{
   text-align: center;
+}
+@media (max-width: 768px) {
+  .common-tittle {
+    margin-bottom: 0rem;
+  }
+  .common-tittle h2{
+    font-size: 1.3rem;
+  }
 }
