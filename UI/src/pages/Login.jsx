@@ -8,7 +8,9 @@ function LoginForm(props) {
         password: "",
     });
 
+    const [errors, setErrors] = useState({});
     const [successMessage, setSuccessMessage] = useState(null);
+    const [errorMessage, setErrorMessage] = useState(null);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -18,53 +20,81 @@ function LoginForm(props) {
         });
     };
 
+    const validate = () => {
+        const newErrors = {};
+
+        // Email validation
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!formData.email.trim()) {
+            newErrors.email = "Email is required";
+        } else if (!emailPattern.test(formData.email)) {
+            newErrors.email = "Invalid email address";
+        }
+
+        // Password validation
+        if (!formData.password.trim()) {
+            newErrors.password = "Password is required";
+        } 
+        // else if (formData.password.length < 8) {
+        //     newErrors.password = "Password must be at least 8 characters";
+        // }
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const query = `
-            mutation login($credentials: LoginInput!) {
-                login(credentials: $credentials) {
-                    user {
-                        _id
-                        name
-                    }
-                }
-            }
-        `;
-
-        try {
-            const response = await fetch('http://localhost:3000/graphql', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    query,
-                    variables: {
-                        credentials: {
-                            email: formData.email,
-                            password: formData.password,
+        if (validate()) {
+            const query = `
+                mutation login($credentials: LoginInput!) {
+                    login(credentials: $credentials) {
+                        user {
+                            _id
+                            name
                         }
                     }
-                }),
-                credentials: 'include', // Important for session-based auth
-            });
+                }
+            `;
 
-            const responseData = await response.json();
+            try {
+                const response = await fetch('http://localhost:3000/graphql', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        query,
+                        variables: {
+                            credentials: {
+                                email: formData.email,
+                                password: formData.password,
+                            }
+                        }
+                    }),
+                    credentials: 'include', // Important for session-based auth
+                });
 
-            if (responseData.errors) {
-                throw new Error(responseData.errors[0].message);
+                const responseData = await response.json();
+
+                if (responseData.errors) {
+                    throw new Error(responseData.errors[0].message);
+                }
+
+                const { user } = responseData.data.login;
+
+                setSuccessMessage('Login successful. Redirecting to home page..');
+                setErrorMessage(null);
+
+                setTimeout(() => {
+                    redirectToHome();
+                }, 2000);
+            } catch (error) {
+                console.error('There was an error logging in!', error);
+                setErrorMessage('Invalid credentials. Please try again.');
+                setSuccessMessage(null);
             }
-
-            const { user } = responseData.data.login;
-
-            setSuccessMessage('Login successful. Redirecting to home page..');
-
-            setTimeout(() => {
-                redirectToHome();
-            }, 2000);
-        } catch (error) {
-            console.error('There was an error logging in!', error);
         }
     };
 
@@ -77,6 +107,7 @@ function LoginForm(props) {
         props.history.push('/register');
         props.updateTitle('Register');
     };
+
     return (
         <div>
             <div className="login-container">
@@ -86,21 +117,21 @@ function LoginForm(props) {
                         <input 
                             type="email" 
                             name="email"
-                            placeholder="email@gmail.com" 
+                            placeholder="Email Address" 
                             value={formData.email} 
-                            onChange={handleChange} 
-                            required 
+                            onChange={handleChange}  
                         />
+                        {errors.email && <span style={{ color: 'red' }}>{errors.email}</span>}
                     </div>
                     <div className="form-group">
                         <input 
                             type="password" 
                             name="password"
-                            placeholder="password" 
+                            placeholder="Password" 
                             value={formData.password} 
-                            onChange={handleChange} 
-                            required 
+                            onChange={handleChange}  
                         />
+                        {errors.password && <span style={{ color: 'red' }}>{errors.password}</span>}
                     </div>
                     <button type="submit" className="login-button">Login</button>
                     <p className="signup-link">
@@ -110,6 +141,9 @@ function LoginForm(props) {
                 </form>
                 <div className="alert alert-success mt-2" style={{ display: successMessage ? 'block' : 'none' }} role="alert">
                     {successMessage}
+                </div>
+                <div className="alert alert-danger mt-2" style={{ display: errorMessage ? 'block' : 'none' }} role="alert">
+                    {errorMessage}
                 </div>
             </div>
         </div>    
