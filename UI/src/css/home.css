@@ -27,6 +27,13 @@
   top: 110px;
 }
 
+.hero-upper-tittle {
+  font-size: 24px;
+}
+
+.hero-lower-tittle {
+  font-size: 32px;
+}
 /* Steps styling starts */
 
 .row-img {
@@ -51,7 +58,7 @@
   gap: 2;
   margin-top: 30px;
   width: 100%;
-  height: 350px;
+  /* height: 350px; */
 
 }
 
@@ -74,9 +81,6 @@
   font-weight: bold;
 }
 
-.box-text {
-  color: #827C7C;
-}
 
 /* Features seaction stying starts */
 .features-container {
@@ -84,6 +88,7 @@
   flex-direction: column;
   align-items: center;
   padding: 2rem 4rem;
+  background-color: #F1EFE7;
 
 }
 
@@ -154,11 +159,12 @@
 
 /* reachout container starts */
 
-.reachout-container{
+.reachout-container {
   position: relative;
   margin-top: 4rem;
   padding-top: 4rem;
 }
+
 .reachout-box {
   width: 100%;
   height: 350px;
@@ -168,7 +174,7 @@
 
 .reachout-image-container {
   width: 40%;
-  top:0;
+  top: 0;
 }
 
 .reachout-text-container {
@@ -179,21 +185,98 @@
   flex-direction: column;
   gap: 10px;
 }
-.reachout-text-container h1{
+
+.reachout-text-container h1 {
   font-weight: bolder;
 }
+
 .reachout-image {
   width: 35%;
   position: absolute;
   top: 0;
 }
-.reachout-info{
+
+.reachout-info {
   flex-direction: column;
   padding: 2rem;
 }
-.reachout-email{
+
+.reachout-email {
   border-right: 1px solid black;
 }
-.email-phone div{
+
+.email-phone div {
   padding: 1rem;
+}
+
+
+@media (max-width: 768px) {
+  .bg-image {
+    height: 62vh;
+  }
+  .hero-text {
+    top: 0px;
+  }
+  .hero-upper-tittle {
+    font-size: 16px;
+  }
+
+  .hero-lower-tittle {
+    font-size: 20px;
+  }
+  .row-container{
+    flex-direction: column;
+  }
+  .box-text {
+    text-align: center;
+  }
+  .features-container{
+    padding: 2rem 0;
+  }
+  .box-container{
+    flex-direction: column;
+    height: auto;
+  }
+  .left-feature-container {
+    width: 100%;
+  }
+  
+  .right-feature-container {
+    width: 100%;
+  }
+  .feature-button {
+    width: 130px;
+  }
+  .feature{
+    margin-top: 20px;
+  }
+  .reachout-container{
+    position: static;
+    margin-top: 0;
+  }
+
+  .reachout-box{
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    padding: 1.2rem;
+    gap: 1rem;
+  }
+  .reachout-image-container{
+    width: 100%;
+  }
+  .reachout-image {
+    width: 100%;
+    position: static;
+  }
+  .reachout-text-container{
+    width: 100%;
+  }
+  .email-phone{
+    flex-direction: column;
+  }
+  .reachout-email{
+    border-right: none;
+    border-bottom:1px solid black;
+  }
 }
