@@ -13,9 +13,10 @@ const User = new Schema({
         type:String,
         require:true
     },
-    role:{
-        type:String,
-        require:true
+    role: { 
+        type: String, 
+        enum: ['Student', 'Alumni', 'Admin'], 
+        required: true 
     },
     connections:{
         type:String,
@@ -25,7 +26,12 @@ const User = new Schema({
         type:String,
         require:true
     },
-    education:{
+    education: { 
+        type: String,
+        enum: ['Graduation', 'Masters', 'Diploma', 'Degree'], 
+        required: true 
+    },
+    yearOfGraduation:{
         type:String,
         require:true
     },
@@ -46,18 +52,20 @@ const User = new Schema({
     socialMediaURL:{
         type:String,
     },
-    status:{
-        type:String,
-        required:true,
-    }
+    status: { 
+        type: String, 
+        enum: ['Active', 'Inactive', 'Blocked', 'Deleted'], 
+        default: 'Active' 
+    },
 });
 
 //Encoding the password before saving to database...
-User.pre('save', function (next) {
-    bcrypt.hash(this.password, 10, (error, hash) => {
-        this.password = hash;
-        next();
-    });
+User.pre('save', async function(next) {
+    if (this.isModified('password') || this.isNew) {
+      const salt = await bcrypt.genSalt(10);
+      this.password = await bcrypt.hash(this.password, salt);
+    }
+    next();
 });
 
 const userSchema = mongoose.model('User',User);

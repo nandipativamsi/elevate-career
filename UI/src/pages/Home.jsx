@@ -21,8 +21,8 @@ function HomePage() {
       <header className="py-5 bg-image">
         <div className="hero-text">
           <div className="text-center">
-            <h4 className='fs-5'>ONE STEP TOWARDS</h4>
-            <h1 className="fw-bolder fs-1">EXCELLENCE!!</h1>
+            <h4 className='hero-upper-tittle'>ONE STEP TOWARDS</h4>
+            <h1 className="fw-bolder hero-lower-tittle">EXCELLENCE!!</h1>
           </div>
         </div>
       </header>
@@ -60,7 +60,7 @@ function HomePage() {
           </div>
         </div>
       </section>
-      <section className="py-5 bg-light">
+      <section className="py-5">
         <div className="features-container">
           <div className="row">
             <div className="col-lg-12 text-center common-tittle">
