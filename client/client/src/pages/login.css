@@ -1,0 +1,124 @@
+/* Existing CSS */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #ffffff; /* Fallback color */
+  background-size: cover;
+  background-position: center;
+  padding: 20px;
+  height: 100vh;
+}
+
+.login-header {
+  color: #cfa24e;
+  text-align: center;
+}
+
+.login-form {
+  padding: 20px;
+  border-radius: 5px;
+  width: 300px;
+  text-align: center;
+  background-color: rgba(248, 248, 248, 0.9); /* Semi-transparent background for better readability */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.login-form h2 {
+  margin-bottom: 20px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+.login-button {
+  width: 100%;
+  padding: 10px;
+  background-color: #000000;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 3px;
+  margin-top: 10px;
+}
+
+.register-button {
+  width: 100%;
+  padding: 10px;
+  background-color: #ededed;
+  color: #000000;
+  border: none;
+  cursor: pointer;
+  border-radius: 3px;
+  margin-top: 10px;
+}
+
+.login-button:hover {
+  background-color: #cfa24e;
+}
+
+.signup-link,
+.login-link {
+  margin-top: 15px;
+  display: block;
+}
+
+.signup-link a,
+.login-link a {
+  text-decoration: none;
+  color: #007bff;
+}
+
+.signup-link a:hover,
+.login-link a:hover {
+  text-decoration: underline;
+}
+
+/* Media Query for Mobile Devices */
+@media (max-width: 600px) {
+  .login-container {
+    height: auto; /* Allow container to expand */
+    padding: 10px; /* Adjust padding */
+  }
+
+  .login-form {
+    width: 100%; /* Full width */
+    padding: 15px; /* Adjust padding */
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    padding: 8px; /* Adjust input padding */
+    font-size: 14px; /* Adjust font size */
+  }
+
+  .login-button,
+  .register-button {
+    padding: 8px; /* Adjust button padding */
+    font-size: 14px; /* Adjust button font size */
+  }
+
+  .login-form h2 {
+    font-size: 18px; /* Adjust heading size */
+    margin-bottom: 15px; /* Adjust margin for spacing */
+  }
+
+  .signup-link,
+  .login-link {
+    font-size: 14px; /* Adjust link font size */
+  }
+}

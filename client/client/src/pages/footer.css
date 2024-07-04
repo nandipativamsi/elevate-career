@@ -1,0 +1,102 @@
+/* Existing CSS */
+.footer {
+  padding: 20px;
+  background-color: #f2efe8;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  text-align: left;
+}
+
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.footer-column {
+  flex: 1;
+  min-width: 150px;
+  margin: 10px;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  height: 100px;
+}
+
+.footer-column h4 {
+  margin-bottom: 10px;
+}
+
+.footer-column ul {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-column li {
+  margin-bottom: 5px;
+}
+
+.footer-column a {
+  text-decoration: none;
+  color: #333;
+}
+
+.footer-column a:hover {
+  text-decoration: underline;
+}
+
+.social-media a {
+  display: block;
+  margin-bottom: 5px;
+}
+
+/* Media Query for Mobile Devices */
+@media (max-width: 600px) {
+  .footer {
+      padding: 10px; /* Adjust padding for mobile */
+      flex-direction: column; /* Stack columns vertically */
+      align-items: flex-start; /* Align items to the start */
+  }
+
+  .footer-content {
+      flex-direction: column; /* Stack content vertically */
+      align-items: flex-start; /* Align items to the start */
+  }
+
+  .footer-column {
+      width: 100%; /* Full width for columns */
+      margin: 5px 0; /* Reduce margin for columns */
+  }
+
+  .logo {
+      height: 80px; /* Adjust logo size */
+  }
+
+  .footer-column h4 {
+      font-size: 16px; /* Adjust heading size */
+  }
+
+  .footer-column ul {
+      padding-left: 15px; /* Add padding for list items */
+  }
+
+  .footer-column li {
+      margin-bottom: 10px; /* Increase space between items */
+  }
+
+  .footer-column a {
+      font-size: 14px; /* Adjust link size */
+  }
+
+  .social-media a {
+      font-size: 14px; /* Adjust social media link size */
+      margin-bottom: 10px; /* Increase space between social links */
+  }
+}
+               
