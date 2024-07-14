@@ -161,7 +161,7 @@
 
 .reachout-container {
   position: relative;
-  margin-top: 4rem;
+  margin: 4rem 0;
   padding-top: 4rem;
 }
 
@@ -195,20 +195,6 @@
   position: absolute;
   top: 0;
 }
-
-.reachout-info {
-  flex-direction: column;
-  padding: 2rem;
-}
-
-.reachout-email {
-  border-right: 1px solid black;
-}
-
-.email-phone div {
-  padding: 1rem;
-}
-
 
 @media (max-width: 768px) {
   .bg-image {
@@ -271,12 +257,5 @@
   }
   .reachout-text-container{
     width: 100%;
-  }
-  .email-phone{
-    flex-direction: column;
-  }
-  .reachout-email{
-    border-right: none;
-    border-bottom:1px solid black;
   }
 }
