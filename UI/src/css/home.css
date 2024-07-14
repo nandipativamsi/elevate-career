@@ -11,7 +11,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-image: url('../assets/hero3.jpg');
+  background-image: url('../assets/hero3.webp');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -38,16 +38,21 @@
 
 .row-img {
   width: 50%;
+  height: 50%;
 }
 
 .size-s {
   padding: 18px 0;
   width: 40%;
+  height: 50%;
+
 }
 
 .size-ss {
   width: 40%;
   padding: 18px 0;
+  height: 50%;
+
 }
 
 .row-container {

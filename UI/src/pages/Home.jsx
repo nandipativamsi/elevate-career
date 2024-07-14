@@ -2,12 +2,12 @@
 import PropTypes from 'prop-types';
 import '../css/index.css'
 import "../css/home.css"
-import rowimg1 from '../assets/row1.png'
-import rowimg2 from '../assets/row2.png'
-import rowimg3 from '../assets/row3.png'
-import featureImg1 from '../assets/feature1.jpg'
-import featureImg2 from '../assets/feature2.jpg'
-import featureImg3 from '../assets/feature3.jpg'
+import rowimg1 from '../assets/row1.webp'
+import rowimg2 from '../assets/row2.webp'
+import rowimg3 from '../assets/row3.webp'
+import featureImg1 from '../assets/feature1.webp'
+import featureImg2 from '../assets/feature2.webp'
+import featureImg3 from '../assets/feature3.webp'
 import reachoutImg from '../assets/ReachOut.png'
 
 // import React, { useEffect } from 'react';

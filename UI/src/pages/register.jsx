@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { withRouter } from "react-router-dom";
 import './login.css';
+import PropTypes from 'prop-types';
+
 
 function RegistrationForm(props) {
     const [formData, setFormData] = useState({
@@ -269,5 +271,11 @@ function RegistrationForm(props) {
         </div>
     );
 }
+RegistrationForm.propTypes = {
+    updateTitle: PropTypes.func.isRequired,
+    history: PropTypes.shape({
+      push: PropTypes.func.isRequired
+    }).isRequired
+  };
 
 export default withRouter(RegistrationForm);
