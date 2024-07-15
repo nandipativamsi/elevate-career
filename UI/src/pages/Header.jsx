@@ -4,7 +4,7 @@ import axios from 'axios';
 import { ACCESS_TOKEN_NAME } from '../constants/apiConstants';
 import { FaBars, FaTimes } from 'react-icons/fa';
 import './header.css'; 
-import logo from '../assets/logo.png'; 
+import logo from '../assets/logo.webp'; 
 
 function Header(props) {
     const [user, setUser] = useState(null);

@@ -1,21 +1,25 @@
 // import React from 'react';
+import PropTypes from 'prop-types';
 import '../css/index.css'
 import "../css/home.css"
-import '../css/navbar.css'
-import rowimg1 from '../assets/row1.png'
-import rowimg2 from '../assets/row2.png'
-import rowimg3 from '../assets/row3.png'
-import featureImg1 from '../assets/feature1.jpg'
-import featureImg2 from '../assets/feature2.jpg'
-import featureImg3 from '../assets/feature3.jpg'
+import rowimg1 from '../assets/row1.webp'
+import rowimg2 from '../assets/row2.webp'
+import rowimg3 from '../assets/row3.webp'
+import featureImg1 from '../assets/feature1.webp'
+import featureImg2 from '../assets/feature2.webp'
+import featureImg3 from '../assets/feature3.webp'
 import reachoutImg from '../assets/ReachOut.png'
 
-import React, { useEffect } from 'react';
+// import React, { useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
-import { ACCESS_TOKEN_NAME, API_BASE_URL } from '../constants/apiConstants';
-import axios from 'axios'
+// import { ACCESS_TOKEN_NAME, API_BASE_URL } from '../constants/apiConstants';
+// import axios from 'axios'
 
-function HomePage() {
+function HomePage(props) {
+  const { history } = props;
+  const navigateTo = (path) => {
+    history.push(path);
+  };
   return (
     <div>
       <header className="py-5 bg-image">
@@ -73,7 +77,7 @@ function HomePage() {
                 <img src={featureImg1} alt="Join our team" className="feature-image aspect-ratio" />
                 <h3 className="feature-title">JOBS BOARD</h3>
                 <p className="feature-description">Students can apply for jobs, internships, freelancing projects posted by Alumni. It is a great way to grab opportunities, hands-on experience and setting pathways to your career.</p>
-                <button className="feature-button my-btn">CLICK HERE</button>
+                <button className="feature-button my-btn" onClick={()=>navigateTo('/jobboard')}>CLICK HERE</button> 
               </div>
             </div>
             <div className="right-feature-container">
@@ -81,13 +85,13 @@ function HomePage() {
                 <img src={featureImg2} alt="Events" className="feature-image" />
                 <h3 className="feature-title">EVENTS</h3>
                 <p className="feature-description">Join the events posted by alumni such as job fairs, networking sessions, meetups, workshops, and more.</p>
-                <button className="feature-button my-btn">CLICK HERE</button>
+                <button className="feature-button my-btn" onClick={()=>navigateTo('/viewEvents')}>CLICK HERE</button>
               </div>
               <div className="feature lower-container">
                 <img src={featureImg3} alt="Resources library" className="feature-image" />
                 <h3 className="feature-title">RESOURCES LIBRARY</h3>
                 <p className="feature-description">Find great sources of articles, webinars, career guidance tips, trends in technology, resume preparation, and more to educate yourself and get prepared.</p>
-                <button className="feature-button my-btn">CLICK HERE</button>
+                <button className="feature-button my-btn" onClick={()=>navigateTo('/viewResources')}>CLICK HERE</button>
               </div>
             </div>
           </div>
@@ -102,17 +106,7 @@ function HomePage() {
           <div className="reachout-text-container">
             <h1>REACH OUT !</h1>
             <p>At Elevate Career, we are here to support your professional journey every step of the way. Whether you are looking for personalized career advice, have questions about our services, or need assistance navigating your career path, we are just a click away.</p>
-            <button className="feature-button my-btn">CLICK HERE</button>
-          </div>
-        </div>
-
-        <div className="reachout-info flex-container align-text-center">
-          <div>
-            <h5 className='fw-bold'>HOW TO REACH US</h5>
-          </div>
-          <div className='flex-container email-phone'>
-            <div className='reachout-email'>contact@elevatecareer.com</div>
-            <div>+1 (123) 456-7890</div>
+            <button className="feature-button my-btn" onClick={()=>navigateTo("/help-center")}>CLICK HERE</button>
           </div>
         </div>
       </section>
@@ -120,26 +114,9 @@ function HomePage() {
   );
 }
 
-function Home(props) {
-  useEffect(() => {
-    axios.get(API_BASE_URL + '/user/me', { headers: { 'token': localStorage.getItem(ACCESS_TOKEN_NAME) } })
-      .then(function (response) {
-        if (response.status !== 200) {
-          redirectToLogin()
-        }
-      })
-      .catch(function (error) {
-        redirectToLogin()
-      });
-  }, [])
-  function redirectToLogin() {
-    props.history.push('/login');
-  }
-  return (
-    <div className="mt-2">
-      Home page content
-    </div>
-  )
-}
-
+HomePage.propTypes = {
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired
+  }).isRequired
+};
 export default withRouter(HomePage);

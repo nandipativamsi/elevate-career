@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import { withRouter } from "react-router-dom";
 import './login.css';
+import PropTypes from 'prop-types';
+
 
 function LoginForm(props) {
     const [formData, setFormData] = useState({
@@ -82,7 +84,7 @@ function LoginForm(props) {
                     throw new Error(responseData.errors[0].message);
                 }
 
-                const { user } = responseData.data.login;
+                // const { user } = responseData.data.login;
 
                 setSuccessMessage('Login successful. Redirecting to home page..');
                 setErrorMessage(null);
@@ -135,7 +137,7 @@ function LoginForm(props) {
                     </div>
                     <button type="submit" className="login-button">Login</button>
                     <p className="signup-link">
-                        Don't have an account?
+                        Don&apos;t have an account?
                     </p>
                     <button type="button" className="register-button" onClick={redirectToRegister}>Register here</button>
                 </form>
@@ -149,5 +151,10 @@ function LoginForm(props) {
         </div>    
     )
 }
-
+LoginForm.propTypes = {
+    updateTitle: PropTypes.func.isRequired,
+    history: PropTypes.shape({
+      push: PropTypes.func.isRequired
+    }).isRequired
+  };
 export default withRouter(LoginForm);

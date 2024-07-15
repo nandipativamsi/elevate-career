@@ -11,7 +11,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-image: url('../assets/hero3.jpg');
+  background-image: url('../assets/hero3.webp');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -38,16 +38,21 @@
 
 .row-img {
   width: 50%;
+  height: 50%;
 }
 
 .size-s {
   padding: 18px 0;
   width: 40%;
+  height: 50%;
+
 }
 
 .size-ss {
   width: 40%;
   padding: 18px 0;
+  height: 50%;
+
 }
 
 .row-container {
@@ -161,7 +166,7 @@
 
 .reachout-container {
   position: relative;
-  margin-top: 4rem;
+  margin: 4rem 0;
   padding-top: 4rem;
 }
 
@@ -195,20 +200,6 @@
   position: absolute;
   top: 0;
 }
-
-.reachout-info {
-  flex-direction: column;
-  padding: 2rem;
-}
-
-.reachout-email {
-  border-right: 1px solid black;
-}
-
-.email-phone div {
-  padding: 1rem;
-}
-
 
 @media (max-width: 768px) {
   .bg-image {
@@ -271,12 +262,5 @@
   }
   .reachout-text-container{
     width: 100%;
-  }
-  .email-phone{
-    flex-direction: column;
-  }
-  .reachout-email{
-    border-right: none;
-    border-bottom:1px solid black;
   }
 }
