@@ -15,6 +15,7 @@ const ViewResources = () => {
                         description
                         likes
                         dislikes
+                        image
                         comments {
                             userID
                             comment
@@ -61,6 +62,12 @@ const ViewResources = () => {
             <ul>
                 {resources.map(resource => (
                     <li key={resource._id}>
+                        <div>
+                            <img
+                                src={resource.image ? `../assets/ResourceImages/${resource.image}` : "ND"}
+                                alt="Resource-Image"
+                            />
+                        </div>
                         <h3>{resource.title}</h3>
                         <p><strong>Description:</strong> {resource.description}</p>
                         <p><strong>Likes:</strong> {resource.likes}</p>

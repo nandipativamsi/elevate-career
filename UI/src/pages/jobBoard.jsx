@@ -25,6 +25,7 @@ const JobBoard = () => {
                         experience
                         salary
                         workType
+                        image
                     }
                 }
             `;
@@ -116,7 +117,10 @@ const JobBoard = () => {
                         jobs.map((job) => (
                             <div key={job._id} className="job-box flex-container">
                                 <div className="job-posting-image">
-                                    <img src={jobPostingImg} alt="job-posting" />
+                                    <img
+                                        src={job.image ? `../assets/JobImages/${job.image}` : jobPostingImg}
+                                        alt="job-posting"
+                                    />
                                 </div>
                                 <div className="job-posting-text">
                                     <p className="job-title">{job.title}</p>
