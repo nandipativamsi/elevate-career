@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import defaultEventImage from '../assets/defaultEventImage.jpeg';
 
 const ViewEvents = () => {
     const [events, setEvents] = useState([]);
@@ -63,7 +64,7 @@ const ViewEvents = () => {
                     <li key={event._id}>
                         <div>
                             <img
-                                src={event.image ? `../../assets/EventImages/${event.image}` : "ND"}
+                                src={event.image ? `/src/assets/EventImages/${event.image}` : defaultEventImage}
                                 alt="Event-Image"
                             />
                         </div>

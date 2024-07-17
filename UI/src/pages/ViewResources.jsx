@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import defaultResourceImage from '../assets/defaultResourceImage.jpeg';
 
 const ViewResources = () => {
     const [resources, setResources] = useState([]);
@@ -64,7 +65,7 @@ const ViewResources = () => {
                     <li key={resource._id}>
                         <div>
                             <img
-                                src={resource.image ? `../assets/ResourceImages/${resource.image}` : "ND"}
+                                src={resource.image ? `/src/assets/ResourceImages/${resource.image}` : defaultResourceImage}
                                 alt="Resource-Image"
                             />
                         </div>
