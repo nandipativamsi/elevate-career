@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import defaultEventImage from '../assets/defaultEventImage.jpeg';
 
 const ViewEvents = () => {
     const [events, setEvents] = useState([]);
@@ -18,6 +19,7 @@ const ViewEvents = () => {
                         attendees
                         postedBy
                         limit
+                        image
                     }
                 }
             `;
@@ -60,6 +62,12 @@ const ViewEvents = () => {
             <ul>
                 {events.map(event => (
                     <li key={event._id}>
+                        <div>
+                            <img
+                                src={event.image ? `/src/assets/EventImages/${event.image}` : defaultEventImage}
+                                alt="Event-Image"
+                            />
+                        </div>
                         <h3>{event.title}</h3>
                         <p><strong>Description:</strong> {event.description}</p>
                         <p><strong>Date:</strong> {event.date}</p>

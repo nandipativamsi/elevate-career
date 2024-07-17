@@ -9,6 +9,7 @@
     attendees: String
     postedBy: String
     limit: String!
+    image: String
   }
 
    input EventInput {
@@ -19,6 +20,7 @@
     attendees: String
     postedBy: String
     limit: String!
+    image: String
   }
   
   type Query {

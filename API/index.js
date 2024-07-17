@@ -10,19 +10,75 @@ const { Kind } = require('graphql/language');
 const bcrypt = require('bcrypt');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
+const multer = require('multer');
+const path = require('path');
 const User = require('./models/Users'); // Import your User model
 
 const app = express();
 const port = process.env.PORT || 5500;
 const URI = process.env.MONGODB_URI;
 
-app.use(bodyParser.json());
-// Configure CORS
 const corsOptions = {
   origin: 'http://localhost:5173', 
   credentials: true, 
 };
 app.use(cors(corsOptions));
+
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', 'http://localhost:5173');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  next();
+});
+
+const createStorage = (folderPath) => {
+  return multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, path.join(__dirname, folderPath));
+    },
+    filename: function (req, file, cb) {
+      const timestamp = Date.now();
+      const ext = path.extname(file.originalname);
+      const newFileName = `${timestamp}${ext}`;
+      cb(null, newFileName);
+    }
+  });
+};
+
+const jobImageStorage = createStorage('../UI/src/assets/JobImages');
+const uploadJobImage = multer({ storage: jobImageStorage });
+
+const eventImageStorage = createStorage('../UI/src/assets/EventImages');
+const uploadEventImage = multer({ storage: eventImageStorage });
+
+const resourceImageStorage = createStorage('../UI/src/assets/ResourceImages');
+const uploadResourceImage = multer({ storage: resourceImageStorage });
+
+app.post('/JobImage/upload', uploadJobImage.single('image'), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: 'No file uploaded' });
+  }
+  res.json({ imageName: req.file.filename });
+});
+
+app.post('/EventImage/upload', uploadEventImage.single('image'), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: 'No file uploaded' });
+  }
+  res.json({ imageName: req.file.filename });
+});
+
+app.post('/ResourceImage/upload', uploadResourceImage.single('image'), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: 'No file uploaded' });
+  }
+  res.json({ imageName: req.file.filename });
+});
+
+app.use(bodyParser.json());
+// Configure CORS
+
 
 // Set up session middleware
 app.use(session({
@@ -127,6 +183,7 @@ let database, JobsCollection, EventsCollection, ResourcesCollection;
       Mutation: {
         addJob: async (_, { job }) => {
           validateJob(job);
+          console.log(job);
           job._id = new ObjectId();
           job.postedBy = "Smeet";
           job.applications = "0";
