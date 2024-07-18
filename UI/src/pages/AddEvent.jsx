@@ -8,9 +8,11 @@ const AddEvent = () => {
         date: '',
         location: '',
         limit: '',
+        image: '',
     });
 
     const [errors, setErrors] = useState({});
+    const [imageFile, setImageFile] = useState(null);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -20,10 +22,14 @@ const AddEvent = () => {
         });
     };
 
+    const handleFileChange = (e) => {
+        setImageFile(e.target.files[0]);
+    };
+
     const validate = () => {
         const newErrors = {};
         for (const key in formData) {
-            if (!formData[key]) {
+            if (!formData[key] && key !== 'image') {
                 newErrors[key] = `${key} is required`;
             }
         }
@@ -36,6 +42,33 @@ const AddEvent = () => {
 
         if (validate()) {
             try {
+
+                let imageName = '';
+      
+                if (imageFile) {
+                    
+            
+                    const formData = new FormData();
+                    formData.append('image', imageFile);
+            
+                    const response = await fetch('http://localhost:3000/EventImage/upload', {
+                    method: 'POST',
+                    body: formData,
+                    });
+            
+                    if (!response.ok) {
+                    throw new Error('Image upload failed');
+                    }
+            
+                    const responseData = await response.json();
+            
+                    if (responseData.error) {
+                    throw new Error(responseData.error);
+                    }
+            
+                    imageName = responseData.imageName;
+                }
+
                 const query = `
                     mutation addEvent($event: EventInput!) {
                         addEvent(event: $event) { 
@@ -51,7 +84,9 @@ const AddEvent = () => {
                     },
                     body: JSON.stringify({
                         query,
-                        variables: { event: formData }
+                        variables: { 
+                            event: { ...formData, image: imageName }
+                        }
                     }),
                 });
 
@@ -71,6 +106,7 @@ const AddEvent = () => {
                     limit: '',
                 });
                 setErrors({});
+                setImageFile(null);
             } catch (error) {
                 console.error('There was an error creating the event!', error);
             }
@@ -128,6 +164,15 @@ const AddEvent = () => {
                     onChange={handleChange}
                 />
                 {errors.limit && <span style={{ color: 'red' }}>{errors.limit}</span>}
+            </div>
+            <div>
+                <label>Image</label>
+                <input
+                    type="file"
+                    name="image"
+                    onChange={handleFileChange}
+                />
+                {errors.image && <span style={{ color: 'red' }}>{errors.image}</span>}
             </div>
             <button type="submit">Create Event</button>
         </form>

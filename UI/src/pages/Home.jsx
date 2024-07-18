@@ -26,7 +26,7 @@ function HomePage(props) {
         <div className="hero-text">
           <div className="text-center">
             <h4 className='hero-upper-tittle'>ONE STEP TOWARDS</h4>
-            <h1 className="fw-bolder hero-lower-tittle">EXCELLENCE!!</h1>
+            <h1 className="fw-bolder hero-lower-tittle">EXCELLENCE!</h1>
           </div>
         </div>
       </header>
@@ -34,7 +34,7 @@ function HomePage(props) {
       <section className="py-5">
         <div>
           <div className="col-lg-12 text-center common-tittle">
-            <h2 className='fw-bold'>WHAT ARE YOUR STEPS??</h2>
+            <h2 className='fw-bold'>WHAT ARE YOUR STEPS?</h2>
           </div>
         </div>
         <div className="row-container">

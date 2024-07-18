@@ -13,6 +13,7 @@ type Resource {
     dislikes: String
     comments: [Comment]
     postedBy: String
+    image: String
 }
 
 input CommentInput {
@@ -27,6 +28,7 @@ input ResourceInput {
     dislikes: String
     comments: [CommentInput]
     postedBy: String
+    image: String
 }
 
 type Query {
