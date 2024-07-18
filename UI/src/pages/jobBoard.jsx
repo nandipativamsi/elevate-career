@@ -128,7 +128,7 @@
                                         <p className="location-jobtype">
                                             {job.location} <span>({job.workType})</span>
                                         </p>
-                                        <p className="job-salary">{job.salary}</p>
+                                        <p className="job-salary">${job.salary}</p>
                                     </div>
                                 </div>
                             ))
