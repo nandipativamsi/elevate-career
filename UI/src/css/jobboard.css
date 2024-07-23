@@ -73,7 +73,9 @@
   width: 45%;
   justify-content: flex-start;
   padding: 1.5rem;
-  gap: 1.5rem;
+  gap: 1.5rem;  
+  text-decoration: none;
+  color: black;
 }
 
 .job-posting-image {
@@ -95,6 +97,8 @@
 .location-jobtype,
 .job-salary {
   margin: 0;
+  text-decoration: none;
+  color: black;
 }
 
 @media (max-width: 768px) {
