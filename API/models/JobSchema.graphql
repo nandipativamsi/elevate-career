@@ -42,6 +42,7 @@ input JobInput {
 
 type Query {
   jobList: [Job!]!
+  singleJob(id: ID!): Job
 }
     
 type Mutation {

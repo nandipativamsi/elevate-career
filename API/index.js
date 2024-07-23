@@ -171,6 +171,10 @@ let database, JobsCollection, EventsCollection, ResourcesCollection;
           const jobs = await JobsCollection.find({}).toArray();
           return jobs;
         },
+        singleJob: async (_, { id }) => {
+          const job = await JobsCollection.findOne({ _id: new ObjectId(id) });
+          return job;
+        },
         eventList: async () => {
           const events = await EventsCollection.find({}).toArray();
           return events;
@@ -183,7 +187,7 @@ let database, JobsCollection, EventsCollection, ResourcesCollection;
       Mutation: {
         addJob: async (_, { job }) => {
           validateJob(job);
-          console.log(job);
+          //console.log(job);
           job._id = new ObjectId();
           job.postedBy = "Smeet";
           job.applications = "0";
