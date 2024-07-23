@@ -22,6 +22,7 @@ const ViewEvents = () => {
                         attendees
                         postedBy
                         limit
+                        image
                     }
                 }
             `;

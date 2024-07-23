@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Row, Col } from 'react-bootstrap';
 import heroImg from '../assets/jobBoardHero.png';
-import jobPostingImg from '../assets/job-posting-image.jpeg';
+import { Link } from 'react-router-dom';
+import jobPostingImg from '../assets/defaultJobImage.jpeg';
 import "../css/jobboard.css";
 
 const JobBoard = () => {
@@ -12,22 +13,23 @@ const JobBoard = () => {
     useEffect(() => {
         const loadData = async () => {
             const query = `
-                query {
-                    jobList {
-                        _id
-                        jobType
-                        title
-                        description
-                        company
-                        location
-                        postedBy
-                        applications
-                        experience
-                        salary
-                        workType
+                    query {
+                        jobList {
+                            _id
+                            jobType
+                            title
+                            description
+                            company
+                            location
+                            postedBy
+                            applications
+                            experience
+                            salary
+                            workType
+                            image
+                        }
                     }
-                }
-            `;
+                `;
 
             try {
                 const response = await fetch('http://localhost:3000/graphql', {
@@ -114,9 +116,12 @@ const JobBoard = () => {
                         <p>Error: {error}</p>
                     ) : (
                         jobs.map((job) => (
-                            <div key={job._id} className="job-box flex-container">
+                            <Link key={job._id} to={`/jobDetails/${job._id}`} className="job-box flex-container">
                                 <div className="job-posting-image">
-                                    <img src={jobPostingImg} alt="job-posting" />
+                                    <img
+                                        src={job.image ? `/src/assets/JobImages/${job.image}` : jobPostingImg}
+                                        alt="job-posting"
+                                    />
                                 </div>
                                 <div className="job-posting-text">
                                     <p className="job-title">{job.title}</p>
@@ -126,7 +131,7 @@ const JobBoard = () => {
                                     </p>
                                     <p className="job-salary">{job.salary}</p>
                                 </div>
-                            </div>
+                            </Link>
                         ))
                     )}
                 </div>
