@@ -11,6 +11,7 @@ import ViewEvents from './pages/ViewEvents';
 import AddResource from './pages/AddResource';
 import ViewResources from './pages/ViewResources';
 import JobBoard from './pages/jobBoard';
+import JobDetails from './pages/jobDetails';
 import PrivateRoute from './utils/PrivateRoutes';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
@@ -47,6 +48,7 @@ function App() {
             <Route path="/viewEvents"><ViewEvents/></Route>
             <Route path="/addResource"><AddResource/></Route>
             <Route path="/viewResources"><ViewResources/></Route>
+            <Route path="/jobDetails/:id"><JobDetails/></Route>
             <Route path="/home">
               <Home/>
             </Route>
