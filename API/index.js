@@ -12,7 +12,6 @@ const session = require('express-session');
 const MongoStore = require('connect-mongo');
 const multer = require('multer');
 const path = require('path');
-const User = require('./models/Users'); // Import your User model
 
 const app = express();
 const port = process.env.PORT || 5500;
@@ -219,12 +218,14 @@ let database, JobsCollection, EventsCollection, ResourcesCollection;
           await EventsCollection.insertOne(event);
           return event;
         },
-        addResource: async (_, { resource }) => {
+        addResource: async (_, { resource }, { req }) => {
           resource._id = new ObjectId();
+          resource.createdAt = new Date();
           validateResource(resource);
           resource.likes = "0";
           resource.dislikes = "0";
-          resource.comments = []; 
+          resource.postedBy = req.session.userId || "Anonymous";
+          resource.comments = [];
           await ResourcesCollection.insertOne(resource);
           return resource;
         },

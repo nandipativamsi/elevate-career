@@ -17,6 +17,8 @@ const ViewResources = () => {
                         likes
                         dislikes
                         image
+                        postedBy
+                        createdAt
                         comments {
                             userID
                             comment
@@ -71,6 +73,8 @@ const ViewResources = () => {
                         </div>
                         <h3>{resource.title}</h3>
                         <p><strong>Description:</strong> {resource.description}</p>
+                        <p><strong>Posted By:</strong> {resource.postedBy}</p>
+                        <p><strong>Created At:</strong> {resource.createdAt ? new Date(resource.createdAt).toLocaleString() : 'N/A'}</p>
                         <p><strong>Likes:</strong> {resource.likes}</p>
                         <p><strong>Dislikes:</strong> {resource.dislikes}</p>
                         <div>
@@ -92,3 +96,5 @@ const ViewResources = () => {
 };
 
 export default ViewResources;
+
+
