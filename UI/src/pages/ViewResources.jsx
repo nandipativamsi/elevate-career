@@ -22,6 +22,8 @@ const ViewResources = () => {
                         dislikes
                         postedBy
                         image
+                        postedBy
+                        createdAt
                         comments {
                             userID
                             comment
@@ -129,7 +131,7 @@ const ViewResources = () => {
                                         {resource.title.length > 20 ? `${resource.title.substring(0, 20)}...` : resource.title}
                                     </Card.Title>
                                     <Card.Text>
-                                        {resource.description.length > 50 ? `${resource.description.substring(0, 50)}...` : resource.description}
+                                        {resource.description.length > 30 ? `${resource.description.substring(0, 30)}...` : resource.description}
                                     </Card.Text>
                                     <div className="d-flex justify-content-between align-items-center mb-2">
                                         <div className="d-flex align-items-center">
@@ -159,3 +161,5 @@ const ViewResources = () => {
 };
 
 export default ViewResources;
+
+

@@ -47,4 +47,5 @@ type Query {
     
 type Mutation {
   addJob(job: JobInput!): Job!
+  applyForJob(jobId: ID!, userId: ID!): Job!
 }
