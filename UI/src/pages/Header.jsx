@@ -68,6 +68,7 @@ function Header(props) {
                             <li><a href="/jobboard">Job Board</a></li>
                             <li><a href="/viewEvents">Events</a></li>
                             <li><a href="/viewResources">Resources</a></li>
+                            <li><a href="/connections">Connections</a></li>
                             <li><a href="/" onClick={handleLogout}>Logout</a></li>
                             <li>Hello, {user.name}</li>
                         </>
