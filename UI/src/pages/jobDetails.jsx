@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import jobPostingImg from '../assets/defaultJobImage.jpeg';
 import '../css/jobDetails.css';
-import bannerImage from '../assets/defaultJobImage.jpeg';
+import bannerImage from '../assets/bannerImageJobDetails.jpg';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
 const JobDetails = () => {
