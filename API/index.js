@@ -194,6 +194,23 @@ let database, JobsCollection, EventsCollection, ResourcesCollection;
           await JobsCollection.insertOne(job);
           return job;
         },
+        applyForJob: async (_, { jobId, userId }) => {
+          const job = await JobsCollection.findOne({ _id: new ObjectId(jobId) });
+          if (!job) {
+            throw new Error('Job not found');
+          }
+    
+          const applications = job.applications ? job.applications.split(',') : [];
+          if (!applications.includes(userId)) {
+            applications.push(userId);
+            await JobsCollection.updateOne(
+              { _id: new ObjectId(jobId) },
+              { $set: { applications: applications.join(',') } }
+            );
+          }
+    
+          return await JobsCollection.findOne({ _id: new ObjectId(jobId) });
+        },  
         addEvent: async (_, { event }) => {
           validateEvent(event);
           event._id = new ObjectId();
