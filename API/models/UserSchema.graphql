@@ -63,3 +63,8 @@ type Mutation {
   login(credentials: LoginInput!): AuthPayload!
   logout: Boolean!
 }
+
+type Query {
+  singleUser(id: ID!): User
+  usersByIds(ids: [ID!]!): [User!]!
+}
