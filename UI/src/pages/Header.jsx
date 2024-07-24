@@ -37,8 +37,14 @@ function Header(props) {
     //     }
     // }
     function handleLogout() {
-        localStorage.removeItem(ACCESS_TOKEN_NAME)
-        props.history.push('/login')
+        axios.post('http://localhost:3000/api/logout', {}, { withCredentials: true })
+            .then(() => {
+                setUser(null);
+                props.history.push('/login');
+            })
+            .catch(error => {
+                console.log('Error logging out', error);
+            });
     }
     const [menuOpen, setMenuOpen] = useState(false);
 
