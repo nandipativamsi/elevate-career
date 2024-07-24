@@ -12,6 +12,7 @@ import AddResource from './pages/AddResource';
 import ViewResources from './pages/ViewResources';
 import JobBoard from './pages/jobBoard';
 import JobDetails from './pages/jobDetails';
+import JobApplications from './pages/JobApplications';
 import ConnectionsPage from './pages/Connections';
 import PrivateRoute from './utils/PrivateRoutes';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -51,6 +52,7 @@ function App() {
             <Route path="/viewResources"><ViewResources/></Route>
             <Route path="/connections"><ConnectionsPage/></Route>
             <Route path="/jobDetails/:id"><JobDetails/></Route>
+            <Route path="/jobApplications/:id"><JobApplications/></Route>
             <Route path="/home">
               <Home/>
             </Route>

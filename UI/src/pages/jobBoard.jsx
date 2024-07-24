@@ -130,6 +130,9 @@ const JobBoard = () => {
                                         {job.location} <span>({job.workType})</span>
                                     </p>
                                     <p className="job-salary">{job.salary}</p>
+                                    <Link to={`/jobApplications/${job._id}`} className="btn btn-success px-3 py-1">
+                                        View Applications
+                                    </Link>
                                 </div>
                             </Link>
                         ))
