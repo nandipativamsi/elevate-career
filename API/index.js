@@ -179,6 +179,15 @@ let database, JobsCollection, EventsCollection, ResourcesCollection, UsersCollec
           const user = await UsersCollection.findOne({ _id: new ObjectId(id) });
           return user;
         },
+        singleUser: async (_, { id }) => {
+          const user = await UsersCollection.findOne({ _id: new ObjectId(id) });
+          return user;
+        },
+        usersByIds: async (_, { ids }) => {
+          const objectIds = ids.map(id => new ObjectId(id));
+          const users = await UsersCollection.find({ _id: { $in: objectIds } }).toArray();
+          return users;
+        },
       },
       Mutation: {
         addJob: async (_, { job }) => {

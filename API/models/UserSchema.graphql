@@ -84,3 +84,8 @@ type Mutation {
   logout: Boolean!
   updateUser(id: ID!, user: UpdateUser!): User!
 }
+
+type Query {
+  singleUser(id: ID!): User
+  usersByIds(ids: [ID!]!): [User!]!
+}

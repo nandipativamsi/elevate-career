@@ -11,8 +11,9 @@ import ViewEvents from './pages/ViewEvents';
 import AddResource from './pages/AddResource';
 import ViewResources from './pages/ViewResources';
 import JobBoard from './pages/jobBoard';
-import JobDetails from './pages/jobDetails';
+import HelpCenter from './pages/HelpCenter';
 import ConnectionsPage from './pages/Connections';
+import JobDetails from './pages/jobDetails';
 import PrivateRoute from './utils/PrivateRoutes';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
@@ -55,6 +56,7 @@ function App() {
               <Home/>
             </Route>
             <Route path="/jobboard"><JobBoard/></Route>
+            <Route path="/help-center"><HelpCenter/></Route>
           </Switch>
           <AlertComponent errorMessage={errorMessage} hideError={updateErrorMessage}/>
         </div>
