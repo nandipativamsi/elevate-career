@@ -18,15 +18,15 @@ enum statusType {
   Deleted
 }
 
-type User{
+type User {
   _id: ID!
-  name : String!
-  email : String!
-  password : String!
-  role : roleType!
-  contactNumber : String!
-  education : educationType!
-  yearOfGraduation : String!
+  name: String!
+  email: String!
+  password: String!
+  role: roleType!
+  contactNumber: String!
+  education: educationType!
+  yearOfGraduation: String!
   workExperience: String!
   connections: String
   skills: String
@@ -37,15 +37,31 @@ type User{
   status: statusType
 }
 
-input UserInput{
-  name : String!
-  email : String!
-  password : String!
-  role : roleType!
-  contactNumber : String!
-  education : educationType!
-  yearOfGraduation : String!
+input UserInput {
+  name: String!
+  email: String!
+  password: String!
+  role: roleType!
+  contactNumber: String!
+  education: educationType!
+  yearOfGraduation: String!
   workExperience: String!
+}
+
+input UpdateUser {
+  name: String
+  email: String
+  password: String
+  role: roleType
+  contactNumber: String
+  education: educationType
+  yearOfGraduation: String
+  workExperience: String
+  skills: String
+  interests: String
+  linkedInURL: String
+  gitHubURL: String
+  socialMediaURL: String
 }
 
 input LoginInput {
@@ -58,10 +74,15 @@ type AuthPayload {
   user: User!
 }
 
+type Query {
+  getUserById(id: ID!): User!
+}
+
 type Mutation {
   addUser(user: UserInput!): User!
   login(credentials: LoginInput!): AuthPayload!
   logout: Boolean!
+  updateUser(id: ID!, user: UpdateUser!): User!
 }
 
 type Query {
