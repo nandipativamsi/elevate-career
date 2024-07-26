@@ -19,23 +19,17 @@ function Header(props) {
                 console.log('No active session found', error);
             });
     }, []);
+
     const capitalize = (s) => {
         if (typeof s !== 'string') return ''
         return s.charAt(0).toUpperCase() + s.slice(1)
     }
+    
     let title = capitalize(props.location.pathname.substring(1, props.location.pathname.length))
     if (props.location.pathname === '/') {
         title = 'Welcome'
     }
-    // function renderLogout() {
-    //     if (props.location.pathname === '/home') {
-    //         return (
-    //             <div className="ml-auto">
-    //                 <button className="btn btn-danger" onClick={() => handleLogout()}>Logout</button>
-    //             </div>
-    //         )
-    //     }
-    // }
+
     function handleLogout() {
         axios.post('http://localhost:3000/api/logout', {}, { withCredentials: true })
             .then(() => {
@@ -46,11 +40,12 @@ function Header(props) {
                 console.log('Error logging out', error);
             });
     }
-    const [menuOpen, setMenuOpen] = useState(false);
 
+    const [menuOpen, setMenuOpen] = useState(false);
     const toggleMenu = () => {
         setMenuOpen(!menuOpen);
     };
+
     return (
         <header className="header">
             <div className="logo-container">
@@ -69,6 +64,7 @@ function Header(props) {
                             <li><a href="/viewEvents">Events</a></li>
                             <li><a href="/viewResources">Resources</a></li>
                             <li><a href="/connections">Connections</a></li>
+                            <li><Link to={`/profile`}>Profile</Link></li>
                             <li><a href="/" onClick={handleLogout}>Logout</a></li>
                             <li>Hello, {user.name}</li>
                         </>

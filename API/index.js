@@ -76,10 +76,7 @@ app.post('/ResourceImage/upload', uploadResourceImage.single('image'), (req, res
 });
 
 app.use(bodyParser.json());
-// Configure CORS
 
-
-// Set up session middleware
 app.use(session({
   secret: 'your-secret-key',
   resave: false,
@@ -88,7 +85,6 @@ app.use(session({
   cookie: { maxAge: 1000 * 60 * 60 } // 1 hour
 }));
 
-// Middleware to check if user is authenticated
 function isAuthenticated(req, res, next) {
   if (req.session.user) {
       return next();
@@ -97,13 +93,11 @@ function isAuthenticated(req, res, next) {
   }
 }
 
-// Apply the middleware to routes that need protection
 app.use('/addNew', isAuthenticated);
 app.use('/jobboard', isAuthenticated);
 app.use('/viewEvents', isAuthenticated);
 app.use('/viewResources', isAuthenticated);
 
-// Route to get current user
 app.get('/api/current_user', (req, res) => {
   if (req.session.user) {
       res.json({ user: req.session.user });
@@ -112,7 +106,6 @@ app.get('/api/current_user', (req, res) => {
   }
 });
 
-// Logout route
 app.post('/api/logout', (req, res) => {
   req.session.destroy((err) => {
       if (err) {
@@ -145,7 +138,7 @@ const GraphQLDate = new GraphQLScalarType({
   },
 });
 
-let database, JobsCollection, EventsCollection, ResourcesCollection;
+let database, JobsCollection, EventsCollection, ResourcesCollection, UsersCollection;
 
 (async () => {
   try {
@@ -182,6 +175,10 @@ let database, JobsCollection, EventsCollection, ResourcesCollection;
           const resources = await ResourcesCollection.find({}).toArray();
           return resources;
         },
+        getUserById: async (_, { id }) => {
+          const user = await UsersCollection.findOne({ _id: new ObjectId(id) });
+          return user;
+        },
         singleUser: async (_, { id }) => {
           const user = await UsersCollection.findOne({ _id: new ObjectId(id) });
           return user;
@@ -195,7 +192,6 @@ let database, JobsCollection, EventsCollection, ResourcesCollection;
       Mutation: {
         addJob: async (_, { job }) => {
           validateJob(job);
-          //console.log(job);
           job._id = new ObjectId();
           job.postedBy = "Smeet";
           job.applications = "0";
@@ -248,23 +244,16 @@ let database, JobsCollection, EventsCollection, ResourcesCollection;
           const { email, password } = credentials;
     
           const user = await UsersCollection.findOne({ email });
-          // console.log(user);
           if (!user) {
             throw new AuthenticationError('Invalid email or password');
           }
 
-          // const isPasswordValid = await bcrypt.compare(password, user.password);
-          // if (!isPasswordValid) {
-          //   throw new AuthenticationError('Invalid email or password');
-          // }
-          if(user.password!=password){
+          if (user.password !== password) {
               throw new AuthenticationError('Invalid email or password');
           }
 
-          // Create session
           req.session.userId = user._id;
           req.session.user = user;
-          // console.log(req.session.user);
     
           return {
             user,
@@ -277,6 +266,18 @@ let database, JobsCollection, EventsCollection, ResourcesCollection;
             }
           });
           return true;
+        },
+        updateUser: async (_, { id, input }) => {
+          const user = await UsersCollection.findOne({ _id: new ObjectId(id) });
+          if (!user) {
+            throw new Error('User not found');
+          }
+          const updatedUser = await UsersCollection.findOneAndUpdate(
+            { _id: new ObjectId(id) },
+            { $set: input },
+            { returnOriginal: false }
+          );
+          return updatedUser.value;
         },
       },
       GraphQLDate,
@@ -327,6 +328,7 @@ const validateUser = (user) => {
     throw new UserInputError('Invalid input(s)', { errors });
   }
 };
+
 const validateResource = (resource) => {
   let errors = [];
 

@@ -83,3 +83,38 @@
     font-size: 16px;
     box-sizing: border-box;
 }
+
+.collapsible-container {
+  margin-top: 20px;
+}
+
+.collapsible {
+  cursor: pointer;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-top: 5px;
+  margin-bottom: 5px; /* Space between collapsibles */
+  margin-left: 40px; /* Left margin */
+  margin-right: 40px; /* Right margin */
+  display: flex;
+  justify-content: space-between; /* Align header and icon */
+  align-items: center;
+}
+
+.collapsible-content {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-top: none; /* Seamless connection with the header */
+  border-radius: 0 0 5px 5px;
+  margin-bottom: 10px; /* Space after content */
+}
+
+.icon {
+  font-size: 1.2em; /* Larger icon */
+}
+.card-body-margin {
+  margin-left: 20px;
+  margin-right: 20px;
+  border: none !important;
+}
