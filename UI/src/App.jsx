@@ -45,6 +45,7 @@ function App() {
               <LoginForm showError={updateErrorMessage} updateTitle={updateTitle}/>
             </Route>
             <Route path="/addJob"><AddJob/></Route>
+            <Route path="/editJob/:id"><AddJob/></Route>
             <Route path="/addNew"><AddNew/></Route>
             <Route path="/addEvent"><AddEvent/></Route>
             <Route path="/viewEvents"><ViewEvents/></Route>
