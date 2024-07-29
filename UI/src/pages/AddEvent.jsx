@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 
-
 const AddEvent = () => {
     const [formData, setFormData] = useState({
         title: '',
         description: '',
         date: '',
+        time: '',
         location: '',
         limit: '',
+        price: '',
         image: '',
     });
 
@@ -42,28 +43,25 @@ const AddEvent = () => {
 
         if (validate()) {
             try {
-
                 let imageName = '';
       
                 if (imageFile) {
-                    
-            
                     const formData = new FormData();
                     formData.append('image', imageFile);
             
                     const response = await fetch('http://localhost:3000/EventImage/upload', {
-                    method: 'POST',
-                    body: formData,
+                        method: 'POST',
+                        body: formData,
                     });
             
                     if (!response.ok) {
-                    throw new Error('Image upload failed');
+                        throw new Error('Image upload failed');
                     }
             
                     const responseData = await response.json();
             
                     if (responseData.error) {
-                    throw new Error(responseData.error);
+                        throw new Error(responseData.error);
                     }
             
                     imageName = responseData.imageName;
@@ -72,8 +70,8 @@ const AddEvent = () => {
                 const query = `
                     mutation addEvent($event: EventInput!) {
                         addEvent(event: $event) { 
-                        _id
-                       }
+                            _id
+                        }
                     }
                 `;
 
@@ -102,8 +100,10 @@ const AddEvent = () => {
                     title: '',
                     description: '',
                     date: '',
+                    time: '',
                     location: '',
                     limit: '',
+                    price: '',
                 });
                 setErrors({});
                 setImageFile(null);
@@ -116,7 +116,7 @@ const AddEvent = () => {
     return (
         <form className="AddNewForm" onSubmit={handleSubmit}>
             <div>
-            <h2 className='form-heading'>Create New Event</h2>
+                <h2 className='form-heading'>Create New Event</h2>
                 <label>Title</label>
                 <input
                     type="text"
@@ -138,12 +138,22 @@ const AddEvent = () => {
             <div>
                 <label>Date</label>
                 <input
-                    type="date"  
+                    type="date"
                     name="date"
                     value={formData.date}
                     onChange={handleChange}
                 />
                 {errors.date && <span style={{ color: 'red' }}>{errors.date}</span>}
+            </div>
+            <div>
+                <label>Time</label>
+                <input
+                    type="time"
+                    name="time"
+                    value={formData.time}
+                    onChange={handleChange}
+                />
+                {errors.time && <span style={{ color: 'red' }}>{errors.time}</span>}
             </div>
             <div>
                 <label>Location</label>
@@ -166,6 +176,16 @@ const AddEvent = () => {
                 {errors.limit && <span style={{ color: 'red' }}>{errors.limit}</span>}
             </div>
             <div>
+                <label>Price (For One Person)</label>
+                <input
+                    type="text"
+                    name="price"
+                    value={formData.price}
+                    onChange={handleChange}
+                />
+                {errors.price && <span style={{ color: 'red' }}>{errors.price}</span>}
+            </div>
+            <div>
                 <label>Image</label>
                 <input
                     type="file"
@@ -179,4 +199,4 @@ const AddEvent = () => {
     );
 };
 
-export default AddEvent; 
+export default AddEvent;

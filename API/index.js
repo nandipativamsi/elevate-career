@@ -12,7 +12,6 @@ const session = require('express-session');
 const MongoStore = require('connect-mongo');
 const multer = require('multer');
 const path = require('path');
-const User = require('./models/Users'); // Import your User model
 
 const app = express();
 const port = process.env.PORT || 5500;
@@ -77,10 +76,7 @@ app.post('/ResourceImage/upload', uploadResourceImage.single('image'), (req, res
 });
 
 app.use(bodyParser.json());
-// Configure CORS
 
-
-// Set up session middleware
 app.use(session({
   secret: 'your-secret-key',
   resave: false,
@@ -89,7 +85,6 @@ app.use(session({
   cookie: { maxAge: 1000 * 60 * 60 } // 1 hour
 }));
 
-// Middleware to check if user is authenticated
 function isAuthenticated(req, res, next) {
   if (req.session.user) {
       return next();
@@ -98,13 +93,11 @@ function isAuthenticated(req, res, next) {
   }
 }
 
-// Apply the middleware to routes that need protection
 app.use('/addNew', isAuthenticated);
 app.use('/jobboard', isAuthenticated);
 app.use('/viewEvents', isAuthenticated);
 app.use('/viewResources', isAuthenticated);
 
-// Route to get current user
 app.get('/api/current_user', (req, res) => {
   if (req.session.user) {
       res.json({ user: req.session.user });
@@ -113,7 +106,6 @@ app.get('/api/current_user', (req, res) => {
   }
 });
 
-// Logout route
 app.post('/api/logout', (req, res) => {
   req.session.destroy((err) => {
       if (err) {
@@ -146,7 +138,7 @@ const GraphQLDate = new GraphQLScalarType({
   },
 });
 
-let database, JobsCollection, EventsCollection, ResourcesCollection;
+let database, JobsCollection, EventsCollection, ResourcesCollection, UsersCollection;
 
 (async () => {
   try {
@@ -164,7 +156,7 @@ let database, JobsCollection, EventsCollection, ResourcesCollection;
     const resourceTypeDefs = fs.readFileSync('./models/ResourceSchema.graphql', 'utf-8');
     const userTypeDefs = fs.readFileSync('./models/UserSchema.graphql', 'utf-8');
     const typeDefs = [eventTypeDefs, jobTypeDefs, resourceTypeDefs, userTypeDefs].join('\n');
-
+   
     const resolvers = {
       Query: {
         jobList: async () => {
@@ -183,31 +175,74 @@ let database, JobsCollection, EventsCollection, ResourcesCollection;
           const resources = await ResourcesCollection.find({}).toArray();
           return resources;
         },
+        getUserById: async (_, { id }) => {
+          const user = await UsersCollection.findOne({ _id: new ObjectId(id) });
+          return user;
+        },
+        singleUser: async (_, { id }) => {
+          const user = await UsersCollection.findOne({ _id: new ObjectId(id) });
+          return user;
+        },
+        usersByIds: async (_, { ids }) => {
+          const objectIds = ids.map(id => new ObjectId(id));
+          const users = await UsersCollection.find({ _id: { $in: objectIds } }).toArray();
+          return users;
+        },
       },
       Mutation: {
-        addJob: async (_, { job }) => {
+        addJob: async (_, { job }, { req }) => {
           validateJob(job);
-          //console.log(job);
           job._id = new ObjectId();
-          job.postedBy = "Smeet";
+          job.postedBy = req.session.userId || "Smeet";
           job.applications = "0";
           await JobsCollection.insertOne(job);
           return job;
         },
-        addEvent: async (_, { event }) => {
+        updateJob: async (_, { id, job }) => {
+          await JobsCollection.updateOne(
+            { _id: new ObjectId(id) },
+            { $set: job }
+          );
+          return await JobsCollection.findOne({ _id: new ObjectId(id) });
+        },
+        applyForJob: async (_, { jobId, userId }) => {
+          const job = await JobsCollection.findOne({ _id: new ObjectId(jobId) });
+          if (!job) {
+            throw new Error('Job not found');
+          }
+      
+          const applications = job.applications ? job.applications.split(',') : [];
+          if (!applications.includes(userId)) {
+            applications.push(userId);
+            await JobsCollection.updateOne(
+              { _id: new ObjectId(jobId) },
+              { $set: { applications: applications.join(',') } }
+            );
+          }
+      
+          return await JobsCollection.findOne({ _id: new ObjectId(jobId) });
+        },
+        deleteJob: async (_, { _id }) => {
+          const result = await JobsCollection.deleteOne({ _id: new ObjectId(_id) });
+          return result.deletedCount === 1;
+        },
+        addEvent: async (_, { event }, { req }) => {
           validateEvent(event);
           event._id = new ObjectId();
           event.attendees = "0";
-          event.postedBy = "Smeet";
+          event.postedBy = req.session.userId || "Smeet";
           await EventsCollection.insertOne(event);
           return event;
         },
-        addResource: async (_, { resource }) => {
+        addResource: async (_, { resource }, { req }) => {
           resource._id = new ObjectId();
+          resource.createdAt = new Date();
           validateResource(resource);
           resource.likes = "0";
           resource.dislikes = "0";
-          resource.comments = []; 
+          resource.postedBy = req.session.userId || "Smeet";
+          console.log(req.session.userId);
+          resource.comments = [];
           await ResourcesCollection.insertOne(resource);
           return resource;
         },
@@ -219,26 +254,19 @@ let database, JobsCollection, EventsCollection, ResourcesCollection;
         },
         login: async (_, { credentials }, { req }) => {
           const { email, password } = credentials;
-    
+      
           const user = await UsersCollection.findOne({ email });
-          // console.log(user);
           if (!user) {
             throw new AuthenticationError('Invalid email or password');
           }
-
-          // const isPasswordValid = await bcrypt.compare(password, user.password);
-          // if (!isPasswordValid) {
-          //   throw new AuthenticationError('Invalid email or password');
-          // }
-          if(user.password!=password){
-              throw new AuthenticationError('Invalid email or password');
+      
+          if (user.password !== password) {
+            throw new AuthenticationError('Invalid email or password');
           }
-
-          // Create session
+      
           req.session.userId = user._id;
           req.session.user = user;
-          // console.log(req.session.user);
-    
+      
           return {
             user,
           };
@@ -250,6 +278,18 @@ let database, JobsCollection, EventsCollection, ResourcesCollection;
             }
           });
           return true;
+        },
+        updateUser: async (_, { id, input }) => {
+          const user = await UsersCollection.findOne({ _id: new ObjectId(id) });
+          if (!user) {
+            throw new Error('User not found');
+          }
+          const updatedUser = await UsersCollection.findOneAndUpdate(
+            { _id: new ObjectId(id) },
+            { $set: input },
+            { returnOriginal: false }
+          );
+          return updatedUser.value;
         },
       },
       GraphQLDate,
@@ -300,6 +340,7 @@ const validateUser = (user) => {
     throw new UserInputError('Invalid input(s)', { errors });
   }
 };
+
 const validateResource = (resource) => {
   let errors = [];
 

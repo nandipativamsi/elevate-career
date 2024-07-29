@@ -41,10 +41,21 @@ input JobInput {
 }
 
 type Query {
+  
   jobList: [Job!]!
+
   singleJob(id: ID!): Job
+
 }
     
 type Mutation {
+
   addJob(job: JobInput!): Job!
+
+  updateJob(id: ID!, job: JobInput!): Job!
+
+  applyForJob(jobId: ID!, userId: ID!): Job!
+
+  deleteJob(_id: ID!): Boolean!
+
 }
