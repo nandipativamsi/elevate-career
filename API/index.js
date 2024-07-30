@@ -16,6 +16,7 @@ const path = require('path');
 const app = express();
 const port = process.env.PORT || 5500;
 const URI = process.env.MONGODB_URI;
+const saltRounds = 10;
 
 const corsOptions = {
   origin: 'http://localhost:5173', 
@@ -248,25 +249,28 @@ let database, JobsCollection, EventsCollection, ResourcesCollection, UsersCollec
         },
         addUser: async (_, { user }) => {
           validateUser(user);
+          const hashedPassword = await bcrypt.hash(user.password, saltRounds);
+          user.password = hashedPassword;
           user._id = new ObjectId();
           await UsersCollection.insertOne(user);
           return user;
         },
         login: async (_, { credentials }, { req }) => {
           const { email, password } = credentials;
-      
+    
           const user = await UsersCollection.findOne({ email });
           if (!user) {
             throw new AuthenticationError('Invalid email or password');
           }
-      
-          if (user.password !== password) {
+    
+          const passwordMatch = await bcrypt.compare(password, user.password);
+          if (!passwordMatch) {
             throw new AuthenticationError('Invalid email or password');
           }
-      
+    
           req.session.userId = user._id;
           req.session.user = user;
-      
+    
           return {
             user,
           };
