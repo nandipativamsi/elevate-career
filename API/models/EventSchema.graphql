@@ -29,6 +29,8 @@ input EventInput {
 
 type Query {
   eventList: [Event!]!
+
+  singleEvent(id: ID!): Event
 }
 
 type Mutation {

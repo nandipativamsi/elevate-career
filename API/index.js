@@ -172,9 +172,17 @@ let database, JobsCollection, EventsCollection, ResourcesCollection, UsersCollec
           const events = await EventsCollection.find({}).toArray();
           return events;
         },
+        singleEvent: async (_, { id }) => {
+          const Event = await EventsCollection.findOne({ _id: new ObjectId(id) });
+          return Event;
+        },
         resourceList: async () => {
           const resources = await ResourcesCollection.find({}).toArray();
           return resources;
+        },
+        singleResource: async (_, { id }) => {
+          const Resource = await ResourcesCollection.findOne({ _id: new ObjectId(id) });
+          return Resource;
         },
         getUserById: async (_, { id }) => {
           const user = await UsersCollection.findOne({ _id: new ObjectId(id) });
@@ -235,6 +243,13 @@ let database, JobsCollection, EventsCollection, ResourcesCollection, UsersCollec
           await EventsCollection.insertOne(event);
           return event;
         },
+        updateEvent: async (_, { id, event }) => {
+          await EventsCollection.updateOne(
+            { _id: new ObjectId(id) },
+            { $set: event }
+          );
+          return await EventsCollection.findOne({ _id: new ObjectId(id) });
+        },
         deleteEvent: async (_, { _id }) => {
           const result = await EventsCollection.deleteOne({ _id: new ObjectId(_id) });
           return result.deletedCount === 1;
@@ -250,6 +265,13 @@ let database, JobsCollection, EventsCollection, ResourcesCollection, UsersCollec
           resource.comments = [];
           await ResourcesCollection.insertOne(resource);
           return resource;
+        },
+        updateResource: async (_, { id, resource }) => {
+          await ResourcesCollection.updateOne(
+            { _id: new ObjectId(id) },
+            { $set: resource }
+          );
+          return await ResourcesCollection.findOne({ _id: new ObjectId(id) });
         },
         deleteResource: async (_, { _id }) => {
           const result = await ResourcesCollection.deleteOne({ _id: new ObjectId(_id) });

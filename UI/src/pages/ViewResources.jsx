@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Row, Col, Card, Button, Form } from 'react-bootstrap';
 import { BiLike, BiDislike, BiComment,BiUser } from 'react-icons/bi';
 import defaultResourceImage from '../assets/defaultResourceImage.jpeg';
+import { Link } from 'react-router-dom';
 import "../css/resources.css";
 
 const ViewResources = () => {
@@ -188,6 +189,9 @@ const ViewResources = () => {
                                     </div>
                                     <Button variant="primary">Read Article</Button>
                                     <button className='btn btn-danger text-white mx-1 px-3' onClick={() => deleteResource(resource._id)}>Delete</button>
+                                    <Link to={`/editResource/${resource._id}`} className="btn btn-warning text-white px-3 me-2">
+                                        Edit 
+                                    </Link>
                                 </Card.Body>
                             </Card>
                         </Col>
