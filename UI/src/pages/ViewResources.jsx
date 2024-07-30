@@ -10,25 +10,58 @@ const ViewResources = () => {
     const [error, setError] = useState(null);
     const [filter, setFilter] = useState('all');
 
-    useEffect(() => {
-        const fetchData = async () => {
-            const query = `
-                query {
-                    resourceList {
-                        _id
-                        title
-                        description
-                        likes
-                        dislikes
-                        postedBy
-                        image
-                        postedBy
-                        createdAt
-                        comments {
-                            userID
-                            comment
-                        }
+    
+    const loadData = async () => {
+        const query = `
+            query {
+                resourceList {
+                    _id
+                    title
+                    description
+                    likes
+                    dislikes
+                    postedBy
+                    image
+                    postedBy
+                    createdAt
+                    comments {
+                        userID
+                        comment
                     }
+                }
+            }
+        `;
+
+        try {
+            const response = await fetch('http://localhost:3000/graphql', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ query }),
+            });
+
+            const { data, errors } = await response.json();
+
+            if (errors) {
+                throw new Error(errors[0].message);
+            }
+
+            setResources(data.resourceList);
+            setLoading(false);
+        } catch (error) {
+            setError(error.message);
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        loadData();
+    }, []);
+
+    const deleteResource = async (_id) => {
+        if (window.confirm("Are you sure you want to delete the resource?")) {
+            const query = `
+                mutation deleteResource($_id: ID!) {
+                    deleteResource(_id: $_id)
                 }
             `;
 
@@ -36,7 +69,10 @@ const ViewResources = () => {
                 const response = await fetch('http://localhost:3000/graphql', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ query }),
+                    body: JSON.stringify({
+                        query,
+                        variables: { _id }
+                    }),
                 });
 
                 const { data, errors } = await response.json();
@@ -45,16 +81,17 @@ const ViewResources = () => {
                     throw new Error(errors[0].message);
                 }
 
-                setResources(data.resourceList);
-                setLoading(false);
+                if (data) {
+                    alert("Resource Deleted Successfully!");
+                    loadData();
+                } else {
+                    alert("Failed to delete the resource");
+                }
             } catch (error) {
                 setError(error.message);
-                setLoading(false);
             }
-        };
-
-        fetchData();
-    }, []);
+        }
+    };
 
     const filteredResources = resources.filter(resource => {
         if (filter === 'all') {
@@ -150,6 +187,7 @@ const ViewResources = () => {
                                         </div>
                                     </div>
                                     <Button variant="primary">Read Article</Button>
+                                    <button className='btn btn-danger text-white mx-1 px-3' onClick={() => deleteResource(resource._id)}>Delete</button>
                                 </Card.Body>
                             </Card>
                         </Col>
