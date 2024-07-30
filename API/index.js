@@ -156,7 +156,7 @@ let database, JobsCollection, EventsCollection, ResourcesCollection, UsersCollec
     const resourceTypeDefs = fs.readFileSync('./models/ResourceSchema.graphql', 'utf-8');
     const userTypeDefs = fs.readFileSync('./models/UserSchema.graphql', 'utf-8');
     const typeDefs = [eventTypeDefs, jobTypeDefs, resourceTypeDefs, userTypeDefs].join('\n');
-
+   
     const resolvers = {
       Query: {
         jobList: async () => {
@@ -190,20 +190,27 @@ let database, JobsCollection, EventsCollection, ResourcesCollection, UsersCollec
         },
       },
       Mutation: {
-        addJob: async (_, { job }) => {
+        addJob: async (_, { job }, { req }) => {
           validateJob(job);
           job._id = new ObjectId();
-          job.postedBy = "Smeet";
+          job.postedBy = req.session.userId || "Smeet";
           job.applications = "0";
           await JobsCollection.insertOne(job);
           return job;
+        },
+        updateJob: async (_, { id, job }) => {
+          await JobsCollection.updateOne(
+            { _id: new ObjectId(id) },
+            { $set: job }
+          );
+          return await JobsCollection.findOne({ _id: new ObjectId(id) });
         },
         applyForJob: async (_, { jobId, userId }) => {
           const job = await JobsCollection.findOne({ _id: new ObjectId(jobId) });
           if (!job) {
             throw new Error('Job not found');
           }
-    
+      
           const applications = job.applications ? job.applications.split(',') : [];
           if (!applications.includes(userId)) {
             applications.push(userId);
@@ -212,14 +219,18 @@ let database, JobsCollection, EventsCollection, ResourcesCollection, UsersCollec
               { $set: { applications: applications.join(',') } }
             );
           }
-    
+      
           return await JobsCollection.findOne({ _id: new ObjectId(jobId) });
-        },  
-        addEvent: async (_, { event }) => {
+        },
+        deleteJob: async (_, { _id }) => {
+          const result = await JobsCollection.deleteOne({ _id: new ObjectId(_id) });
+          return result.deletedCount === 1;
+        },
+        addEvent: async (_, { event }, { req }) => {
           validateEvent(event);
           event._id = new ObjectId();
           event.attendees = "0";
-          event.postedBy = "Smeet";
+          event.postedBy = req.session.userId || "Smeet";
           await EventsCollection.insertOne(event);
           return event;
         },
@@ -229,7 +240,8 @@ let database, JobsCollection, EventsCollection, ResourcesCollection, UsersCollec
           validateResource(resource);
           resource.likes = "0";
           resource.dislikes = "0";
-          resource.postedBy = req.session.userId || "Anonymous";
+          resource.postedBy = req.session.userId || "Smeet";
+          console.log(req.session.userId);
           resource.comments = [];
           await ResourcesCollection.insertOne(resource);
           return resource;
@@ -242,19 +254,19 @@ let database, JobsCollection, EventsCollection, ResourcesCollection, UsersCollec
         },
         login: async (_, { credentials }, { req }) => {
           const { email, password } = credentials;
-    
+      
           const user = await UsersCollection.findOne({ email });
           if (!user) {
             throw new AuthenticationError('Invalid email or password');
           }
-
+      
           if (user.password !== password) {
-              throw new AuthenticationError('Invalid email or password');
+            throw new AuthenticationError('Invalid email or password');
           }
-
+      
           req.session.userId = user._id;
           req.session.user = user;
-    
+      
           return {
             user,
           };

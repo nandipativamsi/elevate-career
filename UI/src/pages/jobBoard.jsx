@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Row, Col } from 'react-bootstrap';
 import heroImg from '../assets/jobBoardHero.png';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import jobPostingImg from '../assets/defaultJobImage.jpeg';
 import "../css/jobboard.css";
 
@@ -10,32 +10,73 @@ const JobBoard = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    const history = useHistory();
+
+    const handleEdit = (jobId) => {
+        history.push(`/editJob/${jobId}`);
+    };
+
+    const loadData = async () => {
+        const query = `
+            query {
+                jobList {
+                    _id
+                    jobType
+                    title
+                    description
+                    company
+                    location
+                    postedBy
+                    applications
+                    experience
+                    salary
+                    workType
+                    image
+                }
+            }
+        `;
+
+        try {
+            const response = await fetch('http://localhost:3000/graphql', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ query }),
+            });
+
+            const { data, errors } = await response.json();
+
+            if (errors) {
+                throw new Error(errors[0].message);
+            }
+
+            setJobs(data.jobList);
+            setLoading(false);
+        } catch (error) {
+            setError(error.message);
+            setLoading(false);
+        }
+    };
+
     useEffect(() => {
-        const loadData = async () => {
+        loadData();
+    }, []);
+
+    const deleteJob = async (_id) => {
+        if (window.confirm("Are you sure you want to delete the job?")) {
             const query = `
-                    query {
-                        jobList {
-                            _id
-                            jobType
-                            title
-                            description
-                            company
-                            location
-                            postedBy
-                            applications
-                            experience
-                            salary
-                            workType
-                            image
-                        }
-                    }
-                `;
+                mutation deleteJob($_id: ID!) {
+                    deleteJob(_id: $_id)
+                }
+            `;
 
             try {
                 const response = await fetch('http://localhost:3000/graphql', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ query }),
+                    body: JSON.stringify({
+                        query,
+                        variables: { _id }
+                    }),
                 });
 
                 const { data, errors } = await response.json();
@@ -44,16 +85,17 @@ const JobBoard = () => {
                     throw new Error(errors[0].message);
                 }
 
-                setJobs(data.jobList);
-                setLoading(false);
+                if (data) {
+                    alert("Job Deleted Successfully!");
+                    loadData();
+                } else {
+                    alert("Failed to delete the job");
+                }
             } catch (error) {
                 setError(error.message);
-                setLoading(false);
             }
-        };
-
-        loadData();
-    }, []);
+        }
+    };
 
     return (
         <div>
@@ -116,7 +158,7 @@ const JobBoard = () => {
                         <p>Error: {error}</p>
                     ) : (
                         jobs.map((job) => (
-                            <Link key={job._id} to={`/jobDetails/${job._id}`} className="job-box flex-container">
+                            <div className="job-box flex-container">
                                 <div className="job-posting-image">
                                     <img
                                         src={job.image ? `/src/assets/JobImages/${job.image}` : jobPostingImg}
@@ -130,11 +172,20 @@ const JobBoard = () => {
                                         {job.location} <span>({job.workType})</span>
                                     </p>
                                     <p className="job-salary">{job.salary}</p>
-                                    <Link to={`/jobApplications/${job._id}`} className="btn btn-success px-3 py-1">
+                                    <div className='col'>
+                                    <Link to={`/jobDetails/${job._id}`} className="btn btn-dark px-3 me-1">
+                                        Details
+                                    </Link>
+                                    <button className='btn btn-warning text-white me-1 px-3' onClick={() => handleEdit(job._id)}>Edit</button>
+                                    <button className='btn btn-danger text-white me-1 px-3' onClick={() => deleteJob(job._id)}>Delete</button>
+                                    
+                                    <Link to={`/jobApplications/${job._id}`} className="btn btn-success px-3 me-2">
                                         View Applications
                                     </Link>
+                                    </div>
+                                    
                                 </div>
-                            </Link>
+                            </div>
                         ))
                     )}
                 </div>

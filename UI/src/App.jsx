@@ -11,9 +11,10 @@ import ViewEvents from './pages/ViewEvents';
 import AddResource from './pages/AddResource';
 import ViewResources from './pages/ViewResources';
 import JobBoard from './pages/jobBoard';
+import JobDetails from './pages/jobDetails';
+import JobApplications from './pages/JobApplications';
 import HelpCenter from './pages/HelpCenter';
 import ConnectionsPage from './pages/Connections';
-import JobDetails from './pages/jobDetails';
 import PrivateRoute from './utils/PrivateRoutes';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
@@ -44,6 +45,7 @@ function App() {
               <LoginForm showError={updateErrorMessage} updateTitle={updateTitle}/>
             </Route>
             <Route path="/addJob"><AddJob/></Route>
+            <Route path="/editJob/:id"><AddJob/></Route>
             <Route path="/addNew"><AddNew/></Route>
             <Route path="/addEvent"><AddEvent/></Route>
             <Route path="/viewEvents"><ViewEvents/></Route>
@@ -51,6 +53,7 @@ function App() {
             <Route path="/viewResources"><ViewResources/></Route>
             <Route path="/connections"><ConnectionsPage/></Route>
             <Route path="/jobDetails/:id"><JobDetails/></Route>
+            <Route path="/jobApplications/:id"><JobApplications/></Route>
             <Route path="/profile"><ProfilePage/></Route>
             <Route path="/home">
               <Home/>
