@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Row, Col, Card, Button } from 'react-bootstrap';
 import heroImg from '../assets/feature2.jpg';
+import { Link } from 'react-router-dom';
 import "../css/events.css";
 
 const ViewEvents = () => {
@@ -161,6 +162,9 @@ const ViewEvents = () => {
                                     </Card.Text>
                                     <Button variant="primary">Details</Button>
                                     <button className='btn btn-danger text-white mx-1 px-3' onClick={() => deleteEvent(event._id)}>Delete</button>
+                                    <Link to={`/editEvent/${event._id}`} className="btn btn-warning text-white px-3 me-2">
+                                        Edit 
+                                    </Link>
                                 </Card.Body>
                             </Card>
                         </Col>

@@ -202,6 +202,17 @@ const AddJob = () => {
             </div>
             <div>
                 <label>Image</label>
+                {formData.image && (
+                <div>
+                    <img
+                        src={`/src/assets/JobImages/${formData.image}`}
+                        alt="Job Image"
+                        style={{ width: '200px', height: 'auto' }}
+                    />
+                    <p >If you want to change image upload new one, otherwise old image will remain as it is...</p  >
+                </div>
+                )}
+            
                 <input
                     type="file"
                     name="image"
