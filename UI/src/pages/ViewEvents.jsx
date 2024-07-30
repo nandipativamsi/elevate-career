@@ -9,21 +9,54 @@ const ViewEvents = () => {
     const [error, setError] = useState(null);
     const [filter, setFilter] = useState('all');
 
+
+    const loadData = async () => {
+        const query = `
+            query {
+                eventList {
+                    _id
+                    title
+                    description
+                    date
+                    location
+                    attendees
+                    postedBy
+                    limit
+                    image
+                }
+            }
+        `;
+
+        try {
+            const response = await fetch('http://localhost:3000/graphql', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ query }),
+            });
+
+            const { data, errors } = await response.json();
+
+            if (errors) {
+                throw new Error(errors[0].message);
+            }
+
+            setEvents(data.eventList);
+            setLoading(false);
+        } catch (error) {
+            setError(error.message);
+            setLoading(false);
+        }
+    };
+
     useEffect(() => {
-        const loadData = async () => {
+        loadData();
+    }, []);
+
+    const deleteEvent = async (_id) => {
+        if (window.confirm("Are you sure you want to delete the event?")) {
             const query = `
-                query {
-                    eventList {
-                        _id
-                        title
-                        description
-                        date
-                        location
-                        attendees
-                        postedBy
-                        limit
-                        image
-                    }
+                mutation deleteEvent($_id: ID!) {
+                    deleteEvent(_id: $_id)
                 }
             `;
 
@@ -31,7 +64,10 @@ const ViewEvents = () => {
                 const response = await fetch('http://localhost:3000/graphql', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ query }),
+                    body: JSON.stringify({
+                        query,
+                        variables: { _id }
+                    }),
                 });
 
                 const { data, errors } = await response.json();
@@ -40,16 +76,17 @@ const ViewEvents = () => {
                     throw new Error(errors[0].message);
                 }
 
-                setEvents(data.eventList);
-                setLoading(false);
+                if (data) {
+                    alert("Event Deleted Successfully!");
+                    loadData();
+                } else {
+                    alert("Failed to delete the Event");
+                }
             } catch (error) {
                 setError(error.message);
-                setLoading(false);
             }
-        };
-
-        loadData();
-    }, []);
+        }
+    };
 
     if (loading) {
         return <p>Loading...</p>;
@@ -123,6 +160,7 @@ const ViewEvents = () => {
                                         })}
                                     </Card.Text>
                                     <Button variant="primary">Details</Button>
+                                    <button className='btn btn-danger text-white mx-1 px-3' onClick={() => deleteEvent(event._id)}>Delete</button>
                                 </Card.Body>
                             </Card>
                         </Col>

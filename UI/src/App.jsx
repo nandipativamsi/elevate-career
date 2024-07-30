@@ -45,15 +45,17 @@ function App() {
               <LoginForm showError={updateErrorMessage} updateTitle={updateTitle}/>
             </Route>
             <Route path="/addJob"><AddJob/></Route>
+            <Route path="/jobDetails/:id"><JobDetails/></Route>
+            <Route path="/jobApplications/:id"><JobApplications/></Route>
             <Route path="/editJob/:id"><AddJob/></Route>
             <Route path="/addNew"><AddNew/></Route>
             <Route path="/addEvent"><AddEvent/></Route>
+            <Route path="/editEvent/:id"><AddEvent/></Route>
             <Route path="/viewEvents"><ViewEvents/></Route>
             <Route path="/addResource"><AddResource/></Route>
+            <Route path="/editResource/:id"><AddResource/></Route>
             <Route path="/viewResources"><ViewResources/></Route>
             <Route path="/connections"><ConnectionsPage/></Route>
-            <Route path="/jobDetails/:id"><JobDetails/></Route>
-            <Route path="/jobApplications/:id"><JobApplications/></Route>
             <Route path="/profile"><ProfilePage/></Route>
             <Route path="/home">
               <Home/>

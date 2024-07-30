@@ -33,4 +33,8 @@ type Query {
 
 type Mutation {
   addEvent(event: EventInput!): Event!
+
+  updateEvent(id: ID!, event: EventInput!): Event!
+
+  deleteEvent(_id: ID!): Boolean!
 }
