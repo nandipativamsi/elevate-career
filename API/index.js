@@ -235,6 +235,10 @@ let database, JobsCollection, EventsCollection, ResourcesCollection, UsersCollec
           await EventsCollection.insertOne(event);
           return event;
         },
+        deleteEvent: async (_, { _id }) => {
+          const result = await EventsCollection.deleteOne({ _id: new ObjectId(_id) });
+          return result.deletedCount === 1;
+        },
         addResource: async (_, { resource }, { req }) => {
           resource._id = new ObjectId();
           resource.createdAt = new Date();
@@ -246,6 +250,10 @@ let database, JobsCollection, EventsCollection, ResourcesCollection, UsersCollec
           resource.comments = [];
           await ResourcesCollection.insertOne(resource);
           return resource;
+        },
+        deleteResource: async (_, { _id }) => {
+          const result = await ResourcesCollection.deleteOne({ _id: new ObjectId(_id) });
+          return result.deletedCount === 1;
         },
         addUser: async (_, { user }) => {
           validateUser(user);
