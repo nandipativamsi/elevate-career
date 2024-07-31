@@ -1,12 +1,8 @@
 import { useState } from 'react';
 import { withRouter } from "react-router-dom";
-<<<<<<< HEAD
 import '../css/login.css';
-=======
->>>>>>> origin
 import PropTypes from 'prop-types';
 import { useAuth } from '../AuthContext.jsx'; // Import the custom hook to use AuthContext
-import './login.css';
 
 function LoginForm(props) {
     const [formData, setFormData] = useState({
