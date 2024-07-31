@@ -2,8 +2,12 @@ import { useEffect, useState } from 'react';
 import { Link, withRouter } from "react-router-dom";
 import axios from 'axios';
 import { FaBars, FaTimes } from 'react-icons/fa';
+<<<<<<< HEAD
+import '../css/header.css'; 
+=======
 import { useAuth } from '../AuthContext.jsx'; // Import the custom hook to use AuthContext
 import './header.css'; 
+>>>>>>> origin
 import logo from '../assets/logo.webp'; 
 
 function Header(props) {
