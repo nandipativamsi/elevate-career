@@ -3,7 +3,7 @@
   background: none;
   height: 87vh;
 }
-
+ 
 .bg-image::before {
   content: '';
   position: absolute;

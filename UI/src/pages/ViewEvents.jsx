@@ -115,15 +115,14 @@ const ViewEvents = () => {
     return (
         <div>
             <section className="hero-section">
-                <img src={heroImg} alt="people networking at event" className="hero-image" />
+                <h1 className="fw-bold event-tittle">EVENTS</h1>
                 <div className="hero-text-container">
-                    <h1 className="fw-bold">EVENTS BOARD</h1>
                     <p>
-                        The Events section of Career Elevate offers a diverse array of opportunities designed to enhance professional growth and network expansion. From industry-specific conferences and expert-led webinars to hands-on workshops and dynamic networking mixers, these events cater to a wide range of career stages and interests. Participants can gain valuable insights into emerging trends, acquire new skills, and connect with like-minded professionals. Whether you're looking to deepen your expertise, explore new career paths, or simply stay current in your field, Career Elevate's events provide the perfect platform to elevate your career aspirations.
+                        The Events section of Career Elevate offers a diverse array of opportunities designed to enhance professional growth and network expansion. From industry-specific conferences and expert-led webinars to hands-on workshops and dynamic networking mixers, these events cater to a wide range of career stages and interests. Participants can gain valuable insights into emerging trends, acquire new skills, and connect with like-minded professionals. Whether you&apos;re looking to deepen your expertise, explore new career paths, or simply stay current in your field, Career Elevate&apos;s events provide the perfect platform to elevate your career aspirations.
                     </p>
                 </div>
             </section>
-            <section className="py-5 event-filter-section">
+            <section className="pt-5 event-filter-section">
                 <Form className="dropdowns-container">
                     <Row className="justify-content-center">
                         <Col xs={12} sm={6} md={4} lg={3} className="dropdown-col">
@@ -139,8 +138,8 @@ const ViewEvents = () => {
                     </Row>
                 </Form>
             </section>
-            <section className="py-5 events-section">
-                <h2 className="text-center">RECOMMENDATIONS FOR YOU</h2>
+            <section className="pb-5 px-3 events-section">
+                <h2 className="m-5 reccomendation-tittle">RECOMMENDATIONS FOR YOU</h2>
                 <Row className="justify-content-center">
                     {filteredEvents.map(event => (
                         <Col xs={12} sm={6} md={4} lg={3} key={event._id} className="mb-4">

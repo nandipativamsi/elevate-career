@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css'; // Ensure Leaflet's CSS is imported
-import './login.css';
+import '../css/login.css';
 import { CCard, CCardBody, CCardHeader, CCollapse } from '@coreui/react';
 
 const HelpCenter = () => {
