@@ -34,7 +34,6 @@ input ResourceInput {
 
 type Query {
     resourceList: [Resource!]!
-
     singleResource(id: ID!): Resource
 }
 

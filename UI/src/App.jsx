@@ -10,6 +10,7 @@ import AddEvent from './pages/AddEvent';
 import ViewEvents from './pages/ViewEvents';
 import AddResource from './pages/AddResource';
 import ViewResources from './pages/ViewResources';
+import ResourceDetails from './pages/ResourceDetails';
 import JobBoard from './pages/jobBoard';
 import JobDetails from './pages/jobDetails';
 import JobApplications from './pages/JobApplications';
@@ -55,6 +56,7 @@ function App() {
             <Route path="/addResource"><AddResource/></Route>
             <Route path="/editResource/:id"><AddResource/></Route>
             <Route path="/viewResources"><ViewResources/></Route>
+            <Route path="/viewResourcesDetails/:id"><ResourceDetails/></Route> 
             <Route path="/connections"><ConnectionsPage/></Route>
             <Route path="/profile"><ProfilePage/></Route>
             <Route path="/home">
