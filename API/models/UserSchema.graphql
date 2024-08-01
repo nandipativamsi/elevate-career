@@ -29,6 +29,7 @@ type User {
   yearOfGraduation: String!
   workExperience: String!
   connections: String
+  pendingConnections: String
   skills: String
   interests: String
   linkedInURL: String
@@ -88,4 +89,5 @@ type Mutation {
 type Query {
   singleUser(id: ID!): User
   usersByIds(ids: [ID!]!): [User!]!
+  userList: [User!]!
 }
