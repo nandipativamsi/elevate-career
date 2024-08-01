@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react';
 import { Link, withRouter } from "react-router-dom";
 import axios from 'axios';
-import { ACCESS_TOKEN_NAME } from '../constants/apiConstants';
 import { FaBars, FaTimes } from 'react-icons/fa';
-import './header.css'; 
+import '../css/header.css'; 
+import { useAuth } from '../AuthContext.jsx'; // Import the custom hook to use AuthContext
 import logo from '../assets/logo.webp'; 
 
 function Header(props) {
-    const [user, setUser] = useState(null);
+    const [menuOpen, setMenuOpen] = useState(false);
+    const { user, setUser } = useAuth(); // Destructure user and setUser from useAuth
 
     useEffect(() => {
         // Check if user session exists
@@ -18,30 +19,35 @@ function Header(props) {
             .catch(error => {
                 console.log('No active session found', error);
             });
-    }, []);
+    }, [setUser]);
 
     const capitalize = (s) => {
         if (typeof s !== 'string') return ''
         return s.charAt(0).toUpperCase() + s.slice(1)
     }
     
-    let title = capitalize(props.location.pathname.substring(1, props.location.pathname.length))
+    let title = capitalize(props.location.pathname.substring(1, props.location.pathname.length));
     if (props.location.pathname === '/') {
-        title = 'Welcome'
+        title = 'Welcome';
     }
 
     function handleLogout() {
         axios.post('http://localhost:3000/api/logout', {}, { withCredentials: true })
             .then(() => {
-                setUser(null);
+                setUser(null); // Reset user state
+                // localStorage.removeItem('token'); // Optionally remove token from localStorage
                 props.history.push('/login');
             })
             .catch(error => {
                 console.log('Error logging out', error);
+                // Even if there is an error logging out from the server,
+                // we can still clear the user state and navigate to the login page
+                setUser(null);
+                // localStorage.removeItem('token'); // Optionally remove token from localStorage
+                props.history.push('/login');
             });
     }
 
-    const [menuOpen, setMenuOpen] = useState(false);
     const toggleMenu = () => {
         setMenuOpen(!menuOpen);
     };

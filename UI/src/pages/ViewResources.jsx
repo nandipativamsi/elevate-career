@@ -124,7 +124,7 @@ const ViewResources = () => {
     return (
         <div>
             <section className="hero-section">
-                <img src={defaultResourceImage} alt="resources" className="hero-image" />
+                {/* <img src={defaultResourceImage} alt="resources" className="hero-image" /> */}
                 <div className="hero-text-container">
                     <h1 className="fw-bold">RESOURCES BOARD</h1>
                     <p>

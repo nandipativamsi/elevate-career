@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useAuth } from '../AuthContext.jsx';
+// import axios from 'axios';
 
 const ProfilePage = () => {
+    const { user, setUser } = useAuth();
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -9,34 +11,20 @@ const ProfilePage = () => {
         yearOfGraduation: '',
         education: '',
         workExperience: '',
-        skills: '', // Optional
-        interests: '', // Optional
-        linkedInURL: '', // Optional
-        gitHubURL: '', // Optional
-        socialMediaURL: '', // Optional
+        skills: '',
+        interests: '',
+        linkedInURL: '',
+        gitHubURL: '',
+        socialMediaURL: '',
     });
 
     const [errors, setErrors] = useState({});
     const [imageFile, setImageFile] = useState(null);
-    const [userId, setUserId] = useState(null);
-    const [isEditing, setIsEditing] = useState(false); // State for edit mode
-
-    useEffect(() => {
-        const fetchUserId = async () => {
-            try {
-                const response = await axios.get('http://localhost:3000/api/current_user', { withCredentials: true });
-                setUserId(response.data.user._id);
-            } catch (error) {
-                console.error('Error fetching user ID:', error);
-            }
-        };
-
-        fetchUserId();
-    }, []);
+    const [isEditing, setIsEditing] = useState(false);
 
     useEffect(() => {
         const fetchProfile = async () => {
-            if (userId) {
+            if (user) {
                 try {
                     const query = `
                         query getUserById($id: ID!) {
@@ -62,7 +50,7 @@ const ProfilePage = () => {
                         },
                         body: JSON.stringify({
                             query,
-                            variables: { id: userId }
+                            variables: { id: user._id }
                         }),
                     });
 
@@ -75,7 +63,7 @@ const ProfilePage = () => {
         };
 
         fetchProfile();
-    }, [userId]);
+    }, [user]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -91,7 +79,6 @@ const ProfilePage = () => {
 
     const validate = () => {
         const newErrors = {};
-        // Required fields validation
         ['name', 'email', 'contactNumber', 'yearOfGraduation', 'education', 'workExperience'].forEach(field => {
             if (!formData[field]) {
                 newErrors[field] = `${field} is required`;
@@ -106,30 +93,6 @@ const ProfilePage = () => {
 
         if (validate()) {
             try {
-                let imageName = '';
-
-                // if (imageFile) {
-                //     const formData = new FormData();
-                //     formData.append('profileImage', imageFile);
-
-                //     const response = await fetch('http://localhost:3000/ProfileImage/upload', {
-                //         method: 'POST',
-                //         body: formData,
-                //     });
-
-                //     if (!response.ok) {
-                //         throw new Error('Image upload failed');
-                //     }
-
-                //     const responseData = await response.json();
-
-                //     if (responseData.error) {
-                //         throw new Error(responseData.error);
-                //     }
-
-                //     imageName = responseData.imageName;
-                // }
-
                 const query = `
                     mutation updateUser($id: ID!, $user: UpdateUser!) {
                         updateUser(id: $id, user: $user) {
@@ -146,7 +109,7 @@ const ProfilePage = () => {
                     body: JSON.stringify({
                         query,
                         variables: {
-                            id: userId,
+                            id: user._id,
                             user: { ...formData }
                         }
                     }),
@@ -156,10 +119,13 @@ const ProfilePage = () => {
                     throw new Error('Profile update failed');
                 }
 
+                const updatedUser = await profileResponse.json();
+                setUser(updatedUser.data.updateUser);
+
                 alert('Profile updated successfully!');
                 setErrors({});
                 setImageFile(null);
-                setIsEditing(false); // Switch back to view mode after update
+                setIsEditing(false);
             } catch (error) {
                 console.error('There was an error updating the profile!', error);
             }
