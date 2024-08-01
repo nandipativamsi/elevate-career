@@ -197,6 +197,10 @@ let database, JobsCollection, EventsCollection, ResourcesCollection, UsersCollec
           const users = await UsersCollection.find({ _id: { $in: objectIds } }).toArray();
           return users;
         },
+        userList: async () => {
+          const users = await UsersCollection.find({ role: { $in: ["Student", "Alumni"], $ne: "Admin" } }).toArray();
+          return users;
+        }
       },
       Mutation: {
         addJob: async (_, { job }, { req }) => {
@@ -282,6 +286,8 @@ let database, JobsCollection, EventsCollection, ResourcesCollection, UsersCollec
           const hashedPassword = await bcrypt.hash(user.password, saltRounds);
           user.password = hashedPassword;
           user._id = new ObjectId();
+          user.connections="";
+          user.pendingConnections="";
           await UsersCollection.insertOne(user);
           return user;
         },
