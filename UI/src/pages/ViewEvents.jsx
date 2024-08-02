@@ -136,10 +136,10 @@ const ViewEvents = () => {
     return (
         <div>
             <section className="hero-section">
-                <h1 className="fw-bold event-title">EVENTS</h1>
                 <div className="hero-text-container">
+                <h1 className="fw-bold">EVENTS</h1>
                     <p>
-                        The Events section of Career Elevate offers a diverse array of opportunities designed to enhance professional growth and network expansion. From industry-specific conferences and expert-led webinars to hands-on workshops and dynamic networking mixers, these events cater to a wide range of career stages and interests. Participants can gain valuable insights into emerging trends, acquire new skills, and connect with like-minded professionals. Whether you're looking to deepen your expertise, explore new career paths, or simply stay current in your field, Career Elevate's events provide the perfect platform to elevate your career aspirations.
+                        The Events section of Career Elevate offers a diverse array of opportunities designed to enhance professional growth and network expansion. From industry-specific conferences and expert-led webinars to hands-on workshops and dynamic networking mixers, these events cater to a wide range of career stages and interests. Participants can gain valuable insights into emerging trends, acquire new skills, and connect with like-minded professionals. Whether you&apose;re looking to deepen your expertise, explore new career paths, or simply stay current in your field, Career Elevate&apose;s events provide the perfect platform to elevate your career aspirations.
                     </p>
                 </div>
             </section>
