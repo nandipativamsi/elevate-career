@@ -196,6 +196,9 @@ let database, JobsCollection, EventsCollection, ResourcesCollection, UsersCollec
           const Resource = await ResourcesCollection.findOne({ _id: new ObjectId(id) });
           return Resource;
         },
+        usersByIds: async (_, { ids }) => {
+          return await UsersCollection.find({ _id: { $in: ids.map(id => new ObjectId(id)) } }).toArray();
+        },
         getUserById: async (_, { id }) => {
           const user = await UsersCollection.findOne({ _id: new ObjectId(id) });
           return user;
@@ -293,6 +296,21 @@ let database, JobsCollection, EventsCollection, ResourcesCollection, UsersCollec
           const result = await ResourcesCollection.deleteOne({ _id: new ObjectId(_id) });
           return result.deletedCount === 1;
         },
+        addComment: async (_, { resourceId, comment }) => {
+          const result = await ResourcesCollection.findOneAndUpdate(
+              { _id: new ObjectId(resourceId) },
+              { $push: { comments: comment } },
+              { returnOriginal: false }
+          );
+
+          // if (!result.value) {
+          //     throw new Error('Resource not found');
+          // }
+
+          const updatedResource = await ResourcesCollection.findOne({ _id: new ObjectId(resourceId) });
+
+          return updatedResource;
+      },
         addUser: async (_, { user }) => {
           validateUser(user);
           const hashedPassword = await bcrypt.hash(user.password, saltRounds);
