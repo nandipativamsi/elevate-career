@@ -13,6 +13,7 @@ const ResourceDetails = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [newComment, setNewComment] = useState('');
+    const [userNames, setUserNames] = useState({});
 
     useEffect(() => {
         const fetchResource = async () => {
@@ -49,11 +50,39 @@ const ResourceDetails = () => {
                 }
 
                 setResource(data.singleResource);
+                const userIDs = data.singleResource.comments.map(comment => comment.userID);
+                userIDs.push(data.singleResource.postedBy); 
+                fetchUserNames(userIDs);
                 setLoading(false);
             } catch (error) {
                 setError(error.message);
                 setLoading(false);
             }
+        };
+
+        const fetchUserNames = async (userIDs) => {
+            const query = `
+                query($ids: [ID!]!) {
+                    usersByIds(ids: $ids) {
+                        _id
+                        name
+                    }
+                }
+            `;
+            const response = await fetch('http://localhost:3000/graphql', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ query, variables: { ids: userIDs } }),
+            });
+            const { data, errors } = await response.json();
+            if (errors) {
+                throw new Error(errors[0].message);
+            }
+            const namesMap = {};
+            data.usersByIds.forEach(user => {
+                namesMap[user._id] = user.name;
+            });
+            setUserNames(namesMap);
         };
 
         fetchResource();
@@ -98,6 +127,7 @@ const ResourceDetails = () => {
                 ...prevResource,
                 comments: data.addComment.comments
             }));
+            fetchUserNames(data.addComment.comments.map(comment => comment.userID));
             setNewComment('');
         } catch (error) {
             setError(error.message);
@@ -125,7 +155,7 @@ const ResourceDetails = () => {
                     <Card.Text>{resource.description}</Card.Text>
                     <div className="d-flex justify-content-between align-items-center mb-2">
                         <div className="d-flex align-items-center">
-                            <strong>Posted by: {resource.postedBy}</strong>
+                            <strong>Posted by: {userNames[resource.postedBy] || 'Unknown User'}</strong>
                         </div>
                         <div className="d-flex align-items-center">
                             <div className="d-flex align-items-center me-3">
@@ -146,7 +176,7 @@ const ResourceDetails = () => {
                 <h3>Comments</h3>
                 {resource.comments.map((comment, index) => (
                     <div key={index} className="comment">
-                        <strong>{comment.userID}:</strong> {comment.comment}
+                        <strong>{userNames[comment.userID] || 'Unknown User'}:</strong> {comment.comment}
                     </div>
                 ))}
                 <Form>

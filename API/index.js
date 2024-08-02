@@ -184,6 +184,9 @@ let database, JobsCollection, EventsCollection, ResourcesCollection, UsersCollec
           const Resource = await ResourcesCollection.findOne({ _id: new ObjectId(id) });
           return Resource;
         },
+        usersByIds: async (_, { ids }) => {
+          return await UsersCollection.find({ _id: { $in: ids.map(id => new ObjectId(id)) } }).toArray();
+        },
         getUserById: async (_, { id }) => {
           const user = await UsersCollection.findOne({ _id: new ObjectId(id) });
           return user;

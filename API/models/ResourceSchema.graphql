@@ -35,6 +35,7 @@ input ResourceInput {
 type Query {
     resourceList: [Resource!]!
     singleResource(id: ID!): Resource
+    usersByIds(ids: [ID!]!): [User!]!
 }
 
 type Mutation {

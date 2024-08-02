@@ -10,6 +10,7 @@ const ViewResources = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [filter, setFilter] = useState('all');
+    const [userNames, setUserNames] = useState({});
     const history = useHistory();
 
     const loadData = async () => {
@@ -23,7 +24,6 @@ const ViewResources = () => {
                     dislikes
                     postedBy
                     image
-                    postedBy
                     createdAt
                     comments {
                         userID
@@ -47,11 +47,37 @@ const ViewResources = () => {
             }
 
             setResources(data.resourceList);
+            fetchUserNames(data.resourceList.map(resource => resource.postedBy));
             setLoading(false);
         } catch (error) {
             setError(error.message);
             setLoading(false);
         }
+    };
+
+    const fetchUserNames = async (userIDs) => {
+        const query = `
+            query($ids: [ID!]!) {
+                usersByIds(ids: $ids) {
+                    _id
+                    name
+                }
+            }
+        `;
+        const response = await fetch('http://localhost:3000/graphql', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query, variables: { ids: userIDs } }),
+        });
+        const { data, errors } = await response.json();
+        if (errors) {
+            throw new Error(errors[0].message);
+        }
+        const namesMap = {};
+        data.usersByIds.forEach(user => {
+            namesMap[user._id] = user.name;
+        });
+        setUserNames(namesMap);
     };
 
     useEffect(() => {
@@ -171,7 +197,7 @@ const ViewResources = () => {
                                     </Card.Text>
                                     <div className="d-flex justify-content-between align-items-center mb-2">
                                         <div className="d-flex align-items-center">
-                                            <BiUser className="me-1" /><strong>{resource.postedBy}</strong>
+                                            <BiUser className="me-1" /><strong>{userNames[resource.postedBy] || 'Unknown User'}</strong>
                                         </div>
                                         <div className="d-flex align-items-center">
                                             <div className="d-flex align-items-center me-3">
