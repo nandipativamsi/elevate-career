@@ -4,8 +4,10 @@ import heroImg from '../assets/jobBoardHero.png';
 import { Link, useHistory } from 'react-router-dom';
 import jobPostingImg from '../assets/defaultJobImage.jpeg';
 import "../css/jobboard.css";
+import { useAuth } from '../AuthContext.jsx';
 
 const JobBoard = () => {
+    const { user } = useAuth();
     const [jobs, setJobs] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -17,30 +19,51 @@ const JobBoard = () => {
     };
 
     const loadData = async () => {
-        const query = `
-            query {
-                jobList {
-                    _id
-                    jobType
-                    title
-                    description
-                    company
-                    location
-                    postedBy
-                    applications
-                    experience
-                    salary
-                    workType
-                    image
+        const query = user?.role === 'Alumni'
+            ? `
+                query jobsByUser($userId: ID!) {
+                    jobsByUser(userId: $userId) {
+                        _id
+                        jobType
+                        title
+                        description
+                        company
+                        location
+                        postedBy
+                        applications
+                        experience
+                        salary
+                        workType
+                        image
+                    }
                 }
-            }
-        `;
+            `
+            : `
+                query {
+                    jobList {
+                        _id
+                        jobType
+                        title
+                        description
+                        company
+                        location
+                        postedBy
+                        applications
+                        experience
+                        salary
+                        workType
+                        image
+                    }
+                }
+            `;
+
+        const variables = user?.role === 'Alumni' ? { userId: user._id } : {};
 
         try {
             const response = await fetch('http://localhost:3000/graphql', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ query }),
+                body: JSON.stringify({ query, variables }),
             });
 
             const { data, errors } = await response.json();
@@ -49,13 +72,14 @@ const JobBoard = () => {
                 throw new Error(errors[0].message);
             }
 
-            setJobs(data.jobList);
+            setJobs(user?.role === 'Alumni' ? data.jobsByUser : data.jobList);
             setLoading(false);
         } catch (error) {
             setError(error.message);
             setLoading(false);
         }
     };
+
 
     useEffect(() => {
         loadData();
@@ -152,43 +176,61 @@ const JobBoard = () => {
                 </Form>
 
                 <div className="job-list flex-container">
-                    {loading ? (
-                        <p>Loading...</p>
-                    ) : error ? (
-                        <p>Error: {error}</p>
-                    ) : (
-                        jobs.map((job) => (
-                            <div className="job-box flex-container">
-                                <div className="job-posting-image">
-                                    <img
-                                        src={job.image ? `/src/assets/JobImages/${job.image}` : jobPostingImg}
-                                        alt="job-posting"
-                                    />
-                                </div>
-                                <div className="job-posting-text">
-                                    <p className="job-title">{job.title}</p>
-                                    <p className="company-name">{job.company}</p>
-                                    <p className="location-jobtype">
-                                        {job.location} <span>({job.workType})</span>
-                                    </p>
-                                    <p className="job-salary">{job.salary}</p>
-                                    <div className='col'>
-                                    <Link to={`/jobDetails/${job._id}`} className="btn btn-dark px-3 me-1">
-                                        Details
-                                    </Link>
-                                    <button className='btn btn-warning text-white me-1 px-3' onClick={() => handleEdit(job._id)}>Edit</button>
-                                    <button className='btn btn-danger text-white me-1 px-3' onClick={() => deleteJob(job._id)}>Delete</button>
-                                    
-                                    <Link to={`/jobApplications/${job._id}`} className="btn btn-success px-3 me-2">
-                                        View Applications
-                                    </Link>
-                                    </div>
-                                    
-                                </div>
-                            </div>
-                        ))
-                    )}
+    {loading ? (
+        <p>Loading...</p>
+    ) : error ? (
+        <p>Error: {error}</p>
+    ) : (
+        jobs.map((job) => (
+            user?.role === 'Student' ? (
+                <Link to={`/jobDetails/${job._id}`} className="job-box flex-container" key={job._id}>
+                    <div className="job-posting-image">
+                        <img
+                            src={job.image ? `/src/assets/JobImages/${job.image}` : jobPostingImg}
+                            alt="job-posting"
+                        />
+                    </div>
+                    <div className="job-posting-text">
+                        <p className="job-title">{job.title}</p>
+                        <p className="company-name">{job.company}</p>
+                        <p className="location-jobtype">
+                            {job.location} <span>({job.workType})</span>
+                        </p>
+                        <p className="job-salary">{job.salary}</p>
+                    </div>
+                </Link>
+            ) : (
+                <div className="job-box flex-container" key={job._id}>
+                    <div className="job-posting-image">
+                        <img
+                            src={job.image ? `/src/assets/JobImages/${job.image}` : jobPostingImg}
+                            alt="job-posting"
+                        />
+                    </div>
+                    <div className="job-posting-text">
+                        <p className="job-title">{job.title}</p>
+                        <p className="company-name">{job.company}</p>
+                        <p className="location-jobtype">
+                            {job.location} <span>({job.workType})</span>
+                        </p>
+                        <p className="job-salary">{job.salary}</p>
+                        <div className='col'>
+                            <Link to={`/jobDetails/${job._id}`} className="btn btn-dark px-3 me-1">
+                                Details
+                            </Link>
+                            <button className='btn btn-warning text-white me-1 px-3' onClick={() => handleEdit(job._id)}>Edit</button>
+                            <button className='btn btn-danger text-white me-1 px-3' onClick={() => deleteJob(job._id)}>Delete</button>
+                            <Link to={`/jobApplications/${job._id}`} className="btn btn-success px-3 me-2">
+                                View Applications
+                            </Link>
+                        </div>
+                    </div>
                 </div>
+            )
+        ))
+    )}
+</div>
+
             </section>
         </div>
     );

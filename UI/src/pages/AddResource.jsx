@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
+import { useAuth } from '../AuthContext.jsx';
 
 const AddResource = () => {
+    const { user } = useAuth();
     const { id } = useParams();
     const history = useHistory();
     const [formData, setFormData] = useState({
         title: '',
         description: '',
         image: '',
+        postedBy: user?._id || '', 
     });
     const [errors, setErrors] = useState({});
     const [imageFile, setImageFile] = useState(null);

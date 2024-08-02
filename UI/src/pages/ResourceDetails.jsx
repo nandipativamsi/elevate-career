@@ -15,6 +15,31 @@ const ResourceDetails = () => {
     const [newComment, setNewComment] = useState('');
     const [userNames, setUserNames] = useState({});
 
+    const fetchUserNames = async (userIDs) => {
+        const query = `
+            query($ids: [ID!]!) {
+                usersByIds(ids: $ids) {
+                    _id
+                    name
+                }
+            }
+        `;
+        const response = await fetch('http://localhost:3000/graphql', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query, variables: { ids: userIDs } }),
+        });
+        const { data, errors } = await response.json();
+        if (errors) {
+            throw new Error(errors[0].message);
+        }
+        const namesMap = {};
+        data.usersByIds.forEach(user => {
+            namesMap[user._id] = user.name;
+        });
+        setUserNames(namesMap);
+    };
+
     useEffect(() => {
         const fetchResource = async () => {
             const query = `
@@ -51,38 +76,13 @@ const ResourceDetails = () => {
 
                 setResource(data.singleResource);
                 const userIDs = data.singleResource.comments.map(comment => comment.userID);
-                userIDs.push(data.singleResource.postedBy); 
+                userIDs.push(data.singleResource.postedBy);
                 fetchUserNames(userIDs);
                 setLoading(false);
             } catch (error) {
                 setError(error.message);
                 setLoading(false);
             }
-        };
-
-        const fetchUserNames = async (userIDs) => {
-            const query = `
-                query($ids: [ID!]!) {
-                    usersByIds(ids: $ids) {
-                        _id
-                        name
-                    }
-                }
-            `;
-            const response = await fetch('http://localhost:3000/graphql', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ query, variables: { ids: userIDs } }),
-            });
-            const { data, errors } = await response.json();
-            if (errors) {
-                throw new Error(errors[0].message);
-            }
-            const namesMap = {};
-            data.usersByIds.forEach(user => {
-                namesMap[user._id] = user.name;
-            });
-            setUserNames(namesMap);
         };
 
         fetchResource();
@@ -169,7 +169,7 @@ const ResourceDetails = () => {
                             </div>
                         </div>
                     </div>
-                    <Button variant="primary" onClick={() => history.goBack()}>Go Back</Button>
+                    <Button variant="primary" onClick={() => history.push(`/viewResources`)}>Go Back</Button>
                 </Card.Body>
             </Card>
             <section className="comments-section">

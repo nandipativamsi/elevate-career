@@ -36,6 +36,8 @@ type Query {
     resourceList: [Resource!]!
     singleResource(id: ID!): Resource
     usersByIds(ids: [ID!]!): [User!]!
+
+    resourcesByUser(userId: ID!): [Resource!]!
 }
 
 type Mutation {

@@ -3,36 +3,57 @@ import { Form, Row, Col, Card, Button } from 'react-bootstrap';
 import heroImg from '../assets/feature2.jpg';
 import { Link } from 'react-router-dom';
 import "../css/events.css";
+import { useAuth } from '../AuthContext.jsx';
 
 const ViewEvents = () => {
+    const { user } = useAuth();
     const [events, setEvents] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [filter, setFilter] = useState('all');
 
-
     const loadData = async () => {
-        const query = `
-            query {
-                eventList {
-                    _id
-                    title
-                    description
-                    date
-                    location
-                    attendees
-                    postedBy
-                    limit
-                    image
+        const query = user?.role === 'Alumni'
+            ? `
+                query eventsByUser($userId: ID!) {
+                    eventsByUser(userId: $userId) {
+                        _id
+                        title
+                        description
+                        date
+                        time
+                        location
+                        attendees
+                        postedBy
+                        limit
+                        image
+                    }
                 }
-            }
-        `;
+            `
+            : `
+                query {
+                    eventList {
+                        _id
+                        title
+                        description
+                        date
+                        time
+                        location
+                        attendees
+                        postedBy
+                        limit
+                        image
+                    }
+                }
+            `;
+
+        const variables = user?.role === 'Alumni' ? { userId: user._id } : {};
 
         try {
             const response = await fetch('http://localhost:3000/graphql', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ query }),
+                body: JSON.stringify({ query, variables }),
             });
 
             const { data, errors } = await response.json();
@@ -41,7 +62,7 @@ const ViewEvents = () => {
                 throw new Error(errors[0].message);
             }
 
-            setEvents(data.eventList);
+            setEvents(user?.role === 'Alumni' ? data.eventsByUser : data.eventList);
             setLoading(false);
         } catch (error) {
             setError(error.message);
@@ -51,7 +72,7 @@ const ViewEvents = () => {
 
     useEffect(() => {
         loadData();
-    }, []);
+    }, [user]);
 
     const deleteEvent = async (_id) => {
         if (window.confirm("Are you sure you want to delete the event?")) {
@@ -115,10 +136,10 @@ const ViewEvents = () => {
     return (
         <div>
             <section className="hero-section">
-                <h1 className="fw-bold event-tittle">EVENTS</h1>
+                <h1 className="fw-bold event-title">EVENTS</h1>
                 <div className="hero-text-container">
                     <p>
-                        The Events section of Career Elevate offers a diverse array of opportunities designed to enhance professional growth and network expansion. From industry-specific conferences and expert-led webinars to hands-on workshops and dynamic networking mixers, these events cater to a wide range of career stages and interests. Participants can gain valuable insights into emerging trends, acquire new skills, and connect with like-minded professionals. Whether you&apos;re looking to deepen your expertise, explore new career paths, or simply stay current in your field, Career Elevate&apos;s events provide the perfect platform to elevate your career aspirations.
+                        The Events section of Career Elevate offers a diverse array of opportunities designed to enhance professional growth and network expansion. From industry-specific conferences and expert-led webinars to hands-on workshops and dynamic networking mixers, these events cater to a wide range of career stages and interests. Participants can gain valuable insights into emerging trends, acquire new skills, and connect with like-minded professionals. Whether you're looking to deepen your expertise, explore new career paths, or simply stay current in your field, Career Elevate's events provide the perfect platform to elevate your career aspirations.
                     </p>
                 </div>
             </section>
@@ -139,31 +160,38 @@ const ViewEvents = () => {
                 </Form>
             </section>
             <section className="pb-5 px-3 events-section">
-                <h2 className="m-5 reccomendation-tittle">RECOMMENDATIONS FOR YOU</h2>
+                <h2 className="m-5 recommendation-title">RECOMMENDATIONS FOR YOU</h2>
                 <Row className="justify-content-center">
                     {filteredEvents.map(event => (
                         <Col xs={12} sm={6} md={4} lg={3} key={event._id} className="mb-4">
                             <Card className="event-card">
-                                <Card.Img variant="top" src={heroImg} alt={event.title} />
+                                <Card.Img variant="top" src={event.image ? `/src/assets/EventImages/${event.image}` : heroImg} alt={event.title} />
                                 <Card.Body>
                                     <Card.Title>{event.title}</Card.Title>
                                     <Card.Text>
-                                        {new Date(parseInt(event.date)).toLocaleString('en-US', {
-                                            weekday: 'short',
-                                            month: 'short',
+                                        {new Date(event.date).toLocaleDateString('en-US', {
+                                            weekday: 'long',
+                                            month: 'long',
                                             day: 'numeric',
-                                            year: 'numeric',
+                                            year: 'numeric'
+                                        })} at {new Date(`${event.date.split('T')[0]}T${event.time}`).toLocaleTimeString('en-US', {
                                             hour: 'numeric',
                                             minute: 'numeric',
-                                            hour12: true,
-                                            timeZoneName: 'short',
+                                            hour12: true
                                         })}
                                     </Card.Text>
-                                    <Button variant="primary">Details</Button>
-                                    <button className='btn btn-danger text-white mx-1 px-3' onClick={() => deleteEvent(event._id)}>Delete</button>
-                                    <Link to={`/editEvent/${event._id}`} className="btn btn-warning text-white px-3 me-2">
-                                        Edit 
-                                    </Link>
+
+                                    {user?.role === 'Alumni' ? (
+                                        <>
+                                            <Button variant="primary">Details</Button>
+                                            <button className='btn btn-danger text-white mx-1 px-3' onClick={() => deleteEvent(event._id)}>Delete</button>
+                                            <Link to={`/editEvent/${event._id}`} className="btn btn-warning text-white px-3 me-2">
+                                                Edit 
+                                            </Link>
+                                        </>
+                                    ) : (
+                                        <Button variant="primary">Details</Button>
+                                    )}
                                 </Card.Body>
                             </Card>
                         </Col>

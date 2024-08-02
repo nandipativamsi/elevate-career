@@ -164,6 +164,18 @@ let database, JobsCollection, EventsCollection, ResourcesCollection, UsersCollec
           const jobs = await JobsCollection.find({}).toArray();
           return jobs;
         },
+        jobsByUser: async (_, { userId }) => {
+          const jobs = await JobsCollection.find({ postedBy: userId }).toArray();
+          return jobs;
+        },
+        resourcesByUser: async (_, { userId }) => {
+          const resources = await ResourcesCollection.find({ postedBy: userId }).toArray();
+          return resources;
+        },
+        eventsByUser: async (_, { userId }) => {
+          const events = await EventsCollection.find({ postedBy: userId }).toArray();
+          return events;
+        },
         singleJob: async (_, { id }) => {
           const job = await JobsCollection.findOne({ _id: new ObjectId(id) });
           return job;
@@ -201,7 +213,10 @@ let database, JobsCollection, EventsCollection, ResourcesCollection, UsersCollec
           return users;
         },
         userList: async () => {
-          const users = await UsersCollection.find({ role: { $in: ["Student", "Alumni"], $ne: "Admin" } }).toArray();
+          const users = await UsersCollection.find({ 
+            role: { $in: ["Student", "Alumni"], $ne: "Admin" },
+            status: "Active"
+          }).toArray();
           return users;
         }
       },
@@ -209,7 +224,6 @@ let database, JobsCollection, EventsCollection, ResourcesCollection, UsersCollec
         addJob: async (_, { job }, { req }) => {
           validateJob(job);
           job._id = new ObjectId();
-          job.postedBy = req.session.userId || "Smeet";
           job.applications = "0";
           await JobsCollection.insertOne(job);
           return job;
@@ -246,7 +260,6 @@ let database, JobsCollection, EventsCollection, ResourcesCollection, UsersCollec
           validateEvent(event);
           event._id = new ObjectId();
           event.attendees = "0";
-          event.postedBy = req.session.userId || "Smeet";
           await EventsCollection.insertOne(event);
           return event;
         },
@@ -267,7 +280,6 @@ let database, JobsCollection, EventsCollection, ResourcesCollection, UsersCollec
           validateResource(resource);
           resource.likes = "0";
           resource.dislikes = "0";
-          resource.postedBy = req.session.userId || "Smeet";
           console.log(req.session.userId);
           resource.comments = [];
           await ResourcesCollection.insertOne(resource);
@@ -306,8 +318,91 @@ let database, JobsCollection, EventsCollection, ResourcesCollection, UsersCollec
           user._id = new ObjectId();
           user.connections="";
           user.pendingConnections="";
+          user.skills="";
+          user.interests="";
+          user.linkedInURL="";
+          user.gitHubURL="";
+          user.socialMediaURL=""
+          user.status="Active";
           await UsersCollection.insertOne(user);
           return user;
+        },
+        sendConnectionRequest: async (_, { fromUserId, toUserId }) => {
+          const toUser = await UsersCollection.findOne({ _id: new ObjectId(toUserId) });
+          const fromUser = await UsersCollection.findOne({ _id: new ObjectId(fromUserId) });
+      
+          if (!toUser || !fromUser) {
+            throw new Error('User not found');
+          }
+      
+          // Update toUser's pendingConnections
+          const toUserPendingConnections = toUser.pendingConnections ? toUser.pendingConnections.split(',') : [];
+          if (!toUserPendingConnections.includes(fromUserId)) {
+            toUserPendingConnections.push(fromUserId);
+          }
+      
+          await UsersCollection.updateOne(
+            { _id: new ObjectId(toUserId) },
+            { $set: { pendingConnections: toUserPendingConnections.join(',') } }
+          );
+      
+          // Update fromUser's pendingConnections
+          const fromUserPendingConnections = fromUser.pendingConnections ? fromUser.pendingConnections.split(',') : [];
+          if (!fromUserPendingConnections.includes(toUserId)) {
+            fromUserPendingConnections.push(toUserId);
+          }
+      
+          await UsersCollection.updateOne(
+            { _id: new ObjectId(fromUserId) },
+            { $set: { pendingConnections: fromUserPendingConnections.join(',') } }
+          );
+      
+          return await UsersCollection.findOne({ _id: new ObjectId(toUserId) });
+        },
+        acceptConnectionRequest: async (_, { fromUserId, toUserId }) => {
+        const toUser = await UsersCollection.findOne({ _id: new ObjectId(toUserId) });
+        const fromUser = await UsersCollection.findOne({ _id: new ObjectId(fromUserId) });
+
+        const toUserConnections = toUser.connections ? toUser.connections.split(',') : [];
+        const fromUserConnections = fromUser.connections ? fromUser.connections.split(',') : [];
+        const toUserPendingConnections = toUser.pendingConnections ? toUser.pendingConnections.split(',') : [];
+
+        if (!toUserConnections.includes(fromUserId)) {
+          toUserConnections.push(fromUserId);
+        }
+        if (!fromUserConnections.includes(toUserId)) {
+          fromUserConnections.push(toUserId);
+        }
+
+        const updatedPendingConnections = toUserPendingConnections.filter(id => id !== fromUserId);
+
+        await UsersCollection.updateOne(
+          { _id: new ObjectId(toUserId) },
+          { $set: { 
+              connections: toUserConnections.join(','), 
+              pendingConnections: updatedPendingConnections.join(',') 
+            } 
+          }
+        );
+
+        await UsersCollection.updateOne(
+          { _id: new ObjectId(fromUserId) },
+          { $set: { connections: fromUserConnections.join(',') } }
+        );
+
+        return await UsersCollection.findOne({ _id: new ObjectId(toUserId) });
+        },
+        rejectConnectionRequest: async (_, { fromUserId, toUserId }) => {
+        const user = await UsersCollection.findOne({ _id: new ObjectId(toUserId) });
+        const pendingConnections = user.pendingConnections ? user.pendingConnections.split(',') : [];
+        const updatedPendingConnections = pendingConnections.filter(id => id !== fromUserId);
+
+        await UsersCollection.updateOne(
+          { _id: new ObjectId(toUserId) },
+          { $set: { pendingConnections: updatedPendingConnections.join(',') } }
+        );
+
+        return await UsersCollection.findOne({ _id: new ObjectId(toUserId) });
         },
         login: async (_, { credentials }, { req }) => {
           const { email, password } = credentials;
