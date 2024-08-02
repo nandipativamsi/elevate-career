@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Row, Col, Card, Button } from 'react-bootstrap';
+import { Form, Row, Col, Card } from 'react-bootstrap';
 import heroImg from '../assets/feature2.jpg';
 import { Link } from 'react-router-dom';
 import "../css/events.css";
+import "../css/index.css";
+import { FaCalendarAlt } from "react-icons/fa";
+
 import { useAuth } from '../AuthContext.jsx';
 
 const ViewEvents = () => {
@@ -137,7 +140,7 @@ const ViewEvents = () => {
         <div>
             <section className="hero-section">
                 <div className="hero-text-container">
-                <h1 className="fw-bold">EVENTS</h1>
+                    <h1 className="fw-bold">EVENTS</h1>
                     <p>
                         The Events section of Career Elevate offers a diverse array of opportunities designed to enhance professional growth and network expansion. From industry-specific conferences and expert-led webinars to hands-on workshops and dynamic networking mixers, these events cater to a wide range of career stages and interests. Participants can gain valuable insights into emerging trends, acquire new skills, and connect with like-minded professionals. Whether you&apose;re looking to deepen your expertise, explore new career paths, or simply stay current in your field, Career Elevate&apose;s events provide the perfect platform to elevate your career aspirations.
                     </p>
@@ -159,16 +162,17 @@ const ViewEvents = () => {
                     </Row>
                 </Form>
             </section>
-            <section className="pb-5 px-3 events-section">
-                <h2 className="m-5 recommendation-title">RECOMMENDATIONS FOR YOU</h2>
-                <Row className="justify-content-center">
+            <section className="pb-5 px-5 events-section">
+                <h2 className="reccomendation-tittle mb-5">RECOMMENDATIONS FOR YOU</h2>
+                <Row className="event-box-container">
                     {filteredEvents.map(event => (
                         <Col xs={12} sm={6} md={4} lg={3} key={event._id} className="mb-4">
                             <Card className="event-card">
-                                <Card.Img variant="top" src={event.image ? `/src/assets/EventImages/${event.image}` : heroImg} alt={event.title} />
+                                <img className="card-img" src={event.image ? `/src/assets/EventImages/${event.image}` : heroImg} alt={event.title} />
                                 <Card.Body>
                                     <Card.Title>{event.title}</Card.Title>
-                                    <Card.Text>
+                                    <Card.Text className='d-flex justify-content-start align-items-center gap-2'>
+                                        <FaCalendarAlt />
                                         {new Date(event.date).toLocaleDateString('en-US', {
                                             weekday: 'long',
                                             month: 'long',
@@ -183,14 +187,15 @@ const ViewEvents = () => {
 
                                     {user?.role === 'Alumni' ? (
                                         <>
-                                            <Button variant="primary">Details</Button>
+                                            <button className='my-btn'>Details</button>
                                             <button className='btn btn-danger text-white mx-1 px-3' onClick={() => deleteEvent(event._id)}>Delete</button>
                                             <Link to={`/editEvent/${event._id}`} className="btn btn-warning text-white px-3 me-2">
-                                                Edit 
+                                                Edit
                                             </Link>
                                         </>
                                     ) : (
-                                        <Button variant="primary">Details</Button>
+                                        <button className="my-btn">Details</button>
+
                                     )}
                                 </Card.Body>
                             </Card>
