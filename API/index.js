@@ -324,7 +324,45 @@ let database, JobsCollection, EventsCollection, ResourcesCollection, UsersCollec
           const updatedResource = await ResourcesCollection.findOne({ _id: new ObjectId(resourceId) });
 
           return updatedResource;
+        },
+        likeResource: async (_, { resourceId }) => {
+          // Fetch the resource from the database
+          const resource = await ResourcesCollection.findOne({ _id: new ObjectId(resourceId) });
+          if (!resource) throw new Error('Resource not found');
+  
+          // Convert likes to integer and increment
+          const currentLikes = parseInt(resource.likes, 10) || 0;
+          const updatedLikes = currentLikes + 1;
+  
+          // Update the resource with the new like count
+          await ResourcesCollection.updateOne(
+              { _id: new ObjectId(resourceId) },
+              { $set: { likes: updatedLikes.toString() } }
+          );
+  
+          // Fetch and return the updated resource
+          return await ResourcesCollection.findOne({ _id: new ObjectId(resourceId) });
       },
+  
+      dislikeResource: async (_, { resourceId }) => {
+          // Fetch the resource from the database
+          const resource = await ResourcesCollection.findOne({ _id: new ObjectId(resourceId) });
+          if (!resource) throw new Error('Resource not found');
+  
+          // Convert dislikes to integer and increment
+          const currentDislikes = parseInt(resource.dislikes, 10) || 0;
+          const updatedDislikes = currentDislikes + 1;
+  
+          // Update the resource with the new dislike count
+          await ResourcesCollection.updateOne(
+              { _id: new ObjectId(resourceId) },
+              { $set: { dislikes: updatedDislikes.toString() } }
+          );
+  
+          // Fetch and return the updated resource
+          return await ResourcesCollection.findOne({ _id: new ObjectId(resourceId) });
+      },
+  
         addUser: async (_, { user }) => {
           validateUser(user);
           const hashedPassword = await bcrypt.hash(user.password, saltRounds);
