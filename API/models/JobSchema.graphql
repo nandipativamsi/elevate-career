@@ -46,6 +46,8 @@ type Query {
 
   singleJob(id: ID!): Job
 
+  jobsByUser(userId: ID!): [Job!]!
+
 }
     
 type Mutation {

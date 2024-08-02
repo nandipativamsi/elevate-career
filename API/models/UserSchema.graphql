@@ -58,6 +58,8 @@ input UpdateUser {
   education: educationType
   yearOfGraduation: String
   workExperience: String
+  connections: String
+  pendingConnections: String
   skills: String
   interests: String
   linkedInURL: String
@@ -84,6 +86,9 @@ type Mutation {
   login(credentials: LoginInput!): AuthPayload!
   logout: Boolean!
   updateUser(id: ID!, user: UpdateUser!): User!
+  sendConnectionRequest(fromUserId: ID!, toUserId: ID!): User!
+  acceptConnectionRequest(fromUserId: ID!, toUserId: ID!): User!
+  rejectConnectionRequest(fromUserId: ID!, toUserId: ID!): User!
 }
 
 type Query {
