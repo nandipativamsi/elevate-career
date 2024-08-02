@@ -1,43 +1,64 @@
 import React, { useState, useEffect } from 'react';
 import { Row, Col, Card, Button, Form } from 'react-bootstrap';
-import { BiLike, BiDislike, BiComment,BiUser } from 'react-icons/bi';
+import { BiLike, BiDislike, BiComment, BiUser } from 'react-icons/bi';
 import defaultResourceImage from '../assets/defaultResourceImage.jpeg';
 import { Link } from 'react-router-dom';
 import "../css/resources.css";
+import { useAuth } from '../AuthContext.jsx';
 
 const ViewResources = () => {
+    const { user } = useAuth();
     const [resources, setResources] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [filter, setFilter] = useState('all');
 
-    
     const loadData = async () => {
-        const query = `
-            query {
-                resourceList {
-                    _id
-                    title
-                    description
-                    likes
-                    dislikes
-                    postedBy
-                    image
-                    postedBy
-                    createdAt
-                    comments {
-                        userID
-                        comment
+        const query = user?.role === 'Alumni'
+            ? `
+                query resourcesByUser($userId: ID!) {
+                    resourcesByUser(userId: $userId) {
+                        _id
+                        title
+                        description
+                        likes
+                        dislikes
+                        postedBy
+                        image
+                        createdAt
+                        comments {
+                            userID
+                            comment
+                        }
                     }
                 }
-            }
-        `;
+            `
+            : `
+                query {
+                    resourceList {
+                        _id
+                        title
+                        description
+                        likes
+                        dislikes
+                        postedBy
+                        image
+                        createdAt
+                        comments {
+                            userID
+                            comment
+                        }
+                    }
+                }
+            `;
+
+        const variables = user?.role === 'Alumni' ? { userId: user._id } : {};
 
         try {
             const response = await fetch('http://localhost:3000/graphql', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ query }),
+                body: JSON.stringify({ query, variables }),
             });
 
             const { data, errors } = await response.json();
@@ -46,7 +67,7 @@ const ViewResources = () => {
                 throw new Error(errors[0].message);
             }
 
-            setResources(data.resourceList);
+            setResources(user?.role === 'Alumni' ? data.resourcesByUser : data.resourceList);
             setLoading(false);
         } catch (error) {
             setError(error.message);
@@ -56,7 +77,7 @@ const ViewResources = () => {
 
     useEffect(() => {
         loadData();
-    }, []);
+    }, [user]);
 
     const deleteResource = async (_id) => {
         if (window.confirm("Are you sure you want to delete the resource?")) {
@@ -70,10 +91,7 @@ const ViewResources = () => {
                 const response = await fetch('http://localhost:3000/graphql', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        query,
-                        variables: { _id }
-                    }),
+                    body: JSON.stringify({ query, variables: { _id } }),
                 });
 
                 const { data, errors } = await response.json();
@@ -94,24 +112,18 @@ const ViewResources = () => {
         }
     };
 
-    const filteredResources = resources.filter(resource => {
-        if (filter === 'all') {
-            return true;
-        } else if (filter === 'popular') {
-            // return resource.likes >= 0 || resource.comments.length >= 0;
-            return [...resources].sort((a, b) => (b.likes + b.comments.length) - (a.likes + a.comments.length));
-        } else if (filter === 'recent') {
-            return true; // Placeholder for recent logic
+    const filterResources = (resources) => {
+        switch (filter) {
+            case 'popular':
+                return resources.sort((a, b) => (b.likes + b.comments.length) - (a.likes + a.comments.length));
+            case 'recent':
+                return resources.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            default:
+                return resources;
         }
-        return true;
-    });
+    };
 
-    const sortedResources = filteredResources.sort((a, b) => {
-        if (filter === 'popular') {
-            return (b.likes + b.comments.length) - (a.likes + a.comments.length);
-        }
-        return 0;
-    });
+    const sortedResources = filterResources(resources);
 
     if (loading) {
         return <p>Loading...</p>;
@@ -124,7 +136,6 @@ const ViewResources = () => {
     return (
         <div>
             <section className="hero-section">
-                <img src={defaultResourceImage} alt="resources" className="hero-image" />
                 <div className="hero-text-container">
                     <h1 className="fw-bold">RESOURCES BOARD</h1>
                     <p>
@@ -173,7 +184,7 @@ const ViewResources = () => {
                                     </Card.Text>
                                     <div className="d-flex justify-content-between align-items-center mb-2">
                                         <div className="d-flex align-items-center">
-                                        <BiUser className="me-1" /><strong>{resource.postedBy}</strong>
+                                            <BiUser className="me-1" /><strong>{resource.postedBy}</strong>
                                         </div>
                                         <div className="d-flex align-items-center">
                                             <div className="d-flex align-items-center me-3">
@@ -187,11 +198,29 @@ const ViewResources = () => {
                                             </div>
                                         </div>
                                     </div>
-                                    <Button variant="primary">Read Article</Button>
-                                    <button className='btn btn-danger text-white mx-1 px-3' onClick={() => deleteResource(resource._id)}>Delete</button>
-                                    <Link to={`/editResource/${resource._id}`} className="btn btn-warning text-white px-3 me-2">
-                                        Edit 
-                                    </Link>
+                                    <Card.Text>
+                                        Created on {new Date(resource.createdAt).toLocaleDateString('en-US', {
+                                            weekday: 'long',
+                                            month: 'long',
+                                            day: 'numeric',
+                                            year: 'numeric'
+                                        })} at {new Date(resource.createdAt).toLocaleTimeString('en-US', {
+                                            hour: 'numeric',
+                                            minute: 'numeric',
+                                            hour12: true
+                                        })}
+                                    </Card.Text>
+                                    {user?.role === 'Alumni' ? (
+                                        <>
+                                        <Button variant="primary">Read Article</Button>
+                                            <Button variant='danger' className='text-white mx-1 px-3' onClick={() => deleteResource(resource._id)}>Delete</Button>
+                                            <Link to={`/editResource/${resource._id}`} className="btn btn-warning text-white px-3 me-2">
+                                                Edit 
+                                            </Link>
+                                        </>
+                                    ) : (
+                                        <Button variant="primary">Read Article</Button>
+                                    )}
                                 </Card.Body>
                             </Card>
                         </Col>
@@ -203,5 +232,3 @@ const ViewResources = () => {
 };
 
 export default ViewResources;
-
-

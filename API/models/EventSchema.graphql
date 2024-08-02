@@ -31,6 +31,8 @@ type Query {
   eventList: [Event!]!
 
   singleEvent(id: ID!): Event
+
+  eventsByUser(userId: ID!): [Event!]!
 }
 
 type Mutation {

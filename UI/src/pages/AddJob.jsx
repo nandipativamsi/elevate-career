@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
+import { useAuth } from '../AuthContext.jsx';
 
 const AddJob = () => {
+    const { user } = useAuth();
     const { id } = useParams();
     const history = useHistory();
     const [formData, setFormData] = useState({
@@ -13,7 +15,7 @@ const AddJob = () => {
         experience: '',
         salary: '',
         workType: '',
-        image: '',
+        image: ''
     });
     const [errors, setErrors] = useState({});
     const [imageFile, setImageFile] = useState(null);
@@ -136,7 +138,7 @@ const AddJob = () => {
                         query,
                         variables: {
                             id,
-                            job: { ...formData, image: imageName },
+                            job: { ...formData, image: imageName, postedBy: user?._id || '' },
                         },
                     }),
                 });

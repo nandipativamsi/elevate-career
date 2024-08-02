@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
+import { useAuth } from '../AuthContext.jsx';
 
 const AddEvent = () => {
+    const { user } = useAuth();
     const { id } = useParams();
     const history = useHistory();
     const [formData, setFormData] = useState({
@@ -13,6 +15,7 @@ const AddEvent = () => {
         limit: '',
         price: '',
         image: '',
+          
     });
     const [errors, setErrors] = useState({});
     const [imageFile, setImageFile] = useState(null);
@@ -140,7 +143,7 @@ const AddEvent = () => {
                         query,
                         variables: {
                             id,
-                            event: { ...formData, image: imageName },
+                            event: { ...formData, image: imageName, postedBy: user?._id || '' },
                         },
                     }),
                 });
