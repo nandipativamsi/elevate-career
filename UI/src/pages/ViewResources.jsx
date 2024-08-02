@@ -135,11 +135,11 @@ const ViewResources = () => {
 
     return (
         <div>
-            <section className="hero-section">
+            <section className="resource-hero-section">
                 <div className="hero-text-container">
                     <h1 className="fw-bold">RESOURCES BOARD</h1>
                     <p>
-                        Discover a wide range of valuable resources to enhance your knowledge and skills. Our resources section offers curated materials, insightful articles, and useful tools to support your professional growth and development.
+                    A resources library is a comprehensive collection designed to support learning, research, and professional development. It includes books, journals, multimedia resources, and access to digital databases and online courses. Study areas and computer workstations facilitate both individual and collaborative work. Specialized collections and archives offer rare materials, while support services like workshops and librarian assistance enhance user experience. Digital tools and mobile access ensure resources are available anytime, anywhere. Community engagement and technology integration further enrich the learning environment.
                     </p>
                 </div>
             </section>
