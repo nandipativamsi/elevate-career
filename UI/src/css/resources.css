@@ -33,3 +33,14 @@
     z-index: 2;
     padding: 1rem;
 }
+
+.resource-card{
+    background-color: #f2efe8 !important;
+    height: 470px !important;
+    width: 100%;
+}
+.resource-card-img{
+    width: 100%;
+    max-height: 50%;
+    object-fit: cover;
+}

@@ -172,7 +172,7 @@ const ViewResources = () => {
                     </p>
                 </div>
             </section>
-            <section className="py-5 resource-filter-section">
+            <section className="pt-5 resource-filter-section">
                 <Form className="dropdowns-container">
                     <Row className="justify-content-center">
                         <Col xs={12} sm={6} md={4} lg={3} className="dropdown-col">
@@ -193,14 +193,14 @@ const ViewResources = () => {
                     </Row>
                 </Form>
             </section>
-            <section className="py-5 resources-section">
-                <h2 className="text-center">RECOMMENDED RESOURCES</h2>
-                <Row className="justify-content-center">
+            <section className="pb-5 px-5 resources-section">
+                <h2 className="reccomendation-tittle mb-5">RECOMMENDED RESOURCES</h2>
+                <Row className="justify-content-center align-items-center">
                     {sortedResources.map(resource => (
                         <Col xs={12} sm={6} md={4} lg={3} key={resource._id} className="mb-4">
                             <Card className="resource-card">
-                                <Card.Img
-                                    variant="top"
+                                <img
+                                    className='resource-card-img'
                                     src={resource.image ? `/src/assets/ResourceImages/${resource.image}` : defaultResourceImage}
                                     alt={resource.title}
                                 />
@@ -241,14 +241,14 @@ const ViewResources = () => {
                                     </Card.Text>
                                     {user?.role === 'Alumni' ? (
                                         <>
-                                        <Button variant="primary" onClick={() => history.push(`/viewResourcesDetails/${resource._id}`)}>Read Article</Button>
+                                        <button className='my-btn' onClick={() => history.push(`/viewResourcesDetails/${resource._id}`)}>Read Article</button>
                                             <Button variant='danger' className='text-white mx-1 px-3' onClick={() => deleteResource(resource._id)}>Delete</Button>
                                             <Link to={`/editResource/${resource._id}`} className="btn btn-warning text-white px-3 me-2">
                                                 Edit 
                                             </Link>
                                         </>
                                     ) : (
-                                        <Button variant="primary" onClick={() => history.push(`/viewResourcesDetails/${resource._id}`)}>Read Article</Button>
+                                        <button className='my-btn' onClick={() => history.push(`/viewResourcesDetails/${resource._id}`)}>Read Article</button>
                                     )}
                                 </Card.Body>
                             </Card>
