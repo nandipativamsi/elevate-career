@@ -39,8 +39,7 @@ type Query {
 
 type Mutation {
     addResource(resource: ResourceInput!): Resource!
-    
     updateResource(id: ID!, resource: ResourceInput!): Resource!
-
     deleteResource(_id: ID!): Boolean!
+    addComment(resourceId: ID!, comment: CommentInput!): Resource!
 }

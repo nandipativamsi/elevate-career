@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
-import { Card, Button } from 'react-bootstrap';
+import { Card, Button, Form } from 'react-bootstrap';
 import defaultResourceImage from '../assets/defaultResourceImage.jpeg';
 import '../css/resourceDetails.css';
+import { useAuth } from '../AuthContext.jsx';
 
 const ResourceDetails = () => {
+    const { user } = useAuth();
     const { id } = useParams();
     const history = useHistory();
     const [resource, setResource] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [newComment, setNewComment] = useState('');
 
     useEffect(() => {
         const fetchResource = async () => {
@@ -56,6 +59,51 @@ const ResourceDetails = () => {
         fetchResource();
     }, [id]);
 
+    const handleCommentSubmit = async () => {
+        const mutation = `
+            mutation($resourceId: ID!, $comment: CommentInput!) {
+                addComment(resourceId: $resourceId, comment: $comment) {
+                    _id
+                    comments {
+                        userID
+                        comment
+                    }
+                }
+            }
+        `;
+
+        try {
+            const response = await fetch('http://localhost:3000/graphql', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    query: mutation,
+                    variables: {
+                        resourceId: id,
+                        comment: {
+                            userID: user._id,
+                            comment: newComment
+                        }
+                    }
+                }),
+            });
+
+            const { data, errors } = await response.json();
+
+            if (errors) {
+                throw new Error(errors[0].message);
+            }
+
+            setResource(prevResource => ({
+                ...prevResource,
+                comments: data.addComment.comments
+            }));
+            setNewComment('');
+        } catch (error) {
+            setError(error.message);
+        }
+    };
+
     if (loading) {
         return <p>Loading...</p>;
     }
@@ -101,6 +149,20 @@ const ResourceDetails = () => {
                         <strong>{comment.userID}:</strong> {comment.comment}
                     </div>
                 ))}
+                <Form>
+                    <Form.Group controlId="newComment">
+                        <Form.Label>Add a Comment</Form.Label>
+                        <Form.Control
+                            type="text"
+                            placeholder="Enter your comment"
+                            value={newComment}
+                            onChange={(e) => setNewComment(e.target.value)}
+                        />
+                    </Form.Group>
+                    <Button variant="primary" onClick={handleCommentSubmit}>
+                        Submit
+                    </Button>
+                </Form>
             </section>
         </div>
     );
