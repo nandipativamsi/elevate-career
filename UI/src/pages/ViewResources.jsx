@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Row, Col, Card, Button, Form } from 'react-bootstrap';
 import { BiLike, BiDislike, BiComment, BiUser } from 'react-icons/bi';
 import defaultResourceImage from '../assets/defaultResourceImage.jpeg';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import "../css/resources.css";
 import { useAuth } from '../AuthContext.jsx';
 
@@ -12,6 +12,8 @@ const ViewResources = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [filter, setFilter] = useState('all');
+    const [userNames, setUserNames] = useState({});
+    const history = useHistory();
 
     const loadData = async () => {
         const query = user?.role === 'Alumni'
@@ -67,12 +69,39 @@ const ViewResources = () => {
                 throw new Error(errors[0].message);
             }
 
+            setResources(data.resourceList);
+            fetchUserNames(data.resourceList.map(resource => resource.postedBy));
             setResources(user?.role === 'Alumni' ? data.resourcesByUser : data.resourceList);
             setLoading(false);
         } catch (error) {
             setError(error.message);
             setLoading(false);
         }
+    };
+
+    const fetchUserNames = async (userIDs) => {
+        const query = `
+            query($ids: [ID!]!) {
+                usersByIds(ids: $ids) {
+                    _id
+                    name
+                }
+            }
+        `;
+        const response = await fetch('http://localhost:3000/graphql', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query, variables: { ids: userIDs } }),
+        });
+        const { data, errors } = await response.json();
+        if (errors) {
+            throw new Error(errors[0].message);
+        }
+        const namesMap = {};
+        data.usersByIds.forEach(user => {
+            namesMap[user._id] = user.name;
+        });
+        setUserNames(namesMap);
     };
 
     useEffect(() => {
@@ -184,7 +213,7 @@ const ViewResources = () => {
                                     </Card.Text>
                                     <div className="d-flex justify-content-between align-items-center mb-2">
                                         <div className="d-flex align-items-center">
-                                            <BiUser className="me-1" /><strong>{resource.postedBy}</strong>
+                                            <BiUser className="me-1" /><strong>{userNames[resource.postedBy] || 'Unknown User'}</strong>
                                         </div>
                                         <div className="d-flex align-items-center">
                                             <div className="d-flex align-items-center me-3">
@@ -212,14 +241,14 @@ const ViewResources = () => {
                                     </Card.Text>
                                     {user?.role === 'Alumni' ? (
                                         <>
-                                        <Button variant="primary">Read Article</Button>
+                                        <Button variant="primary" onClick={() => history.push(`/viewResourcesDetails/${resource._id}`)}>Read Article</Button>
                                             <Button variant='danger' className='text-white mx-1 px-3' onClick={() => deleteResource(resource._id)}>Delete</Button>
                                             <Link to={`/editResource/${resource._id}`} className="btn btn-warning text-white px-3 me-2">
                                                 Edit 
                                             </Link>
                                         </>
                                     ) : (
-                                        <Button variant="primary">Read Article</Button>
+                                        <Button variant="primary" onClick={() => history.push(`/viewResourcesDetails/${resource._id}`)}>Read Article</Button>
                                     )}
                                 </Card.Body>
                             </Card>
