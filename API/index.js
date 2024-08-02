@@ -160,12 +160,26 @@ let database, JobsCollection, EventsCollection, ResourcesCollection, UsersCollec
    
     const resolvers = {
       Query: {
-        jobList: async () => {
-          const jobs = await JobsCollection.find({}).toArray();
+        jobList: async (_, { jobType, workType }) => {
+          // Build the query based on provided arguments
+          const query = {};
+          if (jobType) query.jobType = jobType;
+          if (workType) query.workType = workType;
+          
+          // Fetch jobs from the collection
+          const jobs = await JobsCollection.find(query).toArray();
           return jobs;
         },
-        jobsByUser: async (_, { userId }) => {
-          const jobs = await JobsCollection.find({ postedBy: userId }).toArray();
+        singleJob: async (_, { id }) => {
+          const job = await JobsCollection.findOne({ _id: new ObjectId(id) });
+          return job;
+        },
+        jobsByUser: async (_, { userId, jobType, workType }) => {
+          const query = { postedBy: userId };
+          if (jobType) query.jobType = jobType;
+          if (workType) query.workType = workType;
+          
+          const jobs = await JobsCollection.find(query).toArray();
           return jobs;
         },
         resourcesByUser: async (_, { userId }) => {
