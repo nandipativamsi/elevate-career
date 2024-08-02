@@ -41,23 +41,14 @@ input JobInput {
 }
 
 type Query {
-  
-  jobList: [Job!]!
-
+  jobList(jobType: JobType, workType: WorkType): [Job!]!
   singleJob(id: ID!): Job
-
-  jobsByUser(userId: ID!): [Job!]!
-
+  jobsByUser(userId: ID!, jobType: JobType, workType: WorkType): [Job!]!
 }
-    
+
 type Mutation {
-
   addJob(job: JobInput!): Job!
-
   updateJob(id: ID!, job: JobInput!): Job!
-
   applyForJob(jobId: ID!, userId: ID!): Job!
-
   deleteJob(_id: ID!): Boolean!
-
 }
