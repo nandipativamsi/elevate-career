@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import { Card, Button, Form } from 'react-bootstrap';
+import { FaThumbsUp, FaThumbsDown } from 'react-icons/fa';
+import { BiComment, BiUser } from 'react-icons/bi';
 import defaultResourceImage from '../assets/defaultResourceImage.jpeg';
 import '../css/resourceDetails.css';
 import { useAuth } from '../AuthContext.jsx';
@@ -14,6 +16,8 @@ const ResourceDetails = () => {
     const [error, setError] = useState(null);
     const [newComment, setNewComment] = useState('');
     const [userNames, setUserNames] = useState({});
+    const [hasLiked, setHasLiked] = useState(false);
+    const [hasDisliked, setHasDisliked] = useState(false);
 
     const fetchUserNames = async (userIDs) => {
         const query = `
@@ -88,6 +92,92 @@ const ResourceDetails = () => {
         fetchResource();
     }, [id]);
 
+    const handleLike = async () => {
+        if (hasDisliked) {
+            // Remove dislike if it exists
+            await handleDislike();
+        }
+
+        if (!hasLiked) {
+            const mutation = `
+                mutation($resourceId: ID!) {
+                    likeResource(resourceId: $resourceId) {
+                        _id
+                        likes
+                    }
+                }
+            `;
+
+            try {
+                const response = await fetch('http://localhost:3000/graphql', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        query: mutation,
+                        variables: { resourceId: id },
+                    }),
+                });
+
+                const { data, errors } = await response.json();
+
+                if (errors) {
+                    throw new Error(errors[0].message);
+                }
+
+                setResource(prevResource => ({
+                    ...prevResource,
+                    likes: data.likeResource.likes,
+                }));
+                setHasLiked(true);
+            } catch (error) {
+                setError(error.message);
+            }
+        }
+    };
+
+    const handleDislike = async () => {
+        if (hasLiked) {
+            // Remove like if it exists
+            await handleLike();
+        }
+
+        if (!hasDisliked) {
+            const mutation = `
+                mutation($resourceId: ID!) {
+                    dislikeResource(resourceId: $resourceId) {
+                        _id
+                        dislikes
+                    }
+                }
+            `;
+
+            try {
+                const response = await fetch('http://localhost:3000/graphql', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        query: mutation,
+                        variables: { resourceId: id },
+                    }),
+                });
+
+                const { data, errors } = await response.json();
+
+                if (errors) {
+                    throw new Error(errors[0].message);
+                }
+
+                setResource(prevResource => ({
+                    ...prevResource,
+                    dislikes: data.dislikeResource.dislikes,
+                }));
+                setHasDisliked(true);
+            } catch (error) {
+                setError(error.message);
+            }
+        }
+    };
+
     const handleCommentSubmit = async () => {
         const mutation = `
             mutation($resourceId: ID!, $comment: CommentInput!) {
@@ -158,14 +248,21 @@ const ResourceDetails = () => {
                             <strong>Posted by: {userNames[resource.postedBy] || 'Unknown User'}</strong>
                         </div>
                         <div className="d-flex align-items-center">
-                            <div className="d-flex align-items-center me-3">
-                                Likes: {resource.likes}
-                            </div>
-                            <div className="d-flex align-items-center me-3">
-                                Dislikes: {resource.dislikes}
-                            </div>
+                            <Button
+                                variant={hasLiked ? 'primary' : 'light'}
+                                onClick={handleLike}
+                                className="me-2"
+                            >
+                                <FaThumbsUp /> {resource.likes}
+                            </Button>
+                            <Button
+                                variant={hasDisliked ? 'danger' : 'light'}
+                                onClick={handleDislike}
+                            >
+                                <FaThumbsDown /> {resource.dislikes}
+                            </Button>
                             <div className="d-flex align-items-center">
-                                Comments: {resource.comments.length}
+                                                <BiComment className="me-1" /> {resource.comments.length}
                             </div>
                         </div>
                     </div>
