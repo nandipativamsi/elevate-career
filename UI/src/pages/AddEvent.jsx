@@ -15,7 +15,7 @@ const AddEvent = () => {
         limit: '',
         price: '',
         image: '',
-          
+        attendees: ''
     });
     const [errors, setErrors] = useState({});
     const [imageFile, setImageFile] = useState(null);

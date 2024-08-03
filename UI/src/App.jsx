@@ -7,9 +7,10 @@ import Home from './pages/Home';
 import AddJob from './pages/AddJob';
 import AddNew from './pages/AddNew';
 import AddEvent from './pages/AddEvent';
-import ViewEvents from './pages/ViewEvents';
 import AddResource from './pages/AddResource';
+import ViewEvents from './pages/ViewEvents';
 import ViewResources from './pages/ViewResources';
+import ResourceDetails from './pages/ResourceDetails';
 import JobBoard from './pages/jobBoard';
 import JobDetails from './pages/jobDetails';
 import JobApplications from './pages/JobApplications';
@@ -55,6 +56,7 @@ function App() {
             <Route path="/addResource"><AddResource/></Route>
             <Route path="/editResource/:id"><AddResource/></Route>
             <Route path="/viewResources"><ViewResources/></Route>
+            <Route path="/viewResourcesDetails/:id"><ResourceDetails/></Route> 
             <Route path="/connections"><ConnectionsPage/></Route>
             <Route path="/profile"><ProfilePage/></Route>
             <Route path="/home">

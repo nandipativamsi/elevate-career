@@ -29,16 +29,14 @@ input EventInput {
 
 type Query {
   eventList: [Event!]!
-
   singleEvent(id: ID!): Event
-
   eventsByUser(userId: ID!): [Event!]!
+  checkRegistration(eventId: ID!, userId: ID!): Boolean!
 }
 
 type Mutation {
   addEvent(event: EventInput!): Event!
-
   updateEvent(id: ID!, event: EventInput!): Event!
-
   deleteEvent(_id: ID!): Boolean!
+  registerForEvent(eventId: ID!, userId: ID!): Boolean!
 }

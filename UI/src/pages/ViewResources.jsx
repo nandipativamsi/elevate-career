@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Row, Col, Card, Button, Form } from 'react-bootstrap';
 import { BiLike, BiDislike, BiComment, BiUser } from 'react-icons/bi';
 import defaultResourceImage from '../assets/defaultResourceImage.jpeg';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import "../css/resources.css";
 import { useAuth } from '../AuthContext.jsx';
 
@@ -12,6 +12,8 @@ const ViewResources = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [filter, setFilter] = useState('all');
+    const [userNames, setUserNames] = useState({});
+    const history = useHistory();
 
     const loadData = async () => {
         const query = user?.role === 'Alumni'
@@ -67,12 +69,39 @@ const ViewResources = () => {
                 throw new Error(errors[0].message);
             }
 
+            setResources(data.resourceList);
+            fetchUserNames(data.resourceList.map(resource => resource.postedBy));
             setResources(user?.role === 'Alumni' ? data.resourcesByUser : data.resourceList);
             setLoading(false);
         } catch (error) {
             setError(error.message);
             setLoading(false);
         }
+    };
+
+    const fetchUserNames = async (userIDs) => {
+        const query = `
+            query($ids: [ID!]!) {
+                usersByIds(ids: $ids) {
+                    _id
+                    name
+                }
+            }
+        `;
+        const response = await fetch('http://localhost:3000/graphql', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query, variables: { ids: userIDs } }),
+        });
+        const { data, errors } = await response.json();
+        if (errors) {
+            throw new Error(errors[0].message);
+        }
+        const namesMap = {};
+        data.usersByIds.forEach(user => {
+            namesMap[user._id] = user.name;
+        });
+        setUserNames(namesMap);
     };
 
     useEffect(() => {
@@ -135,15 +164,15 @@ const ViewResources = () => {
 
     return (
         <div>
-            <section className="hero-section">
+            <section className="resource-hero-section">
                 <div className="hero-text-container">
                     <h1 className="fw-bold">RESOURCES BOARD</h1>
                     <p>
-                        Discover a wide range of valuable resources to enhance your knowledge and skills. Our resources section offers curated materials, insightful articles, and useful tools to support your professional growth and development.
+                    A resources library is a comprehensive collection designed to support learning, research, and professional development. It includes books, journals, multimedia resources, and access to digital databases and online courses. Study areas and computer workstations facilitate both individual and collaborative work. Specialized collections and archives offer rare materials, while support services like workshops and librarian assistance enhance user experience. Digital tools and mobile access ensure resources are available anytime, anywhere. Community engagement and technology integration further enrich the learning environment.
                     </p>
                 </div>
             </section>
-            <section className="py-5 resource-filter-section">
+            <section className="pt-5 resource-filter-section">
                 <Form className="dropdowns-container">
                     <Row className="justify-content-center">
                         <Col xs={12} sm={6} md={4} lg={3} className="dropdown-col">
@@ -164,14 +193,14 @@ const ViewResources = () => {
                     </Row>
                 </Form>
             </section>
-            <section className="py-5 resources-section">
-                <h2 className="text-center">RECOMMENDED RESOURCES</h2>
-                <Row className="justify-content-center">
+            <section className="pb-5 px-5 resources-section">
+                <h2 className="reccomendation-tittle mb-5">RECOMMENDED RESOURCES</h2>
+                <Row className="justify-content-center align-items-center">
                     {sortedResources.map(resource => (
                         <Col xs={12} sm={6} md={4} lg={3} key={resource._id} className="mb-4">
                             <Card className="resource-card">
-                                <Card.Img
-                                    variant="top"
+                                <img
+                                    className='resource-card-img'
                                     src={resource.image ? `/src/assets/ResourceImages/${resource.image}` : defaultResourceImage}
                                     alt={resource.title}
                                 />
@@ -184,7 +213,7 @@ const ViewResources = () => {
                                     </Card.Text>
                                     <div className="d-flex justify-content-between align-items-center mb-2">
                                         <div className="d-flex align-items-center">
-                                            <BiUser className="me-1" /><strong>{resource.postedBy}</strong>
+                                            <BiUser className="me-1" /><strong>{userNames[resource.postedBy] || 'Unknown User'}</strong>
                                         </div>
                                         <div className="d-flex align-items-center">
                                             <div className="d-flex align-items-center me-3">
@@ -212,14 +241,14 @@ const ViewResources = () => {
                                     </Card.Text>
                                     {user?.role === 'Alumni' ? (
                                         <>
-                                        <Button variant="primary">Read Article</Button>
+                                        <button className='my-btn' onClick={() => history.push(`/viewResourcesDetails/${resource._id}`)}>Read Article</button>
                                             <Button variant='danger' className='text-white mx-1 px-3' onClick={() => deleteResource(resource._id)}>Delete</Button>
                                             <Link to={`/editResource/${resource._id}`} className="btn btn-warning text-white px-3 me-2">
                                                 Edit 
                                             </Link>
                                         </>
                                     ) : (
-                                        <Button variant="primary">Read Article</Button>
+                                        <button className='my-btn' onClick={() => history.push(`/viewResourcesDetails/${resource._id}`)}>Read Article</button>
                                     )}
                                 </Card.Body>
                             </Card>

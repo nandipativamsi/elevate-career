@@ -160,12 +160,26 @@ let database, JobsCollection, EventsCollection, ResourcesCollection, UsersCollec
    
     const resolvers = {
       Query: {
-        jobList: async () => {
-          const jobs = await JobsCollection.find({}).toArray();
+        jobList: async (_, { jobType, workType }) => {
+          // Build the query based on provided arguments
+          const query = {};
+          if (jobType) query.jobType = jobType;
+          if (workType) query.workType = workType;
+          
+          // Fetch jobs from the collection
+          const jobs = await JobsCollection.find(query).toArray();
           return jobs;
         },
-        jobsByUser: async (_, { userId }) => {
-          const jobs = await JobsCollection.find({ postedBy: userId }).toArray();
+        singleJob: async (_, { id }) => {
+          const job = await JobsCollection.findOne({ _id: new ObjectId(id) });
+          return job;
+        },
+        jobsByUser: async (_, { userId, jobType, workType }) => {
+          const query = { postedBy: userId };
+          if (jobType) query.jobType = jobType;
+          if (workType) query.workType = workType;
+          
+          const jobs = await JobsCollection.find(query).toArray();
           return jobs;
         },
         resourcesByUser: async (_, { userId }) => {
@@ -196,6 +210,9 @@ let database, JobsCollection, EventsCollection, ResourcesCollection, UsersCollec
           const Resource = await ResourcesCollection.findOne({ _id: new ObjectId(id) });
           return Resource;
         },
+        usersByIds: async (_, { ids }) => {
+          return await UsersCollection.find({ _id: { $in: ids.map(id => new ObjectId(id)) } }).toArray();
+        },
         getUserById: async (_, { id }) => {
           const user = await UsersCollection.findOne({ _id: new ObjectId(id) });
           return user;
@@ -215,7 +232,15 @@ let database, JobsCollection, EventsCollection, ResourcesCollection, UsersCollec
             status: "Active"
           }).toArray();
           return users;
-        }
+        }, 
+        checkRegistration: async (_, { eventId, userId }) => {
+          const event = await EventsCollection.findOne({ _id: new ObjectId(eventId) });
+          if (!event) {
+            throw new Error('Event not found');
+          }
+          const registeredUsers = event.registeredUsers || [];
+          return registeredUsers.includes(userId);
+        },
       },
       Mutation: {
         addJob: async (_, { job }, { req }) => {
@@ -271,6 +296,40 @@ let database, JobsCollection, EventsCollection, ResourcesCollection, UsersCollec
           const result = await EventsCollection.deleteOne({ _id: new ObjectId(_id) });
           return result.deletedCount === 1;
         },
+       
+        registerForEvent: async (_, { eventId, userId }) => {
+          const event = await EventsCollection.findOne({ _id: new ObjectId(eventId) });
+    if (!event) {
+        throw new Error('Event not found');
+    }
+
+    // Initialize attendees as an empty array if it's not defined
+    let attendees = event.attendees || "";
+
+    // Convert attendees string to an array
+    let attendeesArray = attendees ? attendees.split(',').map(id => id.trim()) : [];
+
+    // Convert userId to string for comparison
+    const userIdString = new ObjectId(userId).toString();
+
+    if (attendeesArray.includes(userIdString)) {
+        return false; // User is already registered
+    }
+    
+    // Add the new userId to the attendees list
+    attendeesArray.push(userIdString);
+
+    // Convert the array back to a comma-separated string
+    const updatedAttendees = attendeesArray.join(',');
+
+    // Update the event document with the new attendees string
+    await EventsCollection.updateOne(
+        { _id: new ObjectId(eventId) },
+        { $set: { attendees: updatedAttendees } }
+    );
+
+    return true; // Successfully registered
+        },
         addResource: async (_, { resource }, { req }) => {
           resource._id = new ObjectId();
           resource.createdAt = new Date();
@@ -293,6 +352,59 @@ let database, JobsCollection, EventsCollection, ResourcesCollection, UsersCollec
           const result = await ResourcesCollection.deleteOne({ _id: new ObjectId(_id) });
           return result.deletedCount === 1;
         },
+        addComment: async (_, { resourceId, comment }) => {
+          const result = await ResourcesCollection.findOneAndUpdate(
+              { _id: new ObjectId(resourceId) },
+              { $push: { comments: comment } },
+              { returnOriginal: false }
+          );
+
+          // if (!result.value) {
+          //     throw new Error('Resource not found');
+          // }
+
+          const updatedResource = await ResourcesCollection.findOne({ _id: new ObjectId(resourceId) });
+
+          return updatedResource;
+        },
+        likeResource: async (_, { resourceId }) => {
+          // Fetch the resource from the database
+          const resource = await ResourcesCollection.findOne({ _id: new ObjectId(resourceId) });
+          if (!resource) throw new Error('Resource not found');
+  
+          // Convert likes to integer and increment
+          const currentLikes = parseInt(resource.likes, 10) || 0;
+          const updatedLikes = currentLikes + 1;
+  
+          // Update the resource with the new like count
+          await ResourcesCollection.updateOne(
+              { _id: new ObjectId(resourceId) },
+              { $set: { likes: updatedLikes.toString() } }
+          );
+  
+          // Fetch and return the updated resource
+          return await ResourcesCollection.findOne({ _id: new ObjectId(resourceId) });
+      },
+  
+      dislikeResource: async (_, { resourceId }) => {
+          // Fetch the resource from the database
+          const resource = await ResourcesCollection.findOne({ _id: new ObjectId(resourceId) });
+          if (!resource) throw new Error('Resource not found');
+  
+          // Convert dislikes to integer and increment
+          const currentDislikes = parseInt(resource.dislikes, 10) || 0;
+          const updatedDislikes = currentDislikes + 1;
+  
+          // Update the resource with the new dislike count
+          await ResourcesCollection.updateOne(
+              { _id: new ObjectId(resourceId) },
+              { $set: { dislikes: updatedDislikes.toString() } }
+          );
+  
+          // Fetch and return the updated resource
+          return await ResourcesCollection.findOne({ _id: new ObjectId(resourceId) });
+      },
+  
         addUser: async (_, { user }) => {
           validateUser(user);
           const hashedPassword = await bcrypt.hash(user.password, saltRounds);
