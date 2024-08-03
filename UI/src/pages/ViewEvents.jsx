@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Row, Col, Card } from 'react-bootstrap';
+import { Form, Row, Col, Card, Button, Modal } from 'react-bootstrap';
 import heroImg from '../assets/feature2.jpg';
 import { Link } from 'react-router-dom';
 import "../css/events.css";
 import "../css/index.css";
 import { FaCalendarAlt } from "react-icons/fa";
-
 import { useAuth } from '../AuthContext.jsx';
 
 const ViewEvents = () => {
@@ -14,6 +13,9 @@ const ViewEvents = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [filter, setFilter] = useState('all');
+    const [showModal, setShowModal] = useState(false);
+    const [selectedEvent, setSelectedEvent] = useState(null);
+    const [registeredEvents, setRegisteredEvents] = useState({});
 
     const loadData = async () => {
         const query = user?.role === 'Alumni'
@@ -113,21 +115,94 @@ const ViewEvents = () => {
         }
     };
 
-    if (loading) {
-        return <p>Loading...</p>;
-    }
-
-    if (error) {
-        return <p>Error: {error}</p>;
-    }
-
     const handleFilterChange = (e) => {
         setFilter(e.target.value);
     };
 
+    const handleShow = async (event) => {
+        setSelectedEvent(event);
+        const query = `
+            query checkRegistration($eventId: ID!, $userId: ID!) {
+                checkRegistration(eventId: $eventId, userId: $userId)
+            }
+        `;
+        try {
+            const response = await fetch('http://localhost:3000/graphql', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    query,
+                    variables: {
+                        eventId: event._id,
+                        userId: user._id
+                    }
+                }),
+            });
+
+            const { data, errors } = await response.json();
+
+            if (errors) {
+                throw new Error(errors[0].message);
+            }
+
+            setRegisteredEvents(prevState => ({
+                ...prevState,
+                [event._id]: data.checkRegistration
+            }));
+            setShowModal(true);
+        } catch (error) {
+            setError(error.message);
+        }
+    };
+
+    const handleClose = () => {
+        setShowModal(false);
+        setSelectedEvent(null);
+    };
+
+    const handleRegister = async () => {
+        const mutation = `
+            mutation registerForEvent($eventId: ID!, $userId: ID!) {
+                registerForEvent(eventId: $eventId, userId: $userId)
+            }
+        `;
+
+        try {
+            const response = await fetch('http://localhost:3000/graphql', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    query: mutation,
+                    variables: {
+                        eventId: selectedEvent._id,
+                        userId: user._id
+                    }
+                }),
+            });
+
+            const { data, errors } = await response.json();
+
+            if (errors) {
+                throw new Error(errors[0].message);
+            }
+
+            if (data.registerForEvent) {
+                setRegisteredEvents(prevState => ({
+                    ...prevState,
+                    [selectedEvent._id]: true
+                }));
+                alert("Registration successful!");
+            } else {
+                alert("Registration failed. You might already be registered.");
+            }
+        } catch (error) {
+            setError(error.message);
+        }
+    };
+
     const currentTime = Date.now();
     const filteredEvents = events.filter(event => {
-        const eventTime = parseInt(event.date);
+        const eventTime = new Date(event.date).getTime();
         if (filter === 'upcoming') {
             return eventTime >= currentTime;
         } else if (filter === 'expired') {
@@ -136,13 +211,21 @@ const ViewEvents = () => {
         return true; // For 'all' option or any other unrecognized filter, show all events
     });
 
+    if (loading) {
+        return <p>Loading...</p>;
+    }
+
+    if (error) {
+        return <p>Error: {error}</p>;
+    }
+
     return (
         <div>
             <section className="hero-section">
                 <div className="hero-text-container">
                     <h1 className="fw-bold">EVENTS</h1>
                     <p>
-                        The Events section of Career Elevate offers a diverse array of opportunities designed to enhance professional growth and network expansion. From industry-specific conferences and expert-led webinars to hands-on workshops and dynamic networking mixers, these events cater to a wide range of career stages and interests. Participants can gain valuable insights into emerging trends, acquire new skills, and connect with like-minded professionals. Whether you&apose;re looking to deepen your expertise, explore new career paths, or simply stay current in your field, Career Elevate&apose;s events provide the perfect platform to elevate your career aspirations.
+                        The Events section of Career Elevate offers a diverse array of opportunities designed to enhance professional growth and network expansion. From industry-specific conferences and expert-led webinars to hands-on workshops and dynamic networking mixers, these events cater to a wide range of career stages and interests. Participants can gain valuable insights into emerging trends, acquire new skills, and connect with like-minded professionals. Whether you’re looking to deepen your expertise, explore new career paths, or simply stay current in your field, Career Elevate’s events provide the perfect platform to elevate your career aspirations.
                     </p>
                 </div>
             </section>
@@ -187,15 +270,18 @@ const ViewEvents = () => {
 
                                     {user?.role === 'Alumni' ? (
                                         <>
-                                            <button className='my-btn'>Details</button>
-                                            <button className='btn btn-danger text-white mx-1 px-3' onClick={() => deleteEvent(event._id)}>Delete</button>
+                                            <Button className='my-btn' onClick={() => handleShow(event)}>
+                                                {registeredEvents[event._id] ? 'Registered' : 'Details'}
+                                            </Button>
+                                            <Button className='btn btn-danger text-white mx-1 px-3' onClick={() => deleteEvent(event._id)}>Delete</Button>
                                             <Link to={`/editEvent/${event._id}`} className="btn btn-warning text-white px-3 me-2">
                                                 Edit
                                             </Link>
                                         </>
                                     ) : (
-                                        <button className="my-btn">Details</button>
-
+                                        <Button className="my-btn" onClick={() => handleShow(event)}>
+                                            {registeredEvents[event._id] ? 'Registered' : 'Details'}
+                                        </Button>
                                     )}
                                 </Card.Body>
                             </Card>
@@ -203,6 +289,44 @@ const ViewEvents = () => {
                     ))}
                 </Row>
             </section>
+
+            {selectedEvent && (
+                <Modal show={showModal} onHide={handleClose} centered>
+                    <Modal.Header closeButton>
+                        <Modal.Title>{selectedEvent.title}</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <img
+                            src={selectedEvent.image ? `/src/assets/EventImages/${selectedEvent.image}` : heroImg}
+                            alt={selectedEvent.title}
+                            className="img-fluid mb-3"
+                        />
+                        <p><strong>Description:</strong> {selectedEvent.description}</p>
+                        <p><strong>Date:</strong> {new Date(selectedEvent.date).toLocaleDateString('en-US', {
+                            weekday: 'long',
+                            month: 'long',
+                            day: 'numeric',
+                            year: 'numeric'
+                        })} at {new Date(`${selectedEvent.date.split('T')[0]}T${selectedEvent.time}`).toLocaleTimeString('en-US', {
+                            hour: 'numeric',
+                            minute: 'numeric',
+                            hour12: true
+                        })}</p>
+                        <p><strong>Location:</strong> {selectedEvent.location}</p>
+                        <p><strong>Limit:</strong> {selectedEvent.limit}</p>
+                        <p><strong>Price:</strong> {selectedEvent.price}</p>
+                        <p><strong>Attendees:</strong> {new Set(selectedEvent.attendees.split(',').map(id => id.trim()).filter(id => id !== '')).size}</p>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        {registeredEvents[selectedEvent._id] ? (
+                            <Button variant="secondary" disabled>Registered</Button>
+                        ) : (
+                            <Button variant="primary" onClick={handleRegister}>Register</Button>
+                        )}
+                        <Button variant="secondary" onClick={handleClose}>Close</Button>
+                    </Modal.Footer>
+                </Modal>
+            )}
         </div>
     );
 };
