@@ -70,7 +70,11 @@ const ViewResources = () => {
             }
 
             setResources(data.resourceList);
-            fetchUserNames(data.resourceList.map(resource => resource.postedBy));
+            if(user?.role !== 'Alumni'){
+                fetchUserNames(data.resourceList.map(resource => resource.postedBy));
+            }else{
+                fetchUserNames(data.resourcesByUser.map(resource => resource.postedBy));
+            }
             setResources(user?.role === 'Alumni' ? data.resourcesByUser : data.resourceList);
             setLoading(false);
         } catch (error) {

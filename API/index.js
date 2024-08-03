@@ -55,6 +55,9 @@ const uploadEventImage = multer({ storage: eventImageStorage });
 const resourceImageStorage = createStorage('../UI/src/assets/ResourceImages');
 const uploadResourceImage = multer({ storage: resourceImageStorage });
 
+const profileImageStorage = createStorage('../UI/src/assets/ProfileImages');
+const uploadProfileImage = multer({ storage: profileImageStorage });
+
 app.post('/JobImage/upload', uploadJobImage.single('image'), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: 'No file uploaded' });
@@ -70,6 +73,13 @@ app.post('/EventImage/upload', uploadEventImage.single('image'), (req, res) => {
 });
 
 app.post('/ResourceImage/upload', uploadResourceImage.single('image'), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: 'No file uploaded' });
+  }
+  res.json({ imageName: req.file.filename });
+});
+
+app.post('/ProfileImage/upload', uploadProfileImage.single('image'), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: 'No file uploaded' });
   }
@@ -411,7 +421,9 @@ let database, JobsCollection, EventsCollection, ResourcesCollection, UsersCollec
           user.password = hashedPassword;
           user._id = new ObjectId();
           user.connections="";
-          user.pendingConnections="";
+          user.pendingConnectionsAcceptor="";
+          user.pendingConnectionsRequestor="";
+          user.profileImage="";
           user.skills="";
           user.interests="";
           user.linkedInURL="";
@@ -421,82 +433,100 @@ let database, JobsCollection, EventsCollection, ResourcesCollection, UsersCollec
           await UsersCollection.insertOne(user);
           return user;
         },
+
         sendConnectionRequest: async (_, { fromUserId, toUserId }) => {
           const toUser = await UsersCollection.findOne({ _id: new ObjectId(toUserId) });
           const fromUser = await UsersCollection.findOne({ _id: new ObjectId(fromUserId) });
-      
+    
           if (!toUser || !fromUser) {
             throw new Error('User not found');
           }
-      
-          // Update toUser's pendingConnections
-          const toUserPendingConnections = toUser.pendingConnections ? toUser.pendingConnections.split(',') : [];
-          if (!toUserPendingConnections.includes(fromUserId)) {
-            toUserPendingConnections.push(fromUserId);
+    
+          // Update toUser's pendingConnectionsAcceptor
+          const toUserPendingConnectionsAcceptor = toUser.pendingConnectionsAcceptor ? toUser.pendingConnectionsAcceptor.split(',') : [];
+          if (!toUserPendingConnectionsAcceptor.includes(fromUserId)) {
+            toUserPendingConnectionsAcceptor.push(fromUserId);
           }
-      
+    
           await UsersCollection.updateOne(
             { _id: new ObjectId(toUserId) },
-            { $set: { pendingConnections: toUserPendingConnections.join(',') } }
+            { $set: { pendingConnectionsAcceptor: toUserPendingConnectionsAcceptor.join(',') } }
           );
-      
-          // Update fromUser's pendingConnections
-          const fromUserPendingConnections = fromUser.pendingConnections ? fromUser.pendingConnections.split(',') : [];
-          if (!fromUserPendingConnections.includes(toUserId)) {
-            fromUserPendingConnections.push(toUserId);
+    
+          // Update fromUser's pendingConnectionsRequestor
+          const fromUserPendingConnectionsRequestor = fromUser.pendingConnectionsRequestor ? fromUser.pendingConnectionsRequestor.split(',') : [];
+          if (!fromUserPendingConnectionsRequestor.includes(toUserId)) {
+            fromUserPendingConnectionsRequestor.push(toUserId);
           }
-      
+    
           await UsersCollection.updateOne(
             { _id: new ObjectId(fromUserId) },
-            { $set: { pendingConnections: fromUserPendingConnections.join(',') } }
+            { $set: { pendingConnectionsRequestor: fromUserPendingConnectionsRequestor.join(',') } }
           );
-      
+    
           return await UsersCollection.findOne({ _id: new ObjectId(toUserId) });
         },
+    
         acceptConnectionRequest: async (_, { fromUserId, toUserId }) => {
-        const toUser = await UsersCollection.findOne({ _id: new ObjectId(toUserId) });
-        const fromUser = await UsersCollection.findOne({ _id: new ObjectId(fromUserId) });
-
-        const toUserConnections = toUser.connections ? toUser.connections.split(',') : [];
-        const fromUserConnections = fromUser.connections ? fromUser.connections.split(',') : [];
-        const toUserPendingConnections = toUser.pendingConnections ? toUser.pendingConnections.split(',') : [];
-
-        if (!toUserConnections.includes(fromUserId)) {
-          toUserConnections.push(fromUserId);
-        }
-        if (!fromUserConnections.includes(toUserId)) {
-          fromUserConnections.push(toUserId);
-        }
-
-        const updatedPendingConnections = toUserPendingConnections.filter(id => id !== fromUserId);
-
-        await UsersCollection.updateOne(
-          { _id: new ObjectId(toUserId) },
-          { $set: { 
-              connections: toUserConnections.join(','), 
-              pendingConnections: updatedPendingConnections.join(',') 
-            } 
+          const toUser = await UsersCollection.findOne({ _id: new ObjectId(toUserId) });
+          const fromUser = await UsersCollection.findOne({ _id: new ObjectId(fromUserId) });
+    
+          const toUserConnections = toUser.connections ? toUser.connections.split(',') : [];
+          const fromUserConnections = fromUser.connections ? fromUser.connections.split(',') : [];
+          const toUserPendingConnectionsAcceptor = toUser.pendingConnectionsAcceptor ? toUser.pendingConnectionsAcceptor.split(',') : [];
+          const fromUserPendingConnectionsRequestor = fromUser.pendingConnectionsRequestor ? fromUser.pendingConnectionsRequestor.split(',') : [];
+    
+          if (!toUserConnections.includes(fromUserId)) {
+            toUserConnections.push(fromUserId);
           }
-        );
-
-        await UsersCollection.updateOne(
-          { _id: new ObjectId(fromUserId) },
-          { $set: { connections: fromUserConnections.join(',') } }
-        );
-
-        return await UsersCollection.findOne({ _id: new ObjectId(toUserId) });
+          if (!fromUserConnections.includes(toUserId)) {
+            fromUserConnections.push(toUserId);
+          }
+    
+          const updatedPendingConnectionsAcceptor = toUserPendingConnectionsAcceptor.filter(id => id !== fromUserId);
+          const updatedPendingConnectionsRequestor = fromUserPendingConnectionsRequestor.filter(id => id !== toUserId);
+    
+          await UsersCollection.updateOne(
+            { _id: new ObjectId(toUserId) },
+            { $set: { 
+                connections: toUserConnections.join(','), 
+                pendingConnectionsAcceptor: updatedPendingConnectionsAcceptor.join(',') 
+              } 
+            }
+          );
+    
+          await UsersCollection.updateOne(
+            { _id: new ObjectId(fromUserId) },
+            { $set: { 
+                connections: fromUserConnections.join(','), 
+                pendingConnectionsRequestor: updatedPendingConnectionsRequestor.join(',') 
+              } 
+            }
+          );
+    
+          return await UsersCollection.findOne({ _id: new ObjectId(toUserId) });
         },
+    
         rejectConnectionRequest: async (_, { fromUserId, toUserId }) => {
-        const user = await UsersCollection.findOne({ _id: new ObjectId(toUserId) });
-        const pendingConnections = user.pendingConnections ? user.pendingConnections.split(',') : [];
-        const updatedPendingConnections = pendingConnections.filter(id => id !== fromUserId);
-
-        await UsersCollection.updateOne(
-          { _id: new ObjectId(toUserId) },
-          { $set: { pendingConnections: updatedPendingConnections.join(',') } }
-        );
-
-        return await UsersCollection.findOne({ _id: new ObjectId(toUserId) });
+          const toUser = await UsersCollection.findOne({ _id: new ObjectId(toUserId) });
+          const toUserPendingConnectionsAcceptor = toUser.pendingConnectionsAcceptor ? toUser.pendingConnectionsAcceptor.split(',') : [];
+          const updatedPendingConnectionsAcceptor = toUserPendingConnectionsAcceptor.filter(id => id !== fromUserId);
+    
+          await UsersCollection.updateOne(
+            { _id: new ObjectId(toUserId) },
+            { $set: { pendingConnectionsAcceptor: updatedPendingConnectionsAcceptor.join(',') } }
+          );
+    
+          const fromUser = await UsersCollection.findOne({ _id: new ObjectId(fromUserId) });
+          const fromUserPendingConnectionsRequestor = fromUser.pendingConnectionsRequestor ? fromUser.pendingConnectionsRequestor.split(',') : [];
+          const updatedPendingConnectionsRequestor = fromUserPendingConnectionsRequestor.filter(id => id !== toUserId);
+    
+          await UsersCollection.updateOne(
+            { _id: new ObjectId(fromUserId) },
+            { $set: { pendingConnectionsRequestor: updatedPendingConnectionsRequestor.join(',') } }
+          );
+    
+          return await UsersCollection.findOne({ _id: new ObjectId(toUserId) });
         },
         login: async (_, { credentials }, { req }) => {
           const { email, password } = credentials;
@@ -526,17 +556,18 @@ let database, JobsCollection, EventsCollection, ResourcesCollection, UsersCollec
           });
           return true;
         },
-        updateUser: async (_, { id, input }) => {
-          const user = await UsersCollection.findOne({ _id: new ObjectId(id) });
-          if (!user) {
+        updateUser: async (_, { id, user }) => {
+          console.log("Server Side " + {user});
+          const oldUser = await UsersCollection.findOne({ _id: new ObjectId(id) });
+          if (!oldUser) {
             throw new Error('User not found');
           }
-          const updatedUser = await UsersCollection.findOneAndUpdate(
+          const updatedNewUser = await UsersCollection.findOneAndUpdate(
             { _id: new ObjectId(id) },
-            { $set: input },
+            { $set: user },
             { returnOriginal: false }
           );
-          return updatedUser.value;
+          return updatedNewUser;
         },
       },
       GraphQLDate,
