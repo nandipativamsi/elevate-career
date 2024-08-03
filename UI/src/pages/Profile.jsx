@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../AuthContext.jsx';
+import { Form, Button, Container, Row, Col, Alert, Card } from 'react-bootstrap';
+import '../css/profile.css';
+import UserPhoto from "../assets/user.jpg"
 // import axios from 'axios';
 
 const ProfilePage = () => {
@@ -139,48 +142,68 @@ const ProfilePage = () => {
     return (
         <div>
             {isEditing ? (
-                <form className="ProfileForm" onSubmit={handleSubmit}>
-                    <div>
-                        <h2 className='form-heading'>Edit Profile</h2>
-                        {Object.keys(formData).map((field) => (
-                            (field !== 'profileImage') && (
-                                <div key={field}>
-                                    <label>{field.charAt(0).toUpperCase() + field.slice(1)}</label>
-                                    <input
-                                        type="text"
-                                        name={field}
-                                        value={formData[field]}
-                                        onChange={handleChange}
-                                    />
-                                    {errors[field] && <span style={{ color: 'red' }}>{errors[field]}</span>}
+                <Container className="">
+                    <Row className="d-flex flex-column justify-content-center align-items-center">
+                        <h2 className="profile-tittle my-3 edit-tittle">Edit Profile</h2>
+                        <Col md={6} className='profile-form-container'> 
+                            <Form className="ProfileForm" onSubmit={handleSubmit}>
+                                {Object.keys(formData).map((field) => (
+                                    field !== 'profileImage' && (
+                                        <Form.Group controlId={field} key={field} className="mb-3">
+                                            <Form.Label>{field.charAt(0).toUpperCase() + field.slice(1)}</Form.Label>
+                                            <Form.Control
+                                                type="text"
+                                                name={field}
+                                                value={formData[field]}
+                                                onChange={handleChange}
+                                                isInvalid={!!errors[field]}
+                                            />
+                                            {errors[field] && <Alert variant="danger" className="mt-2">{errors[field]}</Alert>}
+                                        </Form.Group>
+                                    )
+                                ))}
+                                <div className="d-flex justify-content-between">
+                                    <button className='my-btn' type="submit">Update Profile</button>
+                                    <button className='my-btn' type="button" onClick={() => setIsEditing(false)}>Cancel</button>
                                 </div>
-                            )
-                        ))}
-                    </div>
-                    {/* <div>
-                        <label>Profile Image</label>
-                        <input
-                            type="file"
-                            name="profileImage"
-                            onChange={handleFileChange}
-                        />
-                        {errors.profileImage && <span style={{ color: 'red' }}>{errors.profileImage}</span>}
-                    </div> */}
-                    <button type="submit">Update Profile</button>
-                    <button type="button" onClick={() => setIsEditing(false)}>Cancel</button>
-                </form>
+                            </Form>
+                        </Col>
+                    </Row>
+                </Container>
             ) : (
-                <div>
-                    <h2 className='form-heading'>Profile Information</h2>
-                    {Object.keys(formData).map((field) => (
-                        (field !== 'profileImage') && (
-                            <div key={field}>
-                                <p><strong>{field.charAt(0).toUpperCase() + field.slice(1)}:</strong> {formData[field] || 'N/A'}</p>
-                            </div>
-                        )
-                    ))}
-                    <button onClick={handleEditClick}>Edit</button>
-                </div>
+                <Container fluid className="profile-page-container">
+                    <Row>  
+                    <Col md={4}>
+                            <Card className="profile-card">
+                                <Card.Body className="d-flex align-items-center justify-content-center flex-column">
+                                    {/* <img src={formData.profileImage} alt="Profile" className="profile-image" /> */}
+                                    <img src={UserPhoto} alt="Profile" className="profile-image" />
+                                    <h3>{formData.name || 'N/A'}</h3>
+                                    <p>{formData.email || 'N/A'}</p>
+                                </Card.Body>
+                            </Card>
+                        </Col>              
+                        <Col md={8}>
+                        <h2 className="profile-tittle mb-3">Profile Information</h2>
+                            <Card className="profile-card">
+                                <Card.Body>
+                                    <Card.Text>
+                                        {Object.keys(formData).map((field) => (
+                                            field !== 'profileImage' && (
+                                                <div key={field} className="profile-field">
+                                                    <p><strong>{field.charAt(0).toUpperCase() + field.slice(1)}:</strong> {formData[field] || 'N/A'}</p>
+                                                </div>
+                                            )
+                                        ))}
+                                    </Card.Text>
+                                    <div className="text-center">
+                                        <button className='my-btn' onClick={handleEditClick}>Edit</button>
+                                    </div>
+                                </Card.Body>
+                            </Card>
+                        </Col>
+                    </Row>
+                </Container>
             )}
         </div>
     );
