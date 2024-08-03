@@ -232,7 +232,15 @@ let database, JobsCollection, EventsCollection, ResourcesCollection, UsersCollec
             status: "Active"
           }).toArray();
           return users;
-        }
+        }, 
+        checkRegistration: async (_, { eventId, userId }) => {
+          const event = await EventsCollection.findOne({ _id: new ObjectId(eventId) });
+          if (!event) {
+            throw new Error('Event not found');
+          }
+          const registeredUsers = event.registeredUsers || [];
+          return registeredUsers.includes(userId);
+        },
       },
       Mutation: {
         addJob: async (_, { job }, { req }) => {
@@ -287,6 +295,40 @@ let database, JobsCollection, EventsCollection, ResourcesCollection, UsersCollec
         deleteEvent: async (_, { _id }) => {
           const result = await EventsCollection.deleteOne({ _id: new ObjectId(_id) });
           return result.deletedCount === 1;
+        },
+       
+        registerForEvent: async (_, { eventId, userId }) => {
+          const event = await EventsCollection.findOne({ _id: new ObjectId(eventId) });
+    if (!event) {
+        throw new Error('Event not found');
+    }
+
+    // Initialize attendees as an empty array if it's not defined
+    let attendees = event.attendees || "";
+
+    // Convert attendees string to an array
+    let attendeesArray = attendees ? attendees.split(',').map(id => id.trim()) : [];
+
+    // Convert userId to string for comparison
+    const userIdString = new ObjectId(userId).toString();
+
+    if (attendeesArray.includes(userIdString)) {
+        return false; // User is already registered
+    }
+    
+    // Add the new userId to the attendees list
+    attendeesArray.push(userIdString);
+
+    // Convert the array back to a comma-separated string
+    const updatedAttendees = attendeesArray.join(',');
+
+    // Update the event document with the new attendees string
+    await EventsCollection.updateOne(
+        { _id: new ObjectId(eventId) },
+        { $set: { attendees: updatedAttendees } }
+    );
+
+    return true; // Successfully registered
         },
         addResource: async (_, { resource }, { req }) => {
           resource._id = new ObjectId();
