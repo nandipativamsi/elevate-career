@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../AuthContext.jsx';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "../css/Connections.css";
+import defaultProfileImage from '../assets/defaultProfileImage.jpg'
 
 const ConnectionsPage = () => {
     const [users, setUsers] = useState([]);
@@ -31,7 +32,9 @@ const ConnectionsPage = () => {
                     contactNumber
                     education
                     connections
-                    pendingConnections
+                    pendingConnectionsAcceptor
+                    pendingConnectionsRequestor
+                    profileImage
                     yearOfGraduation
                     workExperience
                 }
@@ -134,18 +137,16 @@ const ConnectionsPage = () => {
         return connections.includes(currentUserId);
     };
 
-    const isPendingConnection = (user) => {
-        if (!currentUser || !user) return false;
-        const pendingConnections = user.pendingConnections ? user.pendingConnections.split(',') : [];
-        return pendingConnections.includes(currentUserId);
+    const isPendingConnectionAcceptor = (user) => {
+        const pendingConnectionsAcceptor = user.pendingConnectionsAcceptor ? user.pendingConnectionsAcceptor.split(',') : [];
+        return pendingConnectionsAcceptor.includes(currentUserId);
+    };
+
+    const isPendingConnectionRequestor = (user) => {
+        const pendingConnectionsRequestor = user.pendingConnectionsRequestor ? user.pendingConnectionsRequestor.split(',') : [];
+        return pendingConnectionsRequestor.includes(currentUserId);
     };
     
-
-    const hasSentConnectionRequest = (user) => {
-        if (!currentUser || !user) return false;
-        const pendingConnections = currentUser.pendingConnections ? currentUser.pendingConnections.split(',') : [];
-        return pendingConnections.includes(user._id);
-    };
 
     const renderConnectionButtons = (user) => {
         if (!currentUser) return null;
@@ -158,21 +159,26 @@ const ConnectionsPage = () => {
             return <Button variant="success" disabled>Connected</Button>;
         } 
         
-        if (isPendingConnection(user)) {
-            // Show "Accept" and "Reject" buttons if the current user is logged in and has a pending request
-            if (user.pendingConnections.includes(currentUserId)) {
-                return (
-                    <>
-                        <Button variant="primary" onClick={() => acceptConnectionRequest(user._id)}>Accept</Button>
-                        <Button variant="danger" onClick={() => rejectConnectionRequest(user._id)}>Reject</Button>
-                    </>
-                );
-            }
-            // Show "Pending" button if the user has sent a request, but it's not yet accepted
+        if (isPendingConnectionAcceptor(user)) {
+            
             return <Button variant="secondary" disabled>Pending</Button>;
+        }
+
+        if(isPendingConnectionRequestor(user))
+        {
+            return (
+                <>
+                    <Button variant="primary" onClick={() => acceptConnectionRequest(user._id)}>Accept</Button>
+                    <Button variant="danger" onClick={() => rejectConnectionRequest(user._id)}>Reject</Button>
+                </>
+            );
         }
     
         return <Button variant="primary" onClick={() => sendConnectionRequest(user._id)}>Connect</Button>;
+    };
+
+    const getConnectionCount = (connections) => {
+        return connections ? connections.split(',').length : 0;
     };
     
 
@@ -201,15 +207,13 @@ const ConnectionsPage = () => {
                             <Card.Body className="text-center">
                                 <Card.Img
                                     variant="top"
-                                    src="https://via.placeholder.com/100"
+                                    src={user.profileImage ? `/src/assets/ProfileImages/${user.profileImage}` : defaultProfileImage}
                                     className="rounded-circle w-50 mb-3"
                                 />
                                 <Card.Title>{user.name}</Card.Title>
-                                <Card.Text>{user.education}</Card.Text>
-                                <Card.Text>ID : {user._id}</Card.Text>
-                                <Card.Text>Connections: {user.connections}</Card.Text>
-                                <Card.Text>Pending Connections: {user.pendingConnections}</Card.Text>
-                                <Card.Text><strong>Experience:&nbsp;</strong>{user.workExperience}</Card.Text>
+                                <Card.Text>Education : {user.education} - {user.yearOfGraduation}</Card.Text>
+                                <Card.Text>Connections: {getConnectionCount(user.connections)}</Card.Text>
+                                <Card.Text><strong>Experience:&nbsp;</strong>{user.workExperience} Years</Card.Text>
                                 {renderConnectionButtons(user)}
                             </Card.Body>
                         </Card>
