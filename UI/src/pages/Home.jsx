@@ -25,8 +25,9 @@ function HomePage(props) {
       <header className="py-5 bg-image">
         <div className="hero-text">
           <div className="text-center">
-            <h4 className='hero-upper-tittle'>ONE STEP TOWARDS</h4>
-            <h1 className="fw-bolder hero-lower-tittle">EXCELLENCE!</h1>
+            <h1 className="fw-bolder hero-lower-tittle">ELEVATE CAREER</h1>
+            <h4 className='hero-upper-tittle'>
+            ONE STEP TOWARDS EXCELLENCE !</h4>
           </div>
         </div>
       </header>
