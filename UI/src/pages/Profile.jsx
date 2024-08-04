@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../AuthContext.jsx';
 import { Form, Button, Container, Row, Col, Alert, Card } from 'react-bootstrap';
 import '../css/profile.css';
-import defaultProfileImage from "../assets/defaultProfileImage.jpg"; 
+import defaultProfileImage from "../assets/defaultProfileImage.jpg";
 
 const ProfilePage = () => {
     const { user, setUser } = useAuth();
@@ -122,10 +122,10 @@ const ProfilePage = () => {
 
                     // alert(...formData,"And",imageName);
                     // console.log("Client Side - FormData: ", { ...formData, profileImage: imageName });
-                    
+
                 }
                 alert(`Form Data: ${JSON.stringify(formData, null, 2)}\nAnd Image Name: ${imageName}`);
-                
+
 
                 const query = `
                     mutation updateUser($id: ID!, $user: UpdateUser!) {
@@ -135,7 +135,7 @@ const ProfilePage = () => {
                     }
                 `;
 
-                
+
 
                 const profileResponse = await fetch('http://localhost:3000/graphql', {
                     method: 'POST',
@@ -173,12 +173,12 @@ const ProfilePage = () => {
     };
 
     return (
-        <div>
+        <div className='profile-bg'>
             {isEditing ? (
-                <Container className="">
+                <Container>
                     <Row className="d-flex flex-column justify-content-center align-items-center">
-                        <h2 className="profile-tittle my-3 edit-tittle">Edit Profile</h2>
-                        <Col md={6} className='profile-form-container'> 
+                        <h2 className="profile-tittle my-3 edit-tittle z-index2">Edit Profile</h2>
+                        <Col md={6} className='profile-form-container z-index2'>
                             <Form className="ProfileForm" onSubmit={handleSubmit}>
                                 {Object.keys(formData).map((field) => (
                                     field !== 'profileImage' && (
@@ -223,23 +223,23 @@ const ProfilePage = () => {
                 </Container>
             ) : (
                 <Container fluid className="profile-page-container">
-                    <Row>  
+                    <Row>
                         <Col md={4}>
-                            <Card className="profile-card">
+                            <Card className="profile-card z-index2">
                                 <Card.Body className="d-flex align-items-center justify-content-center flex-column">
-                                    <img 
-                                        src={formData.profileImage ? `/src/assets/ProfileImages/${formData.profileImage}` : defaultProfileImage} 
-                                        alt="Profile" 
-                                        className="profile-image" 
+                                    <img
+                                        src={formData.profileImage ? `/src/assets/ProfileImages/${formData.profileImage}` : defaultProfileImage}
+                                        alt="Profile"
+                                        className="profile-image"
                                     />
                                     <h3>{formData.name || 'N/A'}</h3>
                                     <p>{formData.email || 'N/A'}</p>
                                 </Card.Body>
                             </Card>
-                        </Col>              
+                        </Col>
                         <Col md={8}>
-                            <h2 className="profile-tittle mb-3">Profile Information</h2>
-                            <Card className="profile-card">
+                            <Card className="profile-card z-index2 p-3">
+                                <h2 className="profile-tittle mb-3">Profile Information</h2>
                                 <Card.Body>
                                     <Card.Text>
                                         {Object.keys(formData).map((field) => (
