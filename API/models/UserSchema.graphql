@@ -29,7 +29,9 @@ type User {
   yearOfGraduation: String!
   workExperience: String!
   connections: String
-  pendingConnections: String
+  pendingConnectionsAcceptor: String
+  pendingConnectionsRequestor: String
+  profileImage: String
   skills: String
   interests: String
   linkedInURL: String
@@ -59,12 +61,14 @@ input UpdateUser {
   yearOfGraduation: String
   workExperience: String
   connections: String
-  pendingConnections: String
+  pendingConnectionsAcceptor: String
+  pendingConnectionsRequestor: String
   skills: String
   interests: String
   linkedInURL: String
   gitHubURL: String
   socialMediaURL: String
+  profileImage: String
 }
 
 input LoginInput {

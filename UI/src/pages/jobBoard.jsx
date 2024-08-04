@@ -15,7 +15,6 @@ const JobBoard = () => {
     const [workType, setWorkType] = useState('');
     const [noJobsFound, setNoJobsFound] = useState(false);
 
-
     const history = useHistory();
 
     const handleEdit = (jobId) => {
@@ -23,6 +22,8 @@ const JobBoard = () => {
     };
 
     const loadData = async () => {
+        console.log(user?.role);
+        
         const query = user?.role === 'Alumni'
             ? `
                 query jobsByUser($userId: ID!, $jobType: JobType, $workType: WorkType) {
@@ -60,26 +61,26 @@ const JobBoard = () => {
                     }
                 }
             `;
-    
+
         const variables = user?.role === 'Alumni'
             ? { userId: user._id, jobType: jobType || null, workType: workType || null }
             : { jobType: jobType || null, workType: workType || null };
-    
+
         try {
             const response = await fetch('http://localhost:3000/graphql', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ query, variables }),
             });
-    
+
             const { data, errors } = await response.json();
-    
+
             if (errors) {
                 throw new Error(errors[0].message);
             }
-    
+
             const fetchedJobs = user?.role === 'Alumni' ? data.jobsByUser : data.jobList;
-    
+
             setJobs(fetchedJobs);
             setNoJobsFound(fetchedJobs.length === 0);
             setLoading(false);
@@ -88,11 +89,12 @@ const JobBoard = () => {
             setLoading(false);
         }
     };
-    
 
     useEffect(() => {
-        loadData();
-    }, [jobType, workType]);
+        if (user) {
+            loadData();
+        }
+    }, [user, jobType, workType]);
 
     const deleteJob = async (_id) => {
         if (window.confirm("Are you sure you want to delete the job?")) {
@@ -149,8 +151,7 @@ const JobBoard = () => {
                                     as="select"
                                     className="dropdown-input"
                                     value={jobType}
-                                    onChange={(e) => setJobType(e.target.value)}
-                                >
+                                    onChange={(e) => setJobType(e.target.value)}>
                                     <option value="">Select Job Type</option>
                                     <option value="FullTime">Full-time</option>
                                     <option value="PartTime">Part-time</option>
