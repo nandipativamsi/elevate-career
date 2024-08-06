@@ -215,7 +215,7 @@ const ViewResources = () => {
                                     <Card.Text>
                                         {resource.description.length > 30 ? `${resource.description.substring(0, 30)}...` : resource.description}
                                     </Card.Text>
-                                    <div className="d-flex justify-content-between align-items-center mb-2">
+                                    <div className="d-flex justify-content-between align-items-center mb-1">
                                         <div className="d-flex align-items-center">
                                             <BiUser className="me-1" /><strong>{userNames[resource.postedBy] || 'Unknown User'}</strong>
                                         </div>
