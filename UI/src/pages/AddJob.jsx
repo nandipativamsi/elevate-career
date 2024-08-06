@@ -1,6 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useParams, useHistory } from 'react-router-dom';
+import { useAuth } from '../AuthContext.jsx';
 
 const AddJob = () => {
+    const { user } = useAuth();
+    const { id } = useParams();
+    const history = useHistory();
     const [formData, setFormData] = useState({
         jobType: '',
         title: '',
@@ -10,11 +15,53 @@ const AddJob = () => {
         experience: '',
         salary: '',
         workType: '',
-        image: '',
+        image: ''
     });
-
     const [errors, setErrors] = useState({});
     const [imageFile, setImageFile] = useState(null);
+
+    useEffect(() => {
+        if (id) {
+            // Fetch the job data and populate the form
+            const fetchJob = async () => {
+                const query = `
+                    query singleJob($id: ID!) {
+                        singleJob(id: $id) {
+                            jobType
+                            title
+                            description
+                            company
+                            location
+                            experience
+                            salary
+                            workType
+                            image
+                        }
+                    }
+                `;
+
+                try {
+                    const response = await fetch('http://localhost:3000/graphql', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ query, variables: { id } }),
+                    });
+
+                    const { data, errors } = await response.json();
+
+                    if (errors) {
+                        throw new Error(errors[0].message);
+                    }
+
+                    setFormData(data.singleJob);
+                } catch (error) {
+                    console.error('Error fetching job data:', error);
+                }
+            };
+
+            fetchJob();
+        }
+    }, [id]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -44,16 +91,15 @@ const AddJob = () => {
 
         if (validate()) {
             try {
-                let imageName = '';
+                let imageName = formData.image;
 
                 if (imageFile) {
-
-                    const formData = new FormData();
-                    formData.append('image', imageFile);
+                    const imageData = new FormData();
+                    imageData.append('image', imageFile);
 
                     const response = await fetch('http://localhost:3000/JobImage/upload', {
                         method: 'POST',
-                        body: formData,
+                        body: imageData,
                     });
 
                     if (!response.ok) {
@@ -69,46 +115,42 @@ const AddJob = () => {
                     imageName = responseData.imageName;
                 }
 
-                const query = `
-                    mutation addJob($job: JobInput!) {
-                    addJob(job: $job) {
-                            _id
+                const query = id
+                    ? `
+                        mutation updateJob($id: ID!, $job: JobInput!) {
+                            updateJob(id: $id, job: $job) {
+                                _id
+                            }
                         }
-                    }
-                `;
+                    `
+                    : `
+                        mutation addJob($job: JobInput!) {
+                            addJob(job: $job) {
+                                _id
+                            }
+                        }
+                    `;
 
                 const jobResponse = await fetch('http://localhost:3000/graphql', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         query,
                         variables: {
-                            job: { ...formData, image: imageName }
-                        }
+                            id,
+                            job: { ...formData, image: imageName, postedBy: user?._id || '' },
+                        },
                     }),
                 });
 
                 if (!jobResponse.ok) {
-                    throw new Error('Job creation failed');
+                    throw new Error('Job submission failed');
                 }
 
-                alert('Job created successfully!');
-                setFormData({
-                    jobType: '',
-                    title: '',
-                    description: '',
-                    company: '',
-                    location: '',
-                    experience: '',
-                    salary: '',
-                    workType: '',
-                });
-                setErrors({});
-                setImageFile(null);
+                alert(id ? 'Job updated successfully!' : 'Job created successfully!');
+                history.push('/jobBoard');
             } catch (error) {
-                console.error('There was an error creating the job!', error);
+                console.error('There was an error submitting the job!', error);
             }
         }
     };
@@ -116,7 +158,7 @@ const AddJob = () => {
     return (
         <form className="AddNewForm" onSubmit={handleSubmit}>
             <div>
-                <h2 className='form-heading'>Create New Job</h2>
+                <h2 className='form-heading'>{id ? 'Edit Job' : 'Create New Job'}</h2>
                 <label>Job Type</label>
                 <select name="jobType" value={formData.jobType} onChange={handleChange}>
                     <option value="">Select job type</option>
@@ -162,6 +204,17 @@ const AddJob = () => {
             </div>
             <div>
                 <label>Image</label>
+                {formData.image && (
+                <div>
+                    <img
+                        src={`/src/assets/JobImages/${formData.image}`}
+                        alt="Job Image"
+                        style={{ width: '200px', height: 'auto' }}
+                    />
+                    <p >If you want to change image upload new one, otherwise old image will remain as it is...</p  >
+                </div>
+                )}
+            
                 <input
                     type="file"
                     name="image"
@@ -169,7 +222,7 @@ const AddJob = () => {
                 />
                 {errors.image && <span style={{ color: 'red' }}>{errors.image}</span>}
             </div>
-            <button type="submit">Create Job</button>
+            <button type="submit">{id ? 'Update Job' : 'Create Job'}</button>
         </form>
     );
 };

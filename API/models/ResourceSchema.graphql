@@ -34,8 +34,16 @@ input ResourceInput {
 
 type Query {
     resourceList: [Resource!]!
+    singleResource(id: ID!): Resource
+    usersByIds(ids: [ID!]!): [User!]!
+    resourcesByUser(userId: ID!): [Resource!]!
 }
 
 type Mutation {
     addResource(resource: ResourceInput!): Resource!
+    updateResource(id: ID!, resource: ResourceInput!): Resource!
+    deleteResource(_id: ID!): Boolean!
+    addComment(resourceId: ID!, comment: CommentInput!): Resource!
+    likeResource(resourceId: ID!): Resource!
+    dislikeResource(resourceId: ID!): Resource!
 }

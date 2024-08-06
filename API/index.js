@@ -16,6 +16,7 @@ const path = require('path');
 const app = express();
 const port = process.env.PORT || 5500;
 const URI = process.env.MONGODB_URI;
+const saltRounds = 10;
 
 const corsOptions = {
   origin: 'http://localhost:5173', 
@@ -54,6 +55,9 @@ const uploadEventImage = multer({ storage: eventImageStorage });
 const resourceImageStorage = createStorage('../UI/src/assets/ResourceImages');
 const uploadResourceImage = multer({ storage: resourceImageStorage });
 
+const profileImageStorage = createStorage('../UI/src/assets/ProfileImages');
+const uploadProfileImage = multer({ storage: profileImageStorage });
+
 app.post('/JobImage/upload', uploadJobImage.single('image'), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: 'No file uploaded' });
@@ -75,11 +79,15 @@ app.post('/ResourceImage/upload', uploadResourceImage.single('image'), (req, res
   res.json({ imageName: req.file.filename });
 });
 
+app.post('/ProfileImage/upload', uploadProfileImage.single('image'), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: 'No file uploaded' });
+  }
+  res.json({ imageName: req.file.filename });
+});
+
 app.use(bodyParser.json());
-// Configure CORS
 
-
-// Set up session middleware
 app.use(session({
   secret: 'your-secret-key',
   resave: false,
@@ -88,7 +96,6 @@ app.use(session({
   cookie: { maxAge: 1000 * 60 * 60 } // 1 hour
 }));
 
-// Middleware to check if user is authenticated
 function isAuthenticated(req, res, next) {
   if (req.session.user) {
       return next();
@@ -97,13 +104,11 @@ function isAuthenticated(req, res, next) {
   }
 }
 
-// Apply the middleware to routes that need protection
 app.use('/addNew', isAuthenticated);
 app.use('/jobboard', isAuthenticated);
 app.use('/viewEvents', isAuthenticated);
 app.use('/viewResources', isAuthenticated);
 
-// Route to get current user
 app.get('/api/current_user', (req, res) => {
   if (req.session.user) {
       res.json({ user: req.session.user });
@@ -112,7 +117,6 @@ app.get('/api/current_user', (req, res) => {
   }
 });
 
-// Logout route
 app.post('/api/logout', (req, res) => {
   req.session.destroy((err) => {
       if (err) {
@@ -145,7 +149,7 @@ const GraphQLDate = new GraphQLScalarType({
   },
 });
 
-let database, JobsCollection, EventsCollection, ResourcesCollection;
+let database, JobsCollection, EventsCollection, ResourcesCollection, UsersCollection;
 
 (async () => {
   try {
@@ -163,12 +167,38 @@ let database, JobsCollection, EventsCollection, ResourcesCollection;
     const resourceTypeDefs = fs.readFileSync('./models/ResourceSchema.graphql', 'utf-8');
     const userTypeDefs = fs.readFileSync('./models/UserSchema.graphql', 'utf-8');
     const typeDefs = [eventTypeDefs, jobTypeDefs, resourceTypeDefs, userTypeDefs].join('\n');
-
+   
     const resolvers = {
       Query: {
-        jobList: async () => {
-          const jobs = await JobsCollection.find({}).toArray();
+        jobList: async (_, { jobType, workType }) => {
+          // Build the query based on provided arguments
+          const query = {};
+          if (jobType) query.jobType = jobType;
+          if (workType) query.workType = workType;
+          
+          // Fetch jobs from the collection
+          const jobs = await JobsCollection.find(query).toArray();
           return jobs;
+        },
+        singleJob: async (_, { id }) => {
+          const job = await JobsCollection.findOne({ _id: new ObjectId(id) });
+          return job;
+        },
+        jobsByUser: async (_, { userId, jobType, workType }) => {
+          const query = { postedBy: userId };
+          if (jobType) query.jobType = jobType;
+          if (workType) query.workType = workType;
+          
+          const jobs = await JobsCollection.find(query).toArray();
+          return jobs;
+        },
+        resourcesByUser: async (_, { userId }) => {
+          const resources = await ResourcesCollection.find({ postedBy: userId }).toArray();
+          return resources;
+        },
+        eventsByUser: async (_, { userId }) => {
+          const events = await EventsCollection.find({ postedBy: userId }).toArray();
+          return events;
         },
         singleJob: async (_, { id }) => {
           const job = await JobsCollection.findOne({ _id: new ObjectId(id) });
@@ -178,9 +208,24 @@ let database, JobsCollection, EventsCollection, ResourcesCollection;
           const events = await EventsCollection.find({}).toArray();
           return events;
         },
+        singleEvent: async (_, { id }) => {
+          const Event = await EventsCollection.findOne({ _id: new ObjectId(id) });
+          return Event;
+        },
         resourceList: async () => {
           const resources = await ResourcesCollection.find({}).toArray();
           return resources;
+        },
+        singleResource: async (_, { id }) => {
+          const Resource = await ResourcesCollection.findOne({ _id: new ObjectId(id) });
+          return Resource;
+        },
+        usersByIds: async (_, { ids }) => {
+          return await UsersCollection.find({ _id: { $in: ids.map(id => new ObjectId(id)) } }).toArray();
+        },
+        getUserById: async (_, { id }) => {
+          const user = await UsersCollection.findOne({ _id: new ObjectId(id) });
+          return user;
         },
         singleUser: async (_, { id }) => {
           const user = await UsersCollection.findOne({ _id: new ObjectId(id) });
@@ -191,23 +236,43 @@ let database, JobsCollection, EventsCollection, ResourcesCollection;
           const users = await UsersCollection.find({ _id: { $in: objectIds } }).toArray();
           return users;
         },
+        userList: async () => {
+          const users = await UsersCollection.find({ 
+            role: { $in: ["Student", "Alumni"], $ne: "Admin" },
+            status: "Active"
+          }).toArray();
+          return users;
+        }, 
+        checkRegistration: async (_, { eventId, userId }) => {
+          const event = await EventsCollection.findOne({ _id: new ObjectId(eventId) });
+          if (!event) {
+            throw new Error('Event not found');
+          }
+          const registeredUsers = event.registeredUsers || [];
+          return registeredUsers.includes(userId);
+        },
       },
       Mutation: {
-        addJob: async (_, { job }) => {
+        addJob: async (_, { job }, { req }) => {
           validateJob(job);
-          //console.log(job);
           job._id = new ObjectId();
-          job.postedBy = "Smeet";
           job.applications = "0";
           await JobsCollection.insertOne(job);
           return job;
+        },
+        updateJob: async (_, { id, job }) => {
+          await JobsCollection.updateOne(
+            { _id: new ObjectId(id) },
+            { $set: job }
+          );
+          return await JobsCollection.findOne({ _id: new ObjectId(id) });
         },
         applyForJob: async (_, { jobId, userId }) => {
           const job = await JobsCollection.findOne({ _id: new ObjectId(jobId) });
           if (!job) {
             throw new Error('Job not found');
           }
-    
+      
           const applications = job.applications ? job.applications.split(',') : [];
           if (!applications.includes(userId)) {
             applications.push(userId);
@@ -216,16 +281,64 @@ let database, JobsCollection, EventsCollection, ResourcesCollection;
               { $set: { applications: applications.join(',') } }
             );
           }
-    
+      
           return await JobsCollection.findOne({ _id: new ObjectId(jobId) });
-        },  
-        addEvent: async (_, { event }) => {
+        },
+        deleteJob: async (_, { _id }) => {
+          const result = await JobsCollection.deleteOne({ _id: new ObjectId(_id) });
+          return result.deletedCount === 1;
+        },
+        addEvent: async (_, { event }, { req }) => {
           validateEvent(event);
           event._id = new ObjectId();
           event.attendees = "0";
-          event.postedBy = "Smeet";
           await EventsCollection.insertOne(event);
           return event;
+        },
+        updateEvent: async (_, { id, event }) => {
+          await EventsCollection.updateOne(
+            { _id: new ObjectId(id) },
+            { $set: event }
+          );
+          return await EventsCollection.findOne({ _id: new ObjectId(id) });
+        },
+        deleteEvent: async (_, { _id }) => {
+          const result = await EventsCollection.deleteOne({ _id: new ObjectId(_id) });
+          return result.deletedCount === 1;
+        },
+       
+        registerForEvent: async (_, { eventId, userId }) => {
+          const event = await EventsCollection.findOne({ _id: new ObjectId(eventId) });
+    if (!event) {
+        throw new Error('Event not found');
+    }
+
+    // Initialize attendees as an empty array if it's not defined
+    let attendees = event.attendees || "";
+
+    // Convert attendees string to an array
+    let attendeesArray = attendees ? attendees.split(',').map(id => id.trim()) : [];
+
+    // Convert userId to string for comparison
+    const userIdString = new ObjectId(userId).toString();
+
+    if (attendeesArray.includes(userIdString)) {
+        return false; // User is already registered
+    }
+    
+    // Add the new userId to the attendees list
+    attendeesArray.push(userIdString);
+
+    // Convert the array back to a comma-separated string
+    const updatedAttendees = attendeesArray.join(',');
+
+    // Update the event document with the new attendees string
+    await EventsCollection.updateOne(
+        { _id: new ObjectId(eventId) },
+        { $set: { attendees: updatedAttendees } }
+    );
+
+    return true; // Successfully registered
         },
         addResource: async (_, { resource }, { req }) => {
           resource._id = new ObjectId();
@@ -233,38 +346,203 @@ let database, JobsCollection, EventsCollection, ResourcesCollection;
           validateResource(resource);
           resource.likes = "0";
           resource.dislikes = "0";
-          resource.postedBy = req.session.userId || "Anonymous";
+          console.log(req.session.userId);
           resource.comments = [];
           await ResourcesCollection.insertOne(resource);
           return resource;
         },
+        updateResource: async (_, { id, resource }) => {
+          await ResourcesCollection.updateOne(
+            { _id: new ObjectId(id) },
+            { $set: resource }
+          );
+          return await ResourcesCollection.findOne({ _id: new ObjectId(id) });
+        },
+        deleteResource: async (_, { _id }) => {
+          const result = await ResourcesCollection.deleteOne({ _id: new ObjectId(_id) });
+          return result.deletedCount === 1;
+        },
+        addComment: async (_, { resourceId, comment }) => {
+          const result = await ResourcesCollection.findOneAndUpdate(
+              { _id: new ObjectId(resourceId) },
+              { $push: { comments: comment } },
+              { returnOriginal: false }
+          );
+
+          // if (!result.value) {
+          //     throw new Error('Resource not found');
+          // }
+
+          const updatedResource = await ResourcesCollection.findOne({ _id: new ObjectId(resourceId) });
+
+          return updatedResource;
+        },
+        likeResource: async (_, { resourceId }) => {
+          // Fetch the resource from the database
+          const resource = await ResourcesCollection.findOne({ _id: new ObjectId(resourceId) });
+          if (!resource) throw new Error('Resource not found');
+  
+          // Convert likes to integer and increment
+          const currentLikes = parseInt(resource.likes, 10) || 0;
+          const updatedLikes = currentLikes + 1;
+  
+          // Update the resource with the new like count
+          await ResourcesCollection.updateOne(
+              { _id: new ObjectId(resourceId) },
+              { $set: { likes: updatedLikes.toString() } }
+          );
+  
+          // Fetch and return the updated resource
+          return await ResourcesCollection.findOne({ _id: new ObjectId(resourceId) });
+      },
+  
+      dislikeResource: async (_, { resourceId }) => {
+          // Fetch the resource from the database
+          const resource = await ResourcesCollection.findOne({ _id: new ObjectId(resourceId) });
+          if (!resource) throw new Error('Resource not found');
+  
+          // Convert dislikes to integer and increment
+          const currentDislikes = parseInt(resource.dislikes, 10) || 0;
+          const updatedDislikes = currentDislikes + 1;
+  
+          // Update the resource with the new dislike count
+          await ResourcesCollection.updateOne(
+              { _id: new ObjectId(resourceId) },
+              { $set: { dislikes: updatedDislikes.toString() } }
+          );
+  
+          // Fetch and return the updated resource
+          return await ResourcesCollection.findOne({ _id: new ObjectId(resourceId) });
+      },
+  
         addUser: async (_, { user }) => {
           validateUser(user);
+          const hashedPassword = await bcrypt.hash(user.password, saltRounds);
+          user.password = hashedPassword;
           user._id = new ObjectId();
+          user.connections="";
+          user.pendingConnectionsAcceptor="";
+          user.pendingConnectionsRequestor="";
+          user.profileImage="";
+          user.skills="";
+          user.interests="";
+          user.linkedInURL="";
+          user.gitHubURL="";
+          user.socialMediaURL=""
+          user.status="Active";
           await UsersCollection.insertOne(user);
           return user;
+        },
+
+        sendConnectionRequest: async (_, { fromUserId, toUserId }) => {
+          const toUser = await UsersCollection.findOne({ _id: new ObjectId(toUserId) });
+          const fromUser = await UsersCollection.findOne({ _id: new ObjectId(fromUserId) });
+    
+          if (!toUser || !fromUser) {
+            throw new Error('User not found');
+          }
+    
+          // Update toUser's pendingConnectionsAcceptor
+          const toUserPendingConnectionsAcceptor = toUser.pendingConnectionsAcceptor ? toUser.pendingConnectionsAcceptor.split(',') : [];
+          if (!toUserPendingConnectionsAcceptor.includes(fromUserId)) {
+            toUserPendingConnectionsAcceptor.push(fromUserId);
+          }
+    
+          await UsersCollection.updateOne(
+            { _id: new ObjectId(toUserId) },
+            { $set: { pendingConnectionsAcceptor: toUserPendingConnectionsAcceptor.join(',') } }
+          );
+    
+          // Update fromUser's pendingConnectionsRequestor
+          const fromUserPendingConnectionsRequestor = fromUser.pendingConnectionsRequestor ? fromUser.pendingConnectionsRequestor.split(',') : [];
+          if (!fromUserPendingConnectionsRequestor.includes(toUserId)) {
+            fromUserPendingConnectionsRequestor.push(toUserId);
+          }
+    
+          await UsersCollection.updateOne(
+            { _id: new ObjectId(fromUserId) },
+            { $set: { pendingConnectionsRequestor: fromUserPendingConnectionsRequestor.join(',') } }
+          );
+    
+          return await UsersCollection.findOne({ _id: new ObjectId(toUserId) });
+        },
+    
+        acceptConnectionRequest: async (_, { fromUserId, toUserId }) => {
+          const toUser = await UsersCollection.findOne({ _id: new ObjectId(toUserId) });
+          const fromUser = await UsersCollection.findOne({ _id: new ObjectId(fromUserId) });
+    
+          const toUserConnections = toUser.connections ? toUser.connections.split(',') : [];
+          const fromUserConnections = fromUser.connections ? fromUser.connections.split(',') : [];
+          const toUserPendingConnectionsAcceptor = toUser.pendingConnectionsAcceptor ? toUser.pendingConnectionsAcceptor.split(',') : [];
+          const fromUserPendingConnectionsRequestor = fromUser.pendingConnectionsRequestor ? fromUser.pendingConnectionsRequestor.split(',') : [];
+    
+          if (!toUserConnections.includes(fromUserId)) {
+            toUserConnections.push(fromUserId);
+          }
+          if (!fromUserConnections.includes(toUserId)) {
+            fromUserConnections.push(toUserId);
+          }
+    
+          const updatedPendingConnectionsAcceptor = toUserPendingConnectionsAcceptor.filter(id => id !== fromUserId);
+          const updatedPendingConnectionsRequestor = fromUserPendingConnectionsRequestor.filter(id => id !== toUserId);
+    
+          await UsersCollection.updateOne(
+            { _id: new ObjectId(toUserId) },
+            { $set: { 
+                connections: toUserConnections.join(','), 
+                pendingConnectionsAcceptor: updatedPendingConnectionsAcceptor.join(',') 
+              } 
+            }
+          );
+    
+          await UsersCollection.updateOne(
+            { _id: new ObjectId(fromUserId) },
+            { $set: { 
+                connections: fromUserConnections.join(','), 
+                pendingConnectionsRequestor: updatedPendingConnectionsRequestor.join(',') 
+              } 
+            }
+          );
+    
+          return await UsersCollection.findOne({ _id: new ObjectId(toUserId) });
+        },
+    
+        rejectConnectionRequest: async (_, { fromUserId, toUserId }) => {
+          const toUser = await UsersCollection.findOne({ _id: new ObjectId(toUserId) });
+          const toUserPendingConnectionsAcceptor = toUser.pendingConnectionsAcceptor ? toUser.pendingConnectionsAcceptor.split(',') : [];
+          const updatedPendingConnectionsAcceptor = toUserPendingConnectionsAcceptor.filter(id => id !== fromUserId);
+    
+          await UsersCollection.updateOne(
+            { _id: new ObjectId(toUserId) },
+            { $set: { pendingConnectionsAcceptor: updatedPendingConnectionsAcceptor.join(',') } }
+          );
+    
+          const fromUser = await UsersCollection.findOne({ _id: new ObjectId(fromUserId) });
+          const fromUserPendingConnectionsRequestor = fromUser.pendingConnectionsRequestor ? fromUser.pendingConnectionsRequestor.split(',') : [];
+          const updatedPendingConnectionsRequestor = fromUserPendingConnectionsRequestor.filter(id => id !== toUserId);
+    
+          await UsersCollection.updateOne(
+            { _id: new ObjectId(fromUserId) },
+            { $set: { pendingConnectionsRequestor: updatedPendingConnectionsRequestor.join(',') } }
+          );
+    
+          return await UsersCollection.findOne({ _id: new ObjectId(toUserId) });
         },
         login: async (_, { credentials }, { req }) => {
           const { email, password } = credentials;
     
           const user = await UsersCollection.findOne({ email });
-          // console.log(user);
           if (!user) {
             throw new AuthenticationError('Invalid email or password');
           }
-
-          // const isPasswordValid = await bcrypt.compare(password, user.password);
-          // if (!isPasswordValid) {
-          //   throw new AuthenticationError('Invalid email or password');
-          // }
-          if(user.password!=password){
-              throw new AuthenticationError('Invalid email or password');
+    
+          const passwordMatch = await bcrypt.compare(password, user.password);
+          if (!passwordMatch) {
+            throw new AuthenticationError('Invalid email or password');
           }
-
-          // Create session
+    
           req.session.userId = user._id;
           req.session.user = user;
-          // console.log(req.session.user);
     
           return {
             user,
@@ -277,6 +555,19 @@ let database, JobsCollection, EventsCollection, ResourcesCollection;
             }
           });
           return true;
+        },
+        updateUser: async (_, { id, user }) => {
+          console.log("Server Side " + {user});
+          const oldUser = await UsersCollection.findOne({ _id: new ObjectId(id) });
+          if (!oldUser) {
+            throw new Error('User not found');
+          }
+          const updatedNewUser = await UsersCollection.findOneAndUpdate(
+            { _id: new ObjectId(id) },
+            { $set: user },
+            { returnOriginal: false }
+          );
+          return updatedNewUser;
         },
       },
       GraphQLDate,
@@ -327,6 +618,7 @@ const validateUser = (user) => {
     throw new UserInputError('Invalid input(s)', { errors });
   }
 };
+
 const validateResource = (resource) => {
   let errors = [];
 
