@@ -87,6 +87,7 @@ type Query {
 
 type Mutation {
   addUser(user: UserInput!): User!
+  blockUser(userId: String!): User
   login(credentials: LoginInput!): AuthPayload!
   logout: Boolean!
   updateUser(id: ID!, user: UpdateUser!): User!
