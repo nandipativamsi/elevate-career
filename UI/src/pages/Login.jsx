@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { withRouter } from "react-router-dom";
-import './login.css';
+import '../css/login.css';
 import PropTypes from 'prop-types';
+import { useAuth } from '../AuthContext.jsx'; // Import the custom hook to use AuthContext
 
 function LoginForm(props) {
     const [formData, setFormData] = useState({
@@ -12,6 +13,7 @@ function LoginForm(props) {
     const [errors, setErrors] = useState({});
     const [successMessage, setSuccessMessage] = useState(null);
     const [errorMessage, setErrorMessage] = useState(null);
+    const { setUser } = useAuth(); // Destructure setUser from useAuth
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -79,6 +81,13 @@ function LoginForm(props) {
                 if (responseData.errors) {
                     throw new Error(responseData.errors[0].message);
                 }
+
+                const { user } = responseData.data.login;
+                console.log(user);
+                
+                // Store user and token information
+                setUser(user);
+                // localStorage.setItem('token', token);
 
                 setSuccessMessage('Login successful. Redirecting to home page..');
                 setErrorMessage(null);

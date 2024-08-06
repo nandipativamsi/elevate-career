@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import 'leaflet/dist/leaflet.css'; // Ensure Leaflet's CSS is imported
-import './login.css';
+import '../css/login.css';
 import { CCard, CCardBody, CCardHeader, CCollapse } from '@coreui/react';
 import emailjs from 'emailjs-com';
 
