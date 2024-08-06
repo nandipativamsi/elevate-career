@@ -15,7 +15,6 @@ const AddEvent = () => {
         limit: '',
         price: '',
         image: '',
-        attendees: ''
     });
     const [errors, setErrors] = useState({});
     const [imageFile, setImageFile] = useState(null);
@@ -92,9 +91,11 @@ const AddEvent = () => {
     };
 
     const handleSubmit = async (e) => {
+
         e.preventDefault();
 
         if (validate()) {
+            alert("Hi");
             try {
                 let imageName = formData.image;
 

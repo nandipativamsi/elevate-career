@@ -291,7 +291,7 @@ let database, JobsCollection, EventsCollection, ResourcesCollection, UsersCollec
         addEvent: async (_, { event }, { req }) => {
           validateEvent(event);
           event._id = new ObjectId();
-          event.attendees = "0";
+          event.attendees = "";
           await EventsCollection.insertOne(event);
           return event;
         },
