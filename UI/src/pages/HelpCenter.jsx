@@ -98,9 +98,8 @@ const HelpCenter = () => {
         <CCollapse visible={showCollapsible1}>
           <CCard className="mt-3">
             <CCardBody className="card-body-margin">
-              Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad
-              squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt
-              sapiente ea proident.
+            To change or create an event, navigate to the Events section in your account dashboard. 
+            Click on 'Create Event' or select an existing event to edit its details.
             </CCardBody>
           </CCard>
       </CCollapse>
@@ -111,9 +110,8 @@ const HelpCenter = () => {
         <CCollapse visible={showCollapsible2}>
           <CCard className="mt-3">
             <CCardBody className="card-body-margin">
-              Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad
-              squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt
-              sapiente ea proident.
+            To check or add an email address, go to the Account Settings page. Under the Email section, 
+            you can add a new email or verify your existing email addresses.
             </CCardBody>
           </CCard>
       </CCollapse>
@@ -124,9 +122,8 @@ const HelpCenter = () => {
         <CCollapse visible={showCollapsible3}>
           <CCard className="mt-3">
             <CCardBody className="card-body-margin">
-              Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad
-              squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt
-              sapiente ea proident.
+            To delete your account, visit the Account Settings page and scroll down to the Delete Account section.
+             Follow the prompts to permanently remove your account.
             </CCardBody>
           </CCard>
       </CCollapse>
@@ -137,9 +134,8 @@ const HelpCenter = () => {
         <CCollapse visible={showCollapsible4}>
           <CCard className="mt-3">
             <CCardBody className="card-body-margin">
-              Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad
-              squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt
-              sapiente ea proident.
+            To attend an event, simply register for it through the Events page.
+             On the day of the event, use the provided link or details to join at the specified time.
             </CCardBody>
           </CCard>
       </CCollapse>
