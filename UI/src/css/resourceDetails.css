@@ -1,6 +1,6 @@
 .resource-details-container {
     width: 100%;
-    padding: 20px;
+    /* padding: 20px; */
     /* display: flex;
     flex-direction: column;
     align-items: center; */
@@ -33,14 +33,21 @@
 }
 
 .profile-like-container {
-    width: 30%;
+    width: 100%;
     display: flex;
-    justify-content: space-between;
+    justify-content:center;
     align-items: center;
+    gap: 40px;
 }
-
-.card-text {
-    margin-bottom: 20px;
+.profile-name-container{
+    background-color: #F1EFE7;
+    padding: 0.8rem;
+    border-radius: 8px;
+}
+.like-container{
+    background-color: #F1EFE7;
+    border-radius: 8px;
+    padding: 0.55rem;
 }
 
 .comments-section {

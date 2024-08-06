@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import { FaThumbsUp, FaThumbsDown } from 'react-icons/fa';
+import { CgProfile } from "react-icons/cg";
 import { BiComment } from 'react-icons/bi';
 import defaultResourceImage from '../assets/defaultResourceImage.jpeg';
 import '../css/resourceDetails.css';
@@ -240,14 +241,14 @@ const ResourceDetails = () => {
                     alt={resource.title}
                 />
             </div>
-            <div className="resource-details-card">
-                <div className="card-body">
+            <div className="resource-details-card px-3">
+                <div className="card-body my-3">
                     <h2 className="card-title">{resource.title}</h2>
-                    <div className="profile-like-container mb-2">
-                        <div className="d-flex align-items-center">
-                            <strong>Posted by: {userNames[resource.postedBy] || 'Unknown User'}</strong>
+                    <div className="profile-like-container mb-2 my-3">
+                        <div className="d-flex align-items-center profile-name-container">
+                            <strong><CgProfile className='fs-3' /> {userNames[resource.postedBy] || 'Unknown User'}</strong>
                         </div>
-                        <div className="d-flex align-items-center">
+                        <div className="d-flex align-items-center like-container">
                             <button
                                 className={`btn ${hasLiked ? 'btn-primary' : 'btn-light'} me-2`}
                                 onClick={handleLike}
@@ -260,19 +261,19 @@ const ResourceDetails = () => {
                             >
                                 <FaThumbsDown /> {resource.dislikes}
                             </button>
-                            <div className="d-flex align-items-center">
+                            <div className="d-flex align-items-center ml-2">
                                 <BiComment className="me-1" /> {resource.comments.length}
                             </div>
                         </div>
                     </div>
-                    <p className="card-text">{resource.description}</p>
-                    <button className="btn btn-primary" onClick={() => history.push(`/viewResources`)}>Go Back</button>
+                    <h2 className="reccomendation-tittle my-3">Description</h2>
+                    <p className="card-text mx-2">{resource.description}</p>
                 </div>
             </div>
-            <section className="comments-section">
-                <h3>Comments</h3>
+            <section className="comments-section px-3">
+            <h2 className="reccomendation-tittle my-3">Comments</h2>
                 {resource.comments.map((comment, index) => (
-                    <div key={index} className="comment">
+                    <div key={index} className="comment px-2">
                         <strong>{userNames[comment.userID] || 'Unknown User'}:</strong> {comment.comment}
                     </div>
                 ))}
@@ -288,7 +289,8 @@ const ResourceDetails = () => {
                             onChange={(e) => setNewComment(e.target.value)}
                         />
                     </div>
-                    <button type="button" className="btn btn-primary" onClick={handleCommentSubmit}>
+                    <button className="my-btn" onClick={() => history.push(`/viewResources`)}>Go Back</button>
+                    <button type="button" className="my-btn" onClick={handleCommentSubmit}>
                         Submit
                     </button>
                 </form>
