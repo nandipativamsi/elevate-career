@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Row, Col, Card, Button, Modal } from 'react-bootstrap';
 import heroImg from '../assets/feature2.jpg';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import "../css/events.css";
 import "../css/index.css";
 import { FaCalendarAlt } from "react-icons/fa";
 import { useAuth } from '../AuthContext.jsx';
+import axios from 'axios';
 
 const ViewEvents = () => {
     const { user } = useAuth();
+    const history = useHistory();
     const [events, setEvents] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -32,6 +34,7 @@ const ViewEvents = () => {
                         postedBy
                         limit
                         image
+                        price
                     }
                 }
             `
@@ -48,6 +51,7 @@ const ViewEvents = () => {
                         postedBy
                         limit
                         image
+                        price
                     }
                 }
             `;
@@ -161,6 +165,28 @@ const ViewEvents = () => {
     };
 
     const handleRegister = async () => {
+        if (selectedEvent.price !== 'Free') {
+            try {
+                const response = await axios.post('http://localhost:3000/payment', {
+                  eventId: selectedEvent._id,
+                  userId: user._id,
+                  amount: selectedEvent.price, // or any other necessary payment details
+                });
+            
+                // Handle the response as needed
+                if (response.data.success) {
+                  console.log('Payment successful:', response.data);
+                  // Redirect to success page, show a message, etc.
+                } else {
+                  console.error('Payment failed:', response.data.message);
+                  // Handle payment failure
+                }
+              } catch (error) {
+                console.error('Error making payment:', error);
+                // Handle error
+              }
+        }
+
         const mutation = `
             mutation registerForEvent($eventId: ID!, $userId: ID!) {
                 registerForEvent(eventId: $eventId, userId: $userId)
