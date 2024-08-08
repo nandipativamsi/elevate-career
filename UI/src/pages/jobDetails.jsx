@@ -12,6 +12,7 @@ const JobDetails = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [currentUser, setCurrentUser] = useState(null);
+    const [postedByUser, setPostedByUser] = useState(null); // New state for user info
 
     useEffect(() => {
         const fetchJob = async () => {
@@ -47,13 +48,44 @@ const JobDetails = () => {
                     throw new Error(errors[0].message);
                 }
 
-                
-
                 setJob(data.singleJob);
                 setLoading(false);
+
+                // Fetch the user who posted the job
+                if (data.singleJob.postedBy) {
+                    fetchPostedByUser(data.singleJob.postedBy);
+                }
             } catch (error) {
                 setError(error.message);
                 setLoading(false);
+            }
+        };
+
+        const fetchPostedByUser = async (userId) => {
+            try {
+                const query = `
+                    query {
+                        getUserById(id: "${userId}") {
+                            name
+                        }
+                    }
+                `;
+
+                const response = await fetch('http://localhost:3000/graphql', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query }),
+                });
+
+                const { data, errors } = await response.json();
+
+                if (errors) {
+                    throw new Error(errors[0].message);
+                }
+
+                setPostedByUser(data.getUserById);
+            } catch (error) {
+                console.error('Failed to fetch posted by user:', error);
             }
         };
 
@@ -133,7 +165,9 @@ const JobDetails = () => {
                 <h1 className="job-details-company-name">{job.company}</h1>
                 <div className="job-details-button-container">
                     <div className="job-details-button-alumni">
-                        <i className="fas fa-user job-details-alumni-button"></i>{job.postedBy}</div>
+                        <i className="fas fa-user job-details-alumni-button"></i>
+                        {postedByUser ? `${postedByUser.name}` : 'Unknown User'}
+                    </div>
                     <div className="job-details-button" onClick={handleApply}>Apply Now</div>
                 </div>
             </section>
