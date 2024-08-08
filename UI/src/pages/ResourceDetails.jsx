@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
-import { Card, Button, Form } from 'react-bootstrap';
 import { FaThumbsUp, FaThumbsDown } from 'react-icons/fa';
-import { BiComment, BiUser } from 'react-icons/bi';
+import { CgProfile } from "react-icons/cg";
+import { BiComment } from 'react-icons/bi';
 import defaultResourceImage from '../assets/defaultResourceImage.jpeg';
 import '../css/resourceDetails.css';
 import { useAuth } from '../AuthContext.jsx';
@@ -234,62 +234,66 @@ const ResourceDetails = () => {
 
     return (
         <div className="resource-details-container">
-            <Card className="resource-details-card">
-                <Card.Img
-                    variant="top"
+            <div className="resourceImg-container">
+                <img
+                    className="resource-heroImg"
                     src={resource.image ? `/src/assets/ResourceImages/${resource.image}` : defaultResourceImage}
                     alt={resource.title}
                 />
-                <Card.Body>
-                    <Card.Title>{resource.title}</Card.Title>
-                    <Card.Text>{resource.description}</Card.Text>
-                    <div className="d-flex justify-content-between align-items-center mb-2">
-                        <div className="d-flex align-items-center">
-                            <strong>Posted by: {userNames[resource.postedBy] || 'Unknown User'}</strong>
+            </div>
+            <div className="resource-details-card px-3">
+                <div className="card-body my-3">
+                    <h2 className="card-title">{resource.title}</h2>
+                    <div className="profile-like-container mb-2 my-3">
+                        <div className="d-flex align-items-center profile-name-container">
+                            <strong><CgProfile className='fs-3' /> {userNames[resource.postedBy] || 'Unknown User'}</strong>
                         </div>
-                        <div className="d-flex align-items-center">
-                            <Button
-                                variant={hasLiked ? 'primary' : 'light'}
+                        <div className="d-flex align-items-center like-container">
+                            <button
+                                className={`btn ${hasLiked ? 'btn-primary' : 'btn-light'} me-2`}
                                 onClick={handleLike}
-                                className="me-2"
                             >
                                 <FaThumbsUp /> {resource.likes}
-                            </Button>
-                            <Button
-                                variant={hasDisliked ? 'danger' : 'light'}
+                            </button>
+                            <button
+                                className={`btn ${hasDisliked ? 'btn-danger' : 'btn-light'}`}
                                 onClick={handleDislike}
                             >
                                 <FaThumbsDown /> {resource.dislikes}
-                            </Button>
-                            <div className="d-flex align-items-center">
-                                                <BiComment className="me-1" /> {resource.comments.length}
+                            </button>
+                            <div className="d-flex align-items-center ml-2">
+                                <BiComment className="me-1" /> {resource.comments.length}
                             </div>
                         </div>
                     </div>
-                    <Button variant="primary" onClick={() => history.push(`/viewResources`)}>Go Back</Button>
-                </Card.Body>
-            </Card>
-            <section className="comments-section">
-                <h3>Comments</h3>
+                    <h2 className="reccomendation-tittle my-3">Description</h2>
+                    <p className="card-text mx-2">{resource.description}</p>
+                </div>
+            </div>
+            <section className="comments-section px-3">
+            <h2 className="reccomendation-tittle my-3">Comments</h2>
                 {resource.comments.map((comment, index) => (
-                    <div key={index} className="comment">
+                    <div key={index} className="comment px-2">
                         <strong>{userNames[comment.userID] || 'Unknown User'}:</strong> {comment.comment}
                     </div>
                 ))}
-                <Form>
-                    <Form.Group controlId="newComment">
-                        <Form.Label>Add a Comment</Form.Label>
-                        <Form.Control
+                <form>
+                    <div className="form-group">
+                        <label htmlFor="newComment">Add a Comment</label>
+                        <input
                             type="text"
+                            id="newComment"
+                            className="form-control"
                             placeholder="Enter your comment"
                             value={newComment}
                             onChange={(e) => setNewComment(e.target.value)}
                         />
-                    </Form.Group>
-                    <Button variant="primary" onClick={handleCommentSubmit}>
+                    </div>
+                    <button className="my-btn" onClick={() => history.push(`/viewResources`)}>Go Back</button>
+                    <button type="button" className="my-btn" onClick={handleCommentSubmit}>
                         Submit
-                    </Button>
-                </Form>
+                    </button>
+                </form>
             </section>
         </div>
     );

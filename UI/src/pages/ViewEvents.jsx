@@ -31,6 +31,7 @@ const ViewEvents = () => {
                         time
                         location
                         attendees
+                        price
                         postedBy
                         limit
                         image
@@ -46,6 +47,7 @@ const ViewEvents = () => {
                         description
                         date
                         time
+                        price
                         location
                         attendees
                         postedBy

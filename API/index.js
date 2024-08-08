@@ -271,8 +271,7 @@ let database, JobsCollection, EventsCollection, ResourcesCollection, UsersCollec
         },
         userList: async () => {
           const users = await UsersCollection.find({ 
-            role: { $in: ["Student", "Alumni"], $ne: "Admin" },
-            status: "Active"
+            role: { $in: ["Student", "Alumni", "Admin"]},
           }).toArray();
           return users;
         }, 
@@ -324,7 +323,7 @@ let database, JobsCollection, EventsCollection, ResourcesCollection, UsersCollec
         addEvent: async (_, { event }, { req }) => {
           validateEvent(event);
           event._id = new ObjectId();
-          event.attendees = "0";
+          event.attendees = "";
           await EventsCollection.insertOne(event);
           return event;
         },
@@ -466,6 +465,30 @@ let database, JobsCollection, EventsCollection, ResourcesCollection, UsersCollec
           await UsersCollection.insertOne(user);
           return user;
         },
+
+       blockUser: async (_, { userId }, { User }) => {
+          try {
+              // Find the user by ID
+              const user = await UsersCollection.findOne({ _id: new ObjectId(userId) });
+              
+              // If user not found, throw an error
+              if (!user) throw new Error('User not found');
+              
+              // Update the user's status to 'blocked'
+              const updatedUser = await UsersCollection.findOneAndUpdate(
+                  { _id: new ObjectId(userId) },
+                  { $set: { status: 'Blocked' } },
+                  { returnOriginal: false }  // return the updated document
+              );
+      
+              // Return the updated user document
+              return updatedUser;
+          } catch (error) {
+              // Throw an error if something goes wrong
+              throw new Error(error.message);
+          }
+      },
+      
 
         sendConnectionRequest: async (_, { fromUserId, toUserId }) => {
           const toUser = await UsersCollection.findOne({ _id: new ObjectId(toUserId) });

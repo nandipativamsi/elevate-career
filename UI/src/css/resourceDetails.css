@@ -1,0 +1,101 @@
+.resource-details-container {
+    width: 100%;
+    /* padding: 20px; */
+    /* display: flex;
+    flex-direction: column;
+    align-items: center; */
+}
+
+.resourceImg-container {
+    width: 100%;
+    max-height: 50vh;
+    /* overflow: hidden; */
+}
+
+.resourceImg-container img {
+    width: 100%;
+    max-height: inherit;
+    object-fit: cover;
+}
+
+.resource-details-card {
+    margin-bottom: 20px;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+.card-title {
+    font-size: 2.3rem;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.profile-like-container {
+    width: 100%;
+    display: flex;
+    justify-content:center;
+    align-items: center;
+    gap: 40px;
+}
+.profile-name-container{
+    background-color: #F1EFE7;
+    padding: 0.8rem;
+    border-radius: 8px;
+}
+.like-container{
+    background-color: #F1EFE7;
+    border-radius: 8px;
+    padding: 0.55rem;
+}
+
+.comments-section {
+    margin-top: 20px;
+}
+
+.comment {
+    margin-bottom: 10px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    color: white;
+}
+
+.btn-light {
+    background-color: #f8f9fa;
+    color: #333;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    color: white;
+}
+
+.me-2 {
+    margin-right: 0.5rem;
+}
+
+.me-1 {
+    margin-right: 0.25rem;
+}
