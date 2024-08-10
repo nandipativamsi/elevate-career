@@ -169,14 +169,14 @@ const ViewResources = () => {
     return (
         <div>
             <section className="resource-hero-section">
-                <div className="hero-text-container">
+                <div className="resource-hero-text-container">
                     <h1 className="fw-bold">RESOURCES BOARD</h1>
                     <p>
                     A resources library is a comprehensive collection designed to support learning, research, and professional development. It includes books, journals, multimedia resources, and access to digital databases and online courses. Study areas and computer workstations facilitate both individual and collaborative work. Specialized collections and archives offer rare materials, while support services like workshops and librarian assistance enhance user experience. Digital tools and mobile access ensure resources are available anytime, anywhere. Community engagement and technology integration further enrich the learning environment.
                     </p>
                 </div>
             </section>
-            <section className="pt-5 resource-filter-section">
+            <section className="pt-3 resource-filter-section">
                 <Form className="dropdowns-container">
                     <Row className="justify-content-center">
                         <Col xs={12} sm={6} md={4} lg={3} className="dropdown-col">
@@ -201,8 +201,8 @@ const ViewResources = () => {
                 <h2 className="reccomendation-tittle mb-5">RECOMMENDED RESOURCES</h2>
                 <Row className="justify-content-center align-items-center">
                     {sortedResources.map(resource => (
-                        <Col xs={12} sm={6} md={4} lg={3} key={resource._id} className="mb-4">
-                            <Card className="resource-card">
+                        <Col xs={14} sm={6} md={4} lg={3} key={resource._id}>
+                            <Card className="resource-card mb-4">
                                 <img
                                     className='resource-card-img'
                                     src={resource.image ? `/src/assets/ResourceImages/${resource.image}` : defaultResourceImage}
