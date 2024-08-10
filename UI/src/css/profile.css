@@ -1,9 +1,5 @@
-/* Profile form css */
-
 .profile-bg{
   position: relative;
-  /* background: none; */
-  /* height: 87vh; */
 
 }
 .profile-bg::before{
@@ -115,4 +111,13 @@
 
 .profile-field:last-child {
   border-bottom: none;
+}
+
+
+@media (max-width: 768px) {
+
+  .profile-form-container,.profile-tittle{
+    width: 90%;
+  }
+
 }

@@ -177,8 +177,8 @@ const ProfilePage = () => {
             {isEditing ? (
                 <Container>
                     <Row className="d-flex flex-column justify-content-center align-items-center">
-                        <h2 className="profile-tittle my-3 edit-tittle z-index2">Edit Profile</h2>
-                        <Col md={6} className='profile-form-container z-index2'>
+                        <h2 className="profile-tittle mt-3 edit-tittle z-index2">Edit Profile</h2>
+                        <Col md={6} className='profile-form-container z-index2 mb-4'>
                             <Form className="ProfileForm" onSubmit={handleSubmit}>
                                 {Object.keys(formData).map((field) => (
                                     field !== 'profileImage' && (
