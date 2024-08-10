@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Form, Card, Button } from 'react-bootstrap';
 import { FaSearch } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
 import { useAuth } from '../AuthContext.jsx';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "../css/Connections.css";
-import defaultProfileImage from '../assets/defaultProfileImage.jpg'
+import defaultProfileImage from '../assets/defaultProfileImage.jpg';
 
 const ConnectionsPage = () => {
     const [users, setUsers] = useState([]);
@@ -13,13 +12,13 @@ const ConnectionsPage = () => {
     const [error, setError] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
     const { user: currentUser } = useAuth();
+    
+    const currentUserId = currentUser ? currentUser._id : null;
+    const isAdmin = currentUser && currentUser.role === 'Admin'; // Adjust based on your role definition
 
     useEffect(() => {
         loadUsers();
     }, []);
-
-    // Ensure currentUser is defined before calling its properties
-    const currentUserId = currentUser ? currentUser._id : null;
 
     const loadUsers = async () => {
         const query = `
@@ -37,6 +36,7 @@ const ConnectionsPage = () => {
                     profileImage
                     yearOfGraduation
                     workExperience
+                    status
                 }
             }
         `;
@@ -46,13 +46,13 @@ const ConnectionsPage = () => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ query }),
             });
-
+    
             const { data, errors } = await response.json();
-
+    
             if (errors) {
                 throw new Error(errors[0].message);
             }
-
+    
             setUsers(data.userList);
             setLoading(false);
         } catch (error) {
@@ -60,13 +60,14 @@ const ConnectionsPage = () => {
             setLoading(false);
         }
     };
+    
 
     const handleSearchChange = (e) => {
         setSearchTerm(e.target.value);
     };
 
     const sendConnectionRequest = async (toUserId) => {
-        if (!currentUserId) return; // Ensure currentUserId is not null
+        if (!currentUserId) return;
 
         const mutation = `
             mutation {
@@ -84,7 +85,7 @@ const ConnectionsPage = () => {
     };
 
     const acceptConnectionRequest = async (fromUserId) => {
-        if (!currentUserId) return; // Ensure currentUserId is not null
+        if (!currentUserId) return;
 
         const mutation = `
             mutation {
@@ -102,7 +103,7 @@ const ConnectionsPage = () => {
     };
 
     const rejectConnectionRequest = async (fromUserId) => {
-        if (!currentUserId) return; // Ensure currentUserId is not null
+        if (!currentUserId) return;
 
         const mutation = `
             mutation {
@@ -118,6 +119,29 @@ const ConnectionsPage = () => {
         });
         loadUsers();
     };
+
+    const blockUser = async (userId) => {
+        const mutation = `
+            mutation {
+                blockUser(userId: "${userId}") {
+                    _id
+                    status
+                }
+            }
+        `;
+        try {
+            await fetch('http://localhost:3000/graphql', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ query: mutation }),
+            });
+            alert("User Blocked!");
+            loadUsers();  // Refresh the user list to reflect the changes
+        } catch (error) {
+            alert("Error blocking user: " + error.message);
+        }
+    };
+    
 
     if (loading) {
         return <p>Loading...</p>;
@@ -146,26 +170,40 @@ const ConnectionsPage = () => {
         const pendingConnectionsRequestor = user.pendingConnectionsRequestor ? user.pendingConnectionsRequestor.split(',') : [];
         return pendingConnectionsRequestor.includes(currentUserId);
     };
-    
 
     const renderConnectionButtons = (user) => {
         if (!currentUser) return null;
     
+        if (isAdmin) {
+            // Check if the user is the current admin user
+            if (currentUserId === user._id) {
+                return <Button variant="success" disabled>View Profile</Button>;
+            }
+    
+            // For admin users, show the Block button if the user is not the current admin user
+            const isBlocked = user.status === 'Blocked';
+            if (isBlocked) {
+                return <Button variant="danger" disabled>Blocked</Button>;
+            }
+            return <Button variant="danger" onClick={() => blockUser(user._id)}>Block</Button>;
+        }
+    
+        // Non-admin users
         if (currentUserId === user._id) {
-            return <Button variant="success" disabled>View Profile</Button>; // No buttons if the current user is the same as the user
+            return <Button variant="success" disabled>View Profile</Button>;
+        }
+    
+        const isBlocked = user.status === 'Blocked';
+    
+        if (isBlocked) {
+            return <Button variant="danger" disabled>Blocked</Button>;
         }
     
         if (isConnected(user)) {
             return <Button variant="success" disabled>Connected</Button>;
-        } 
-        
-        if (isPendingConnectionAcceptor(user)) {
-            
-            return <Button variant="secondary" disabled>Pending</Button>;
         }
-
-        if(isPendingConnectionRequestor(user))
-        {
+    
+        if (isPendingConnectionAcceptor(user)) {
             return (
                 <>
                     <Button variant="primary" onClick={() => acceptConnectionRequest(user._id)}>Accept</Button>
@@ -174,17 +212,20 @@ const ConnectionsPage = () => {
             );
         }
     
+        if (isPendingConnectionRequestor(user)) {
+            return <Button variant="secondary" disabled>Pending</Button>;
+        }
+    
         return <Button variant="primary" onClick={() => sendConnectionRequest(user._id)}>Connect</Button>;
     };
+    
 
     const getConnectionCount = (connections) => {
         return connections ? connections.split(',').length : 0;
     };
-    
 
     return (
         <Container className='my-5'>
-            
             <Row className="my-4">
                 <Col>
                     <div className="search-box">
@@ -200,7 +241,6 @@ const ConnectionsPage = () => {
                 </Col>
             </Row>
             <Row>
-            <p>Current User: {currentUserId}</p>
                 {filteredUsers.map((user, index) => (
                     <Col md={4} className="my-3" key={index}>
                         <Card className='connection-card'>
