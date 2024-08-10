@@ -27,8 +27,9 @@
 }
 .social-media-icons {
   display: flex;
-  justify-content: space-around;
-  width: 80%;
+  justify-content: space-between;
+  width: 70%;
+  margin-bottom: 5px;
 }
 
 .social-media-icons a {
