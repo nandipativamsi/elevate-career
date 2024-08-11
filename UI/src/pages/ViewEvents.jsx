@@ -35,7 +35,6 @@ const ViewEvents = () => {
                         postedBy
                         limit
                         image
-                        price
                     }
                 }
             `
@@ -53,7 +52,6 @@ const ViewEvents = () => {
                         postedBy
                         limit
                         image
-                        price
                     }
                 }
             `;
@@ -144,13 +142,14 @@ const ViewEvents = () => {
                     }
                 }),
             });
-
+    
             const { data, errors } = await response.json();
-
+    
             if (errors) {
                 throw new Error(errors[0].message);
             }
-
+    
+            // Set registration status in state
             setRegisteredEvents(prevState => ({
                 ...prevState,
                 [event._id]: data.checkRegistration
@@ -160,6 +159,8 @@ const ViewEvents = () => {
             setError(error.message);
         }
     };
+    
+    
 
     const handleClose = () => {
         setShowModal(false);
@@ -167,76 +168,73 @@ const ViewEvents = () => {
     };
 
     const handleRegister = async () => {
+        console.log("Selected Event:", selectedEvent); // Debugging line
+        console.log("Registered Events:", registeredEvents); // Debugging line
+    
         if (selectedEvent.price !== 'Free') {
             try {
                 const response = await fetch('http://localhost:3000/payment', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        
-                            eventId: selectedEvent._id,
-                            userId: user._id,
-                            eventTitle: selectedEvent.title,
-                            amount: selectedEvent.price, 
-                            userEmail: user.email
-                        
+                        eventId: selectedEvent._id,
+                        userId: user._id,
+                        eventTitle: selectedEvent.title,
+                        amount: selectedEvent.price,
+                        userEmail: user.email
                     }),
                 });
                   
                 const data = await response.json();
-                // Handle the response as needed
                 if (data.url) {
-                  console.log('Payment successful:', data.url);
-                  window.location.href = data.url;
-                  // Redirect to success page, show a message, etc.
+                    window.location.href = data.url;
                 } else {
-                  console.error('Payment failed:', data.message);
-                  // Handle payment failure
+                    console.error('Payment failed:', data.message);
                 }
-              } catch (error) {
+            } catch (error) {
                 console.error('Error making payment:', error);
-                // Handle error
-              }
-        }
-
-        const mutation = `
-            mutation registerForEvent($eventId: ID!, $userId: ID!) {
-                registerForEvent(eventId: $eventId, userId: $userId)
             }
-        `;
-
-        try {
-            const response = await fetch('http://localhost:3000/graphql', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    query: mutation,
-                    variables: {
-                        eventId: selectedEvent._id,
-                        userId: user._id
-                    }
-                }),
-            });
-
-            const { data, errors } = await response.json();
-
-            if (errors) {
-                throw new Error(errors[0].message);
+        } else {
+            const mutation = `
+                mutation registerForEvent($eventId: ID!, $userId: ID!) {
+                    registerForEvent(eventId: $eventId, userId: $userId)
+                }
+            `;
+    
+            try {
+                const response = await fetch('http://localhost:3000/graphql', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        query: mutation,
+                        variables: {
+                            eventId: selectedEvent._id,
+                            userId: user._id
+                        }
+                    }),
+                });
+    
+                const { data, errors } = await response.json();
+    
+                if (errors) {
+                    throw new Error(errors[0].message);
+                }
+    
+                if (data.registerForEvent) {
+                    setRegisteredEvents(prevState => ({
+                        ...prevState,
+                        [selectedEvent._id]: true
+                    }));
+                    alert("Registration successful!");
+                } else {
+                    alert("Registration failed. You might already be registered.");
+                }
+            } catch (error) {
+                setError(error.message);
             }
-
-            if (data.registerForEvent) {
-                setRegisteredEvents(prevState => ({
-                    ...prevState,
-                    [selectedEvent._id]: true
-                }));
-                alert("Registration successful!");
-            } else {
-                alert("Registration failed. You might already be registered.");
-            }
-        } catch (error) {
-            setError(error.message);
         }
     };
+    
 
     const currentTime = Date.now();
     const filteredEvents = events.filter(event => {
@@ -248,6 +246,13 @@ const ViewEvents = () => {
         }
         return true; // For 'all' option or any other unrecognized filter, show all events
     });
+
+    // New logic for button text
+    const isRegistered = (attendees) => {
+        if (!user?._id || !attendees) return false;
+        const attendeeIds = attendees.split(',').map(id => id.trim());
+        return attendeeIds.includes(user._id);
+    };
 
     if (loading) {
         return <p>Loading...</p>;
@@ -289,7 +294,7 @@ const ViewEvents = () => {
                     {filteredEvents.map(event => (
                         <Col xs={12} sm={6} md={4} lg={3} key={event._id} className="mb-4">
                             <Card className="event-card">
-                                <img className="card-img" src={event.image ? `/src/assets/EventImages/${event.image}` : heroImg} alt={event.title} />
+                            <img className="card-img" src={event.image ? `/src/assets/EventImages/${event.image}` : heroImg} alt={event.title} />
                                 <Card.Body>
                                     <Card.Title>{event.title}</Card.Title>
                                     <Card.Text className='d-flex justify-content-start align-items-center gap-2'>
@@ -308,8 +313,11 @@ const ViewEvents = () => {
 
                                     {user?.role === 'Alumni' ? (
                                         <>
-                                            <Button className='my-btn' onClick={() => handleShow(event)}>
-                                                {registeredEvents[event._id] ? 'Registered' : 'Details'}
+                                            <Button
+                                                className={`my-btn ${isRegistered(event.attendees) ? 'btn-registered' : ''}`}
+                                                onClick={() => handleShow(event)}
+                                            >
+                                                {isRegistered(event.attendees) ? 'Registered' : 'Details'}
                                             </Button>
                                             <Button className='btn btn-danger text-white mx-1 px-3' onClick={() => deleteEvent(event._id)}>Delete</Button>
                                             <Link to={`/editEvent/${event._id}`} className="btn btn-warning text-white px-3 me-2">
@@ -317,8 +325,11 @@ const ViewEvents = () => {
                                             </Link>
                                         </>
                                     ) : (
-                                        <Button className="my-btn" onClick={() => handleShow(event)}>
-                                            {registeredEvents[event._id] ? 'Registered' : 'Details'}
+                                        <Button
+                                            className={`my-btn ${isRegistered(event.attendees) ? 'btn-registered' : ''}`}
+                                            onClick={() => handleShow(event)}
+                                        >
+                                            {isRegistered(event.attendees) ? 'Registered' : 'Details'}
                                         </Button>
                                     )}
                                 </Card.Body>
@@ -364,7 +375,8 @@ const ViewEvents = () => {
                         <Button variant="secondary" onClick={handleClose}>Close</Button>
                     </Modal.Footer>
                 </Modal>
-            )}
+)}
+
         </div>
     );
 };
