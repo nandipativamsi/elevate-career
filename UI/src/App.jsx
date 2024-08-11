@@ -16,6 +16,8 @@ import JobDetails from './pages/jobDetails';
 import JobApplications from './pages/JobApplications';
 import HelpCenter from './pages/HelpCenter';
 import ConnectionsPage from './pages/Connections';
+import TransactionSuccess from './pages/TransactionSuccess';
+import TransactionFailure from './pages/TransactionFailure';
 import PrivateRoute from './utils/PrivateRoutes';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
@@ -26,6 +28,7 @@ import {
 } from "react-router-dom";
 import AlertComponent from './pages/AlertComponent'; 
 import ProfilePage from './pages/Profile';
+
 
 function App() {
   const [title, updateTitle] = useState(null);
@@ -53,6 +56,8 @@ function App() {
             <Route path="/addEvent"><AddEvent/></Route>
             <Route path="/editEvent/:id"><AddEvent/></Route>
             <Route path="/viewEvents"><ViewEvents/></Route>
+            <Route path="/transactionSuccess"><TransactionSuccess/></Route>
+            <Route path="/transactionFailure"><TransactionFailure/></Route>
             <Route path="/addResource"><AddResource/></Route>
             <Route path="/editResource/:id"><AddResource/></Route>
             <Route path="/viewResources"><ViewResources/></Route>

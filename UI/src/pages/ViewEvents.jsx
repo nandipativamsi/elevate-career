@@ -172,12 +172,15 @@ const ViewEvents = () => {
                 const response = await axios.post('http://localhost:3000/payment', {
                   eventId: selectedEvent._id,
                   userId: user._id,
+                  eventTitle: selectedEvent.title,
                   amount: selectedEvent.price, // or any other necessary payment details
                 });
             
+                
                 // Handle the response as needed
-                if (response.data.success) {
+                if (response.data.url) {
                   console.log('Payment successful:', response.data);
+                  window.location.href = response.data.url;
                   // Redirect to success page, show a message, etc.
                 } else {
                   console.error('Payment failed:', response.data.message);
@@ -342,7 +345,7 @@ const ViewEvents = () => {
                         })}</p>
                         <p><strong>Location:</strong> {selectedEvent.location}</p>
                         <p><strong>Limit:</strong> {selectedEvent.limit}</p>
-                        <p><strong>Price:</strong> {selectedEvent.price}</p>
+                        <p><strong>Price:</strong> ${selectedEvent.price}</p>
                         <p><strong>Attendees:</strong> {new Set(selectedEvent.attendees.split(',').map(id => id.trim()).filter(id => id !== '')).size}</p>
                     </Modal.Body>
                     <Modal.Footer>

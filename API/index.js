@@ -88,15 +88,18 @@ app.post('/ProfileImage/upload', uploadProfileImage.single('image'), (req, res) 
 });
 
 app.post('/payment', async (req, res) => {
+  console.log('inside payment method');
+  console.log(res);
+  
   try {
       const product = await stripe.products.create({
-          name: "T-Shirt",
+          name: "Demo",
       });
 
       const price = await stripe.prices.create({
           product: product.id,
-          unit_amount: 100 * 100, // 100 INR
-          currency: 'inr',
+          unit_amount: 15*100, 
+          currency: 'cad',
       });
 
       const session = await stripe.checkout.sessions.create({
@@ -107,11 +110,12 @@ app.post('/payment', async (req, res) => {
               }
           ],
           mode: 'payment',
-          success_url: 'http://localhost:3000/success',
-          cancel_url: 'http://localhost:3000/cancel',
-          customer_email: 'demo@gmail.com',
+          success_url: 'http://localhost:5173/transactionSuccess',
+          cancel_url: 'http://localhost:5173/transactionFailure',
+          customer_email: 'vamsin452@gmail.com',
       });
-
+      console.log(session.url);
+      
       res.json({ url: session.url });
   } catch (error) {
       console.error('Error creating payment session:', error);
