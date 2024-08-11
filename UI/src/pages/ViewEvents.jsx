@@ -149,7 +149,7 @@ const ViewEvents = () => {
                 throw new Error(errors[0].message);
             }
     
-            // Set registration status in state
+            // Update the registration status in state
             setRegisteredEvents(prevState => ({
                 ...prevState,
                 [event._id]: data.checkRegistration
@@ -159,6 +159,7 @@ const ViewEvents = () => {
             setError(error.message);
         }
     };
+    
     
     
 
@@ -171,6 +172,24 @@ const ViewEvents = () => {
         console.log("Selected Event:", selectedEvent); // Debugging line
         console.log("Registered Events:", registeredEvents); // Debugging line
     
+        // Extract the list of attendees from the selected event
+        const attendeeIds = selectedEvent.attendees.split(',').map(id => id.trim());
+    
+        // Check if the user is already registered
+        const isRegistered = attendeeIds.includes(user._id);
+        
+        // Update the registration status in state
+        setRegisteredEvents(prevState => ({
+            ...prevState,
+            [selectedEvent._id]: isRegistered
+        }));
+    
+        if (isRegistered) {
+            alert("You are already registered for this event.");
+            return; // Exit the function if already registered
+        }
+    
+        // Proceed with payment or registration
         if (selectedEvent.price !== 'Free') {
             try {
                 const response = await fetch('http://localhost:3000/payment', {
@@ -235,7 +254,7 @@ const ViewEvents = () => {
         }
     };
     
-
+    
     const currentTime = Date.now();
     const filteredEvents = events.filter(event => {
         const eventTime = new Date(event.date).getTime();
@@ -340,42 +359,43 @@ const ViewEvents = () => {
             </section>
 
             {selectedEvent && (
-                <Modal show={showModal} onHide={handleClose} centered>
-                    <Modal.Header closeButton>
-                        <Modal.Title>{selectedEvent.title}</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <img
-                            src={selectedEvent.image ? `/src/assets/EventImages/${selectedEvent.image}` : heroImg}
-                            alt={selectedEvent.title}
-                            className="img-fluid mb-3"
-                        />
-                        <p><strong>Description:</strong> {selectedEvent.description}</p>
-                        <p><strong>Date:</strong> {new Date(selectedEvent.date).toLocaleDateString('en-US', {
-                            weekday: 'long',
-                            month: 'long',
-                            day: 'numeric',
-                            year: 'numeric'
-                        })} at {new Date(`${selectedEvent.date.split('T')[0]}T${selectedEvent.time}`).toLocaleTimeString('en-US', {
-                            hour: 'numeric',
-                            minute: 'numeric',
-                            hour12: true
-                        })}</p>
-                        <p><strong>Location:</strong> {selectedEvent.location}</p>
-                        <p><strong>Limit:</strong> {selectedEvent.limit}</p>
-                        <p><strong>Price:</strong> ${selectedEvent.price}</p>
-                        <p><strong>Attendees:</strong> {new Set(selectedEvent.attendees.split(',').map(id => id.trim()).filter(id => id !== '')).size}</p>
-                    </Modal.Body>
-                    <Modal.Footer>
-                        {registeredEvents[selectedEvent._id] ? (
-                            <Button variant="secondary" disabled>Registered</Button>
-                        ) : (
-                            <Button variant="primary" onClick={handleRegister}>Register</Button>
-                        )}
-                        <Button variant="secondary" onClick={handleClose}>Close</Button>
-                    </Modal.Footer>
-                </Modal>
+    <Modal show={showModal} onHide={handleClose} centered>
+        <Modal.Header closeButton>
+            <Modal.Title>{selectedEvent.title}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+            <img
+                src={selectedEvent.image ? `/src/assets/EventImages/${selectedEvent.image}` : heroImg}
+                alt={selectedEvent.title}
+                className="img-fluid mb-3"
+            />
+            <p><strong>Description:</strong> {selectedEvent.description}</p>
+            <p><strong>Date:</strong> {new Date(selectedEvent.date).toLocaleDateString('en-US', {
+                weekday: 'long',
+                month: 'long',
+                day: 'numeric',
+                year: 'numeric'
+            })} at {new Date(`${selectedEvent.date.split('T')[0]}T${selectedEvent.time}`).toLocaleTimeString('en-US', {
+                hour: 'numeric',
+                minute: 'numeric',
+                hour12: true
+            })}</p>
+            <p><strong>Location:</strong> {selectedEvent.location}</p>
+            <p><strong>Limit:</strong> {selectedEvent.limit}</p>
+            <p><strong>Price:</strong> ${selectedEvent.price}</p>
+            <p><strong>Attendees:</strong> {new Set(selectedEvent.attendees.split(',').map(id => id.trim()).filter(id => id !== '')).size}</p>
+        </Modal.Body>
+        <Modal.Footer>
+            {registeredEvents[selectedEvent._id] ? (
+                <Button variant="secondary" disabled>Registered</Button>
+            ) : (
+                <Button variant="primary" onClick={handleRegister}>Register</Button>
+            )}
+            <Button variant="secondary" onClick={handleClose}>Close</Button>
+        </Modal.Footer>
+    </Modal>
 )}
+
 
         </div>
     );
