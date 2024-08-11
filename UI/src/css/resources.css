@@ -27,7 +27,7 @@
 
 }
 
-.hero-text-container{
+.resource-hero-text-container{
     width: 60%;
     background-color: #f2efe8;
     z-index: 2;
@@ -45,4 +45,16 @@
     max-height: 50%;
     object-fit: cover;
 
+}
+@media (max-width: 768px) {
+    .resource-hero-section{
+        height: 80vh;
+    }
+    .resource-hero-section::before{
+        height: 60vh;
+    }
+ 
+    .resource-hero-text-container{
+        width:90%;
+    }
 }

@@ -1,5 +1,5 @@
 /* jobboard.css */
-.hero-section{
+.event-hero-section{
     position: relative;
     background: none;
     height: 84vh;
@@ -9,7 +9,7 @@
     align-items: flex-end;
     gap: 25px;
 }
-.hero-section::before{
+.event-hero-section::before{
     content: '';
     position: absolute;
     top: 0;
@@ -27,7 +27,7 @@
 
 }
 
-.hero-text-container{
+.event-hero-text-container{
     width: 60%;
     background-color: #f2efe8;
     z-index: 2;
@@ -79,6 +79,19 @@ div.justify-content-center{
 }
 
 
-
-
-
+@media (max-width: 768px) {
+    .event-hero-section{
+        height: 80vh;
+    }
+    .event-hero-section::before{
+        height: 60vh;
+    }
+ 
+    .event-hero-text-container{
+        width:90%;
+    }
+    .reccomendation-tittle{
+        font-size: 1.2rem;
+        padding: 0.5rem;
+    }
+}

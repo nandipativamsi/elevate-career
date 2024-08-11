@@ -405,10 +405,6 @@ let database, JobsCollection, EventsCollection, ResourcesCollection, UsersCollec
               { returnOriginal: false }
           );
 
-          // if (!result.value) {
-          //     throw new Error('Resource not found');
-          // }
-
           const updatedResource = await ResourcesCollection.findOne({ _id: new ObjectId(resourceId) });
 
           return updatedResource;
