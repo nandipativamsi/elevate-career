@@ -88,8 +88,8 @@ app.post('/ProfileImage/upload', uploadProfileImage.single('image'), (req, res) 
 });
 
 app.post('/payment', async (req, res) => {
-  console.log('inside payment method');
-  console.log(res);
+  // console.log('inside payment method');
+  // console.log(res);
   
   try {
       const product = await stripe.products.create({
@@ -114,7 +114,7 @@ app.post('/payment', async (req, res) => {
           cancel_url: 'http://localhost:5173/transactionFailure',
           customer_email: 'vamsin452@gmail.com',
       });
-      console.log(session.url);
+      // console.log(session.url);
       
       res.json({ url: session.url });
   } catch (error) {
