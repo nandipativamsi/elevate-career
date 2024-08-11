@@ -169,21 +169,28 @@ const ViewEvents = () => {
     const handleRegister = async () => {
         if (selectedEvent.price !== 'Free') {
             try {
-                const response = await axios.post('http://localhost:3000/payment', {
-                  eventId: selectedEvent._id,
-                  userId: user._id,
-                  eventTitle: selectedEvent.title,
-                  amount: selectedEvent.price, // or any other necessary payment details
+                const response = await fetch('http://localhost:3000/payment', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        
+                            eventId: selectedEvent._id,
+                            userId: user._id,
+                            eventTitle: selectedEvent.title,
+                            amount: selectedEvent.price, 
+                            userEmail: user.email
+                        
+                    }),
                 });
-            
-                
+                  
+                const data = await response.json();
                 // Handle the response as needed
-                if (response.data.url) {
-                  console.log('Payment successful:', response.data);
-                  window.location.href = response.data.url;
+                if (data.url) {
+                  console.log('Payment successful:', data.url);
+                  window.location.href = data.url;
                   // Redirect to success page, show a message, etc.
                 } else {
-                  console.error('Payment failed:', response.data.message);
+                  console.error('Payment failed:', data.message);
                   // Handle payment failure
                 }
               } catch (error) {
