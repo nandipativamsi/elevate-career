@@ -12,11 +12,13 @@ const session = require('express-session');
 const MongoStore = require('connect-mongo');
 const multer = require('multer');
 const path = require('path');
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 const app = express();
 const port = process.env.PORT || 5500;
 const URI = process.env.MONGODB_URI;
 const saltRounds = 10;
+app.use(bodyParser.json());
 
 const corsOptions = {
   origin: 'http://localhost:5173', 
@@ -86,7 +88,41 @@ app.post('/ProfileImage/upload', uploadProfileImage.single('image'), (req, res) 
   res.json({ imageName: req.file.filename });
 });
 
-app.use(bodyParser.json());
+app.post('/payment', async (req, res) => {  
+  const { eventTitle, amount, userEmail } = req.body; // Get eventTitle and amount from the request
+
+  try {
+      const product = await stripe.products.create({
+          name: eventTitle, // Use the event title as the product name
+      });
+
+      const price = await stripe.prices.create({
+          product: product.id,
+          unit_amount: amount * 100, 
+          currency: 'cad',
+      });
+
+      const session = await stripe.checkout.sessions.create({
+          line_items: [
+              {
+                  price: price.id,
+                  quantity: 1,
+              }
+          ],
+          mode: 'payment',
+          success_url: 'http://localhost:5173/transactionSuccess',
+          cancel_url: 'http://localhost:5173/transactionFailure',
+          customer_email: userEmail, 
+      });
+
+      res.json({ url: session.url });
+  } catch (error) {
+      console.error('Error creating payment session:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
 
 app.use(session({
   secret: 'your-secret-key',
@@ -367,10 +403,6 @@ let database, JobsCollection, EventsCollection, ResourcesCollection, UsersCollec
               { $push: { comments: comment } },
               { returnOriginal: false }
           );
-
-          // if (!result.value) {
-          //     throw new Error('Resource not found');
-          // }
 
           const updatedResource = await ResourcesCollection.findOne({ _id: new ObjectId(resourceId) });
 
