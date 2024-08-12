@@ -18,6 +18,7 @@ const app = express();
 const port = process.env.PORT || 5500;
 const URI = process.env.MONGODB_URI;
 const saltRounds = 10;
+app.use(bodyParser.json());
 
 const corsOptions = {
   origin: 'http://localhost:5173', 
@@ -87,18 +88,17 @@ app.post('/ProfileImage/upload', uploadProfileImage.single('image'), (req, res) 
   res.json({ imageName: req.file.filename });
 });
 
-app.post('/payment', async (req, res) => {
-  // console.log('inside payment method');
-  // console.log(res);
-  
+app.post('/payment', async (req, res) => {  
+  const { eventTitle, amount, userEmail } = req.body; // Get eventTitle and amount from the request
+
   try {
       const product = await stripe.products.create({
-          name: "Demo",
+          name: eventTitle, // Use the event title as the product name
       });
 
       const price = await stripe.prices.create({
           product: product.id,
-          unit_amount: 15*100, 
+          unit_amount: amount * 100, 
           currency: 'cad',
       });
 
@@ -112,10 +112,9 @@ app.post('/payment', async (req, res) => {
           mode: 'payment',
           success_url: 'http://localhost:5173/transactionSuccess',
           cancel_url: 'http://localhost:5173/transactionFailure',
-          customer_email: 'vamsin452@gmail.com',
+          customer_email: userEmail, 
       });
-      // console.log(session.url);
-      
+
       res.json({ url: session.url });
   } catch (error) {
       console.error('Error creating payment session:', error);
@@ -123,7 +122,7 @@ app.post('/payment', async (req, res) => {
   }
 });
 
-app.use(bodyParser.json());
+
 
 app.use(session({
   secret: 'your-secret-key',

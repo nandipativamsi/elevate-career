@@ -5,6 +5,7 @@ import { Link, useHistory } from 'react-router-dom';
 import jobPostingImg from '../assets/defaultJobImage.jpeg';
 import "../css/jobboard.css";
 import { useAuth } from '../AuthContext.jsx';
+import { FaEdit, FaTrashAlt } from 'react-icons/fa';
 
 const JobBoard = () => {
     const { user } = useAuth();
@@ -23,7 +24,7 @@ const JobBoard = () => {
 
     const loadData = async () => {
         console.log(user?.role);
-        
+
         const query = user?.role === 'Alumni'
             ? `
                 query jobsByUser($userId: ID!, $jobType: JobType, $workType: WorkType) {
@@ -225,12 +226,21 @@ const JobBoard = () => {
                                             <Link to={`/jobDetails/${job._id}`} className="btn btn-dark px-3 me-1">
                                                 Details
                                             </Link>
-                                            <button className='btn btn-warning text-white me-1 px-3' onClick={() => handleEdit(job._id)}>Edit</button>
-                                            <button className='btn btn-danger text-white me-1 px-3' onClick={() => deleteJob(job._id)}>Delete</button>
+
                                             <Link to={`/jobApplications/${job._id}`} className="btn btn-success px-3 me-2">
                                                 View Applications
                                             </Link>
                                         </div>
+                                    </div>
+                                    <div className="job-actions fs-4">
+                                        <FaEdit
+                                            className="icon icon-edit"
+                                            onClick={() => handleEdit(job._id)}
+                                        />
+                                        <FaTrashAlt
+                                            className="icon icon-delete"
+                                            onClick={() => deleteJob(job._id)}
+                                        />
                                     </div>
                                 </div>
                             )
