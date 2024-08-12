@@ -271,7 +271,7 @@ const ResourceDetails = () => {
                 </div>
             </div>
             <section className="comments-section px-3">
-            <h2 className="reccomendation-tittle my-3">Comments</h2>
+                <h2 className="reccomendation-tittle my-3">Comments</h2>
                 {resource.comments.map((comment, index) => (
                     <div key={index} className="comment px-2">
                         <strong>{userNames[comment.userID] || 'Unknown User'}:</strong> {comment.comment}
