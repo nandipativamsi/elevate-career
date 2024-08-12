@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react';
 import { Link, withRouter } from "react-router-dom";
 import axios from 'axios';
 import { FaBars, FaTimes } from 'react-icons/fa';
-import '../css/header.css'; 
+import '../css/header.css';
 import { useAuth } from '../AuthContext.jsx'; // Import the custom hook to use AuthContext
-import logo from '../assets/logo.webp'; 
+import logo from '../assets/logo.webp';
 
 function Header(props) {
     const [menuOpen, setMenuOpen] = useState(false);
@@ -25,7 +25,7 @@ function Header(props) {
         if (typeof s !== 'string') return ''
         return s.charAt(0).toUpperCase() + s.slice(1)
     }
-    
+
     let title = capitalize(props.location.pathname.substring(1, props.location.pathname.length));
     if (props.location.pathname === '/') {
         title = 'Welcome';
@@ -65,12 +65,12 @@ function Header(props) {
                     <li><a href="/help-center">Help Center</a></li>
                     {user ? (
                         <>
-                            <li><a href="/addNew">Add New</a></li>
                             <li><a href="/jobboard">Job Board</a></li>
                             <li><a href="/viewEvents">Events</a></li>
                             <li><a href="/viewResources">Resources</a></li>
                             <li><a href="/connections">Connections</a></li>
                             <li><Link to={`/profile`}>Profile</Link></li>
+                            <li><a href="/addNew">Add New</a></li>
                             <li><a href="/" onClick={handleLogout}>Logout</a></li>
                             <li>Hello, {user.name}</li>
                         </>

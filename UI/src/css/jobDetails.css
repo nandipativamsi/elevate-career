@@ -19,18 +19,16 @@
 }
 
 .job-details-company-logo-container{
-    height: 200px;
+    height: 150px;
 }
 
 .job-details-company-logo {
     position: relative;
-
     transform: translate(0,-150px);
     border: 15px solid white;
     width: 300px;
     height: auto;
 }
-
 
 
 .job-details-button-container {
