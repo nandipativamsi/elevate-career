@@ -98,6 +98,32 @@ function RegistrationForm(props) {
         return Object.keys(newErrors).length === 0;
     };
 
+    const handleVoiceInput = (field) => {
+        if (!('webkitSpeechRecognition' in window)) {
+            alert('Voice input is not supported in this browser. Please use Google Chrome.');
+            return;
+        }
+
+        const recognition = new window.webkitSpeechRecognition();
+        recognition.lang = 'en-US';
+        recognition.continuous = false;
+        recognition.interimResults = false;
+
+        recognition.onresult = (event) => {
+            const voiceInput = event.results[0][0].transcript;
+            setFormData((prevData) => ({
+                ...prevData,
+                [field]: voiceInput,
+            }));
+        };
+
+        recognition.onerror = (event) => {
+            console.error('Speech recognition error', event);
+        };
+
+        recognition.start();
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         
@@ -192,44 +218,116 @@ function RegistrationForm(props) {
             <div className="form-section">
                 <h2>REGISTER FORM</h2>
                 <form onSubmit={handleSubmit}>
-                    <div className="form-group">
+                    <div className="form-group" style={{ position: 'relative' }}>
                         <input 
                             type="text" 
                             name="name" 
                             placeholder="Full Name" 
                             value={formData.name} 
-                            onChange={handleChange}  
+                            onChange={handleChange} 
+                            style={{ paddingRight: '40px' }}  
                         />
+                        <button
+                            type="button"
+                            onClick={() => handleVoiceInput('name')}
+                            aria-label="Voice input for name"
+                            style={{
+                                position: 'absolute',
+                                right: '10px',
+                                top: '40%',
+                                transform: 'translateY(-50%)',
+                                background: 'none',
+                                border: 'none',
+                                cursor: 'pointer',
+                                fontSize: '16px',
+                            }}
+                        >
+                            🎤
+                        </button>
                         {errors.name && <span style={{ color: 'red' }}>{errors.name}</span>}
                     </div>
-                    <div className="form-group">
+                    <div className="form-group" style={{ position: 'relative' }}>
                         <input 
                             type="email" 
                             name="email" 
                             placeholder="Email Address" 
                             value={formData.email} 
                             onChange={handleChange}  
+                            style={{ paddingRight: '40px' }} 
                         />
+                        <button
+                            type="button"
+                            onClick={() => handleVoiceInput('email')}
+                            aria-label="Voice input for email"
+                            style={{
+                                position: 'absolute',
+                                right: '10px',
+                                top: '40%',
+                                transform: 'translateY(-50%)',
+                                background: 'none',
+                                border: 'none',
+                                cursor: 'pointer',
+                                fontSize: '16px',
+                            }}
+                        >
+                            🎤
+                        </button>
                         {errors.email && <span style={{ color: 'red' }}>{errors.email}</span>}
                     </div>
-                    <div className="form-group">
+                    <div className="form-group" style={{ position: 'relative' }}>
                         <input 
                             type="password" 
                             name="password" 
                             placeholder="Password" 
                             value={formData.password} 
-                            onChange={handleChange}  
+                            onChange={handleChange} 
+                            style={{ paddingRight: '40px' }}  
                         />
+                        <button
+                            type="button"
+                            onClick={() => handleVoiceInput('password')}
+                            aria-label="Voice input for password"
+                            style={{
+                                position: 'absolute',
+                                right: '10px',
+                                top: '40%',
+                                transform: 'translateY(-50%)',
+                                background: 'none',
+                                border: 'none',
+                                cursor: 'pointer',
+                                fontSize: '16px',
+                            }}
+                        >
+                            🎤
+                        </button>
                         {errors.password && <span style={{ color: 'red' }}>{errors.password}</span>}
                     </div>
-                    <div className="form-group">
+                    <div className="form-group" style={{ position: 'relative' }}>
                         <input 
                             type="password" 
                             name="confirmPassword" 
                             placeholder="Confirm Password" 
                             value={formData.confirmPassword} 
-                            onChange={handleChange}  
+                            onChange={handleChange} 
+                            style={{ paddingRight: '40px' }}  
                         />
+                        <button
+                            type="button"
+                            onClick={() => handleVoiceInput('confirmPassword')}
+                            aria-label="Voice input for confirmPassword"
+                            style={{
+                                position: 'absolute',
+                                right: '10px',
+                                top: '40%',
+                                transform: 'translateY(-50%)',
+                                background: 'none',
+                                border: 'none',
+                                cursor: 'pointer',
+                                fontSize: '16px',
+                            }}
+                        >
+                            🎤
+                        </button>
                         {errors.confirmPassword && <span style={{ color: 'red' }}>{errors.confirmPassword}</span>}
                     </div>
                     <div className="form-group">
@@ -241,14 +339,32 @@ function RegistrationForm(props) {
                         </select>
                         {errors.role && <span style={{ color: 'red' }}>{errors.role}</span>}
                     </div>
-                    <div className="form-group">
+                    <div className="form-group" style={{ position: 'relative' }}>
                         <input 
                             type="text" 
                             name="contactNumber" 
                             placeholder="Contact Number" 
                             value={formData.contactNumber} 
                             onChange={handleChange}  
+                            style={{ paddingRight: '40px' }} 
                         />
+                        <button
+                            type="button"
+                            onClick={() => handleVoiceInput('contactNumber')}
+                            aria-label="Voice input for contactNumber"
+                            style={{
+                                position: 'absolute',
+                                right: '10px',
+                                top: '40%',
+                                transform: 'translateY(-50%)',
+                                background: 'none',
+                                border: 'none',
+                                cursor: 'pointer',
+                                fontSize: '16px',
+                            }}
+                        >
+                            🎤
+                        </button>
                         {errors.contactNumber && <span style={{ color: 'red' }}>{errors.contactNumber}</span>}
                     </div>
                     <div className="form-group">

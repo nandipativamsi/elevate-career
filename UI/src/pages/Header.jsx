@@ -65,7 +65,9 @@ function Header(props) {
                     <li><a href="/help-center">Help Center</a></li>
                     {user ? (
                         <>
-                            <li><a href="/addNew">Add New</a></li>
+                            {(user.role === 'Alumni' || user.role === 'Admin') && (
+                                <li><a href="/addNew">Add New</a></li>
+                            )}
                             <li><a href="/jobboard">Job Board</a></li>
                             <li><a href="/viewEvents">Events</a></li>
                             <li><a href="/viewResources">Resources</a></li>

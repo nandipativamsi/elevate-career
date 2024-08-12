@@ -84,7 +84,7 @@ function LoginForm(props) {
 
                 const { user } = responseData.data.login;
                 console.log(user);
-                
+
                 // Store user and token information
                 setUser(user);
                 // localStorage.setItem('token', token);
@@ -113,6 +113,33 @@ function LoginForm(props) {
         props.updateTitle('Register');
     };
 
+    // Voice input handling using Web Speech API
+    const handleVoiceInput = (field) => {
+        if (!('webkitSpeechRecognition' in window)) {
+            alert('Voice input is not supported in this browser. Please use Google Chrome.');
+            return;
+        }
+
+        const recognition = new window.webkitSpeechRecognition();
+        recognition.lang = 'en-US';
+        recognition.continuous = false;
+        recognition.interimResults = false;
+
+        recognition.onresult = (event) => {
+            const voiceInput = event.results[0][0].transcript;
+            setFormData((prevData) => ({
+                ...prevData,
+                [field]: voiceInput,
+            }));
+        };
+
+        recognition.onerror = (event) => {
+            console.error('Speech recognition error', event);
+        };
+
+        recognition.start();
+    };
+
     return (
         <div className="login-container">
             <div className="info-section">
@@ -134,29 +161,66 @@ function LoginForm(props) {
             <div className="form-section">
                 <h2>LOGIN FORM</h2>
                 <form onSubmit={handleSubmit}>
-                    <div className="form-group">
-                        <input 
-                            type="email" 
+                    <div className="form-group" style={{ position: 'relative' }}>
+                        <input
+                            type="email"
                             name="email"
-                            placeholder="Email Address" 
-                            value={formData.email} 
-                            onChange={handleChange}  
+                            placeholder="Email Address"
+                            value={formData.email}
+                            onChange={handleChange}
+                            style={{ paddingRight: '40px' }} 
                         />
+                        <button
+                            type="button"
+                            onClick={() => handleVoiceInput('email')}
+                            aria-label="Voice input for email"
+                            style={{
+                                position: 'absolute',
+                                right: '10px',
+                                top: '40%',
+                                transform: 'translateY(-50%)',
+                                background: 'none',
+                                border: 'none',
+                                cursor: 'pointer',
+                                fontSize: '16px',
+                            }}
+                        >
+                            🎤
+                        </button>
                         {errors.email && <span style={{ color: 'red' }}>{errors.email}</span>}
                     </div>
-                    <div className="form-group">
-                        <input 
-                            type="password" 
+                    <div className="form-group" style={{ position: 'relative' }}>
+                        <input
+                            type="password"
                             name="password"
-                            placeholder="Password" 
-                            value={formData.password} 
-                            onChange={handleChange}  
+                            placeholder="Password"
+                            value={formData.password}
+                            onChange={handleChange}
+                            style={{ paddingRight: '40px' }} 
                         />
+                        <button
+                            type="button"
+                            onClick={() => handleVoiceInput('password')}
+                            aria-label="Voice input for password"
+                            style={{
+                                position: 'absolute',
+                                right: '10px',
+                                top: '40%',
+                                transform: 'translateY(-50%)',
+                                background: 'none',
+                                border: 'none',
+                                cursor: 'pointer',
+                                fontSize: '16px',
+                            }}
+                        >
+                            🎤
+                        </button>
                         {errors.password && <span style={{ color: 'red' }}>{errors.password}</span>}
                     </div>
+
                     <button type="submit" className="button-login">Login</button>
                     <p className="signup-link">
-                        Don't have an account? <span onClick={redirectToRegister} style={{cursor: 'pointer', color: '#007bff'}}>Register here</span>
+                        Don't have an account? <span onClick={redirectToRegister} style={{ cursor: 'pointer', color: '#007bff' }}>Register here</span>
                     </p>
                 </form>
                 {successMessage && <div className="alert alert-success">{successMessage}</div>}
@@ -169,7 +233,7 @@ function LoginForm(props) {
 LoginForm.propTypes = {
     updateTitle: PropTypes.func.isRequired,
     history: PropTypes.shape({
-      push: PropTypes.func.isRequired
+        push: PropTypes.func.isRequired
     }).isRequired
 };
 

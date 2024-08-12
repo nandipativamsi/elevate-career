@@ -202,8 +202,8 @@ const ConnectionsPage = () => {
         if (isConnected(user)) {
             return <Button variant="success" disabled>Connected</Button>;
         }
-    
-        if (isPendingConnectionAcceptor(user)) {
+
+        if (isPendingConnectionRequestor(user)) {
             return (
                 <>
                     <Button variant="primary" onClick={() => acceptConnectionRequest(user._id)}>Accept</Button>
@@ -212,7 +212,7 @@ const ConnectionsPage = () => {
             );
         }
     
-        if (isPendingConnectionRequestor(user)) {
+        if (isPendingConnectionAcceptor(user)) {
             return <Button variant="secondary" disabled>Pending</Button>;
         }
     
