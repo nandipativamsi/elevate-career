@@ -78,6 +78,20 @@ div.justify-content-center{
     text-overflow: ellipsis;
 }
 
+.registered-btn {
+    background-color: #6c757d; /* Example color for registered button */
+    color: white;
+    cursor: not-allowed;
+}
+
+.registered-btn:hover {
+    background-color: #5a6268; /* Darker color on hover */
+}
+
+.btn-registered {
+    background-color: #28a745; /* Green color */
+    border-color: #28a745;
+}
 
 @media (max-width: 768px) {
     .event-hero-section{
