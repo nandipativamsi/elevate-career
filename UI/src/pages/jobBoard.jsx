@@ -67,7 +67,7 @@ const JobBoard = () => {
             : { jobType: jobType || null, workType: workType || null };
 
         try {
-            const response = await fetch('http://localhost:3000/graphql', {
+            const response = await fetch('https://elevate-career-backend.onrender.com/graphql', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ query, variables }),
@@ -105,7 +105,7 @@ const JobBoard = () => {
             `;
 
             try {
-                const response = await fetch('http://localhost:3000/graphql', {
+                const response = await fetch('https://elevate-career-backend.onrender.com/graphql', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ query, variables: { _id } }),

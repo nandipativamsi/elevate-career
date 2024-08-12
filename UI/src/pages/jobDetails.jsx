@@ -36,7 +36,7 @@ const JobDetails = () => {
             `;
 
             try {
-                const response = await fetch('http://localhost:3000/graphql', {
+                const response = await fetch('https://elevate-career-backend.onrender.com/graphql', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ query }),
@@ -71,7 +71,7 @@ const JobDetails = () => {
                     }
                 `;
 
-                const response = await fetch('http://localhost:3000/graphql', {
+                const response = await fetch('https://elevate-career-backend.onrender.com/graphql', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ query }),
@@ -91,7 +91,7 @@ const JobDetails = () => {
 
         const fetchCurrentUser = async () => {
             try {
-                const response = await axios.get('http://localhost:3000/api/current_user', { withCredentials: true });
+                const response = await axios.get('https://elevate-career-backend.onrender.com/api/current_user', { withCredentials: true });
                 setCurrentUser(response.data.user);
             } catch (error) {
                 console.log('No active session found', error);
@@ -118,7 +118,7 @@ const JobDetails = () => {
         `;
 
         try {
-            const response = await fetch('http://localhost:3000/graphql', {
+            const response = await fetch('https://elevate-career-backend.onrender.com/graphql', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ query }),
