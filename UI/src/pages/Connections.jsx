@@ -41,7 +41,7 @@ const ConnectionsPage = () => {
             }
         `;
         try {
-            const response = await fetch('https://elevate-career-backend.onrender.com/graphql', {
+            const response = await fetch('https://elevate-career.onrender.com/graphql', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ query }),
@@ -76,7 +76,7 @@ const ConnectionsPage = () => {
                 }
             }
         `;
-        await fetch('https://elevate-career-backend.onrender.com/graphql', {
+        await fetch('https://elevate-career.onrender.com/graphql', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ query: mutation }),
@@ -94,7 +94,7 @@ const ConnectionsPage = () => {
                 }
             }
         `;
-        await fetch('https://elevate-career-backend.onrender.com/graphql', {
+        await fetch('https://elevate-career.onrender.com/graphql', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ query: mutation }),
@@ -112,7 +112,7 @@ const ConnectionsPage = () => {
                 }
             }
         `;
-        await fetch('https://elevate-career-backend.onrender.com/graphql', {
+        await fetch('https://elevate-career.onrender.com/graphql', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ query: mutation }),
@@ -130,7 +130,7 @@ const ConnectionsPage = () => {
             }
         `;
         try {
-            await fetch('https://elevate-career-backend.onrender.com/graphql', {
+            await fetch('https://elevate-career.onrender.com/graphql', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ query: mutation }),

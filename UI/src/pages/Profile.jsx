@@ -47,7 +47,7 @@ const ProfilePage = () => {
                             }
                         }
                     `;
-                    const response = await fetch('https://elevate-career-backend.onrender.com/graphql', {
+                    const response = await fetch('https://elevate-career.onrender.com/graphql', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -103,7 +103,7 @@ const ProfilePage = () => {
                     const formData = new FormData();
                     formData.append('image', imageFile);
 
-                    const response = await fetch('https://elevate-career-backend.onrender.com/ProfileImage/upload', {
+                    const response = await fetch('https://elevate-career.onrender.com/ProfileImage/upload', {
                         method: 'POST',
                         body: formData,
                     });
@@ -137,7 +137,7 @@ const ProfilePage = () => {
 
 
 
-                const profileResponse = await fetch('https://elevate-career-backend.onrender.com/graphql', {
+                const profileResponse = await fetch('https://elevate-career.onrender.com/graphql', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

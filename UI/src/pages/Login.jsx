@@ -59,7 +59,7 @@ function LoginForm(props) {
             `;
 
             try {
-                const response = await fetch('https://elevate-career-backend.onrender.com/graphql', {
+                const response = await fetch('https://elevate-career.onrender.com/graphql', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

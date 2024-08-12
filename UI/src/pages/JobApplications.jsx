@@ -34,7 +34,7 @@ const JobApplications = () => {
             `;
 
             try {
-                const response = await fetch('https://elevate-career-backend.onrender.com/graphql', {
+                const response = await fetch('https://elevate-career.onrender.com/graphql', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ query: jobQuery }),
@@ -67,7 +67,7 @@ const JobApplications = () => {
                         }
                     `;
 
-                    const applicantsResponse = await fetch('https://elevate-career-backend.onrender.com/graphql', {
+                    const applicantsResponse = await fetch('https://elevate-career.onrender.com/graphql', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ query: applicantsQuery }),

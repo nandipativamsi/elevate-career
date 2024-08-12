@@ -12,7 +12,7 @@ function Header(props) {
 
     useEffect(() => {
         // Check if user session exists
-        axios.get('https://elevate-career-backend.onrender.com/api/current_user', { withCredentials: true })
+        axios.get('https://elevate-career.onrender.com/api/current_user', { withCredentials: true })
             .then(response => {
                 setUser(response.data.user);
             })
@@ -32,7 +32,7 @@ function Header(props) {
     }
 
     function handleLogout() {
-        axios.post('https://elevate-career-backend.onrender.com/api/logout', {}, { withCredentials: true })
+        axios.post('https://elevate-career.onrender.com/api/logout', {}, { withCredentials: true })
             .then(() => {
                 setUser(null); // Reset user state
                 // localStorage.removeItem('token'); // Optionally remove token from localStorage

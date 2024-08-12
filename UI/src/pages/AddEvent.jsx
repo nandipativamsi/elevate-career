@@ -39,7 +39,7 @@ const AddEvent = () => {
                 `;
 
                 try {
-                    const response = await fetch('https://elevate-career-backend.onrender.com/graphql', {
+                    const response = await fetch('https://elevate-career.onrender.com/graphql', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ query, variables: { id } }),
@@ -103,7 +103,7 @@ const AddEvent = () => {
                     const imageData = new FormData();
                     imageData.append('image', imageFile);
 
-                    const response = await fetch('https://elevate-career-backend.onrender.com/EventImage/upload', {
+                    const response = await fetch('https://elevate-career.onrender.com/EventImage/upload', {
                         method: 'POST',
                         body: imageData,
                     });
@@ -137,7 +137,7 @@ const AddEvent = () => {
                         }
                     `;
 
-                const eventResponse = await fetch('https://elevate-career-backend.onrender.com/graphql', {
+                const eventResponse = await fetch('https://elevate-career.onrender.com/graphql', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({

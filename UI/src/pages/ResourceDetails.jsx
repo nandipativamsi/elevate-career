@@ -28,7 +28,7 @@ const ResourceDetails = () => {
                 }
             }
         `;
-        const response = await fetch('https://elevate-career-backend.onrender.com/graphql', {
+        const response = await fetch('https://elevate-career.onrender.com/graphql', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ query, variables: { ids: userIDs } }),
@@ -66,7 +66,7 @@ const ResourceDetails = () => {
             `;
 
             try {
-                const response = await fetch('https://elevate-career-backend.onrender.com/graphql', {
+                const response = await fetch('https://elevate-career.onrender.com/graphql', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ query, variables: { id } }),
@@ -109,7 +109,7 @@ const ResourceDetails = () => {
             `;
 
             try {
-                const response = await fetch('https://elevate-career-backend.onrender.com/graphql', {
+                const response = await fetch('https://elevate-career.onrender.com/graphql', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -152,7 +152,7 @@ const ResourceDetails = () => {
             `;
 
             try {
-                const response = await fetch('https://elevate-career-backend.onrender.com/graphql', {
+                const response = await fetch('https://elevate-career.onrender.com/graphql', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -192,7 +192,7 @@ const ResourceDetails = () => {
         `;
 
         try {
-            const response = await fetch('https://elevate-career-backend.onrender.com/graphql', {
+            const response = await fetch('https://elevate-career.onrender.com/graphql', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
