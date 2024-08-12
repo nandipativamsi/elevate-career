@@ -53,7 +53,10 @@
 .comments-section {
     margin-top: 20px;
 }
-
+.comments-section button{
+    margin: 10px 0;
+    margin-right: 10px;
+}
 .comment {
     margin-bottom: 10px;
 }

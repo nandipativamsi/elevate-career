@@ -9,17 +9,17 @@ const TransactionFailure = () => {
     };
 
     return (
-        <div style={{ textAlign: 'center', marginTop: '50px' }}>
+        <div className="my-5 align-text-center">
             <h1>Transaction Failed!</h1>
 
-            <div style={{ marginTop: '20px', fontSize: '18px' }}>
+            <div className="mt-2 fs-5">
                 {/* <p><strong>Transaction ID:</strong> {transactionDetails.transactionId}</p>
                 <p><strong>Amount Paid:</strong> ${transactionDetails.amount}</p>
                 <p><strong>Date:</strong> {new Date(transactionDetails.date).toLocaleDateString()}</p> */}
             </div>
             <button 
                 onClick={handleContinue} 
-                style={{ marginTop: '30px', padding: '10px 20px', fontSize: '16px' }}>
+                className='my-btn'>
                 Continue
             </button>
         </div>
