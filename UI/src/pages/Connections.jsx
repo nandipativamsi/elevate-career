@@ -248,7 +248,7 @@ const ConnectionsPage = () => {
                                 <Card.Img
                                     variant="top"
                                     src={user.profileImage ? `/src/assets/ProfileImages/${user.profileImage}` : defaultProfileImage}
-                                    className="rounded-circle w-50 mb-3"
+                                    className="connection-card-img rounded-circle w-50 mb-3"
                                 />
                                 <Card.Title>{user.name}</Card.Title>
                                 <Card.Text>Education : {user.education} - {user.yearOfGraduation}</Card.Text>
