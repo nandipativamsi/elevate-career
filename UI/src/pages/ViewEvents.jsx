@@ -59,7 +59,7 @@ const ViewEvents = () => {
         const variables = user?.role === 'Alumni' ? { userId: user._id } : {};
 
         try {
-            const response = await fetch('https://elevate-career.onrender.com/graphql', {
+            const response = await fetch('http://localhost:3000/graphql', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ query, variables }),
@@ -92,7 +92,7 @@ const ViewEvents = () => {
             `;
 
             try {
-                const response = await fetch('https://elevate-career.onrender.com/graphql', {
+                const response = await fetch('http://localhost:3000/graphql', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -131,7 +131,7 @@ const ViewEvents = () => {
             }
         `;
         try {
-            const response = await fetch('https://elevate-career.onrender.com/graphql', {
+            const response = await fetch('http://localhost:3000/graphql', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -192,42 +192,10 @@ const ViewEvents = () => {
         // Proceed with payment or registration
         if (selectedEvent.price !== 'Free') {
             try {
-                const response = await axios.post('https://elevate-career.onrender.com/payment', {
-                  eventId: selectedEvent._id,
-                  userId: user._id,
-                  eventTitle: selectedEvent.title,
-                  amount: selectedEvent.price, // or any other necessary payment details
-                });
-            
-                
-                // Handle the response as needed
-                if (response.data.url) {
-                  console.log('Payment successful:', response.data);
-                  window.location.href = response.data.url;
-                  // Redirect to success page, show a message, etc.
-                } else {
-                  console.error('Payment failed:', response.data.message);
-                  // Handle payment failure
-                }
-              } catch (error) {
-                console.error('Error making payment:', error);
-                // Handle error
-              }
-        }
-
-        const mutation = `
-            mutation registerForEvent($eventId: ID!, $userId: ID!) {
-                registerForEvent(eventId: $eventId, userId: $userId)
-            }
-        `;
-
-        try {
-            const response = await fetch('https://elevate-career.onrender.com/graphql', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    query: mutation,
-                    variables: {
+                const response = await fetch('https://elevate-career.onrender.com/payment', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
                         eventId: selectedEvent._id,
                         userId: user._id,
                         eventTitle: selectedEvent.title,
@@ -253,7 +221,7 @@ const ViewEvents = () => {
             `;
     
             try {
-                const response = await fetch('http://localhost:3000/graphql', {
+                const response = await fetch('https://elevate-career.onrender.com/graphql', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
