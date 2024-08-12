@@ -1,31 +1,42 @@
-   scalar GraphQLDate
-   
-   type Event {
-    _id: ID
-    title: String!
-    description: String!
-    date: String!
-    location: String!
-    attendees: String
-    postedBy: String
-    limit: String!
-  }
+scalar GraphQLDate
 
-   input EventInput {
-    title: String!
-    description: String!
-    date: GraphQLDate!
-    location: String!
-    attendees: String
-    postedBy: String
-    limit: String!
-  }
-  
-  type Query {
-    eventList: [Event!]!
-  }
-  
-  type Mutation {
-    addEvent(event: EventInput!): Event!
-  }
-  
+type Event {
+  _id: ID
+  title: String!
+  description: String!
+  date: GraphQLDate!
+  time: String!
+  location: String!
+  attendees: String
+  postedBy: String
+  limit: String!
+  price: String!
+  image: String
+}
+
+input EventInput {
+  title: String!
+  description: String!
+  date: GraphQLDate!
+  time: String!
+  location: String!
+  attendees: String
+  postedBy: String
+  limit: String!
+  price: String!
+  image: String
+}
+
+type Query {
+  eventList: [Event!]!
+  singleEvent(id: ID!): Event
+  eventsByUser(userId: ID!): [Event!]!
+  checkRegistration(eventId: ID!, userId: ID!): Boolean!
+}
+
+type Mutation {
+  addEvent(event: EventInput!): Event!
+  updateEvent(id: ID!, event: EventInput!): Event!
+  deleteEvent(_id: ID!): Boolean!
+  registerForEvent(eventId: ID!, userId: ID!): Boolean!
+}

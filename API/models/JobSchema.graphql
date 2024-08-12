@@ -23,6 +23,7 @@ type Job {
   experience: String!
   salary: String!
   workType: WorkType!
+  image: String
 }
 
 input JobInput {
@@ -36,12 +37,18 @@ input JobInput {
   experience: String!
   salary: String!
   workType: WorkType!
+  image: String
 }
 
 type Query {
-  jobList: [Job!]!
+  jobList(jobType: JobType, workType: WorkType): [Job!]!
+  singleJob(id: ID!): Job
+  jobsByUser(userId: ID!, jobType: JobType, workType: WorkType): [Job!]!
 }
-    
+
 type Mutation {
   addJob(job: JobInput!): Job!
+  updateJob(id: ID!, job: JobInput!): Job!
+  applyForJob(jobId: ID!, userId: ID!): Job!
+  deleteJob(_id: ID!): Boolean!
 }

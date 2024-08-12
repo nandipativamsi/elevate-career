@@ -74,6 +74,9 @@
   justify-content: flex-start;
   padding: 1.5rem;
   gap: 1.5rem;
+  text-decoration: none;
+  color: black;
+  position: relative;
 }
 
 .job-posting-image {
@@ -82,19 +85,31 @@
 
 .job-posting-image img {
   width: 100%;
-  height: auto;
+  height: 180px;
+  object-fit: cover;
 }
-.job-posting-text{
+
+.job-posting-text {
   display: flex;
   flex-direction: column;
   gap: 1rem;
   align-items: flex-start;
 }
+
 .job-title,
 .company-name,
 .location-jobtype,
 .job-salary {
   margin: 0;
+  text-decoration: none;
+  color: black;
+}
+.job-actions{
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  gap: 20px;
 }
 
 @media (max-width: 768px) {
@@ -118,8 +133,12 @@
     width: 80%;
     justify-content: center;
   }
+
   .job-posting-image {
     width: 100%;
+  }
+  .job-actions{
+    position:static;
   }
 
 }

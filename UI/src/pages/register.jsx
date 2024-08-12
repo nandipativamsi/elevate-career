@@ -1,6 +1,9 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { withRouter } from "react-router-dom";
-import './login.css';
+import '../css/login.css';
+import '../css/RegisterForm.css';
+import PropTypes from 'prop-types';
+
 
 function RegistrationForm(props) {
     const [formData, setFormData] = useState({
@@ -165,109 +168,133 @@ function RegistrationForm(props) {
     };
 
     return (
-        <div className="login-container">
-            <form className="login-form" onSubmit={handleSubmit}>
-                <h2 className='login-header'>REGISTRATION</h2>
-                <div className="form-group">
-                    <input 
-                        type="text" 
-                        name="name" 
-                        placeholder="Full Name" 
-                        value={formData.name} 
-                        onChange={handleChange}  
-                    />
-                    {errors.name && <span style={{ color: 'red' }}>{errors.name}</span>}
-                </div>
-                <div className="form-group">
-                    <input 
-                        type="email" 
-                        name="email" 
-                        placeholder="Email Address" 
-                        value={formData.email} 
-                        onChange={handleChange}  
-                    />
-                    {errors.email && <span style={{ color: 'red' }}>{errors.email}</span>}
-                </div>
-                <div className="form-group">
-                    <input 
-                        type="password" 
-                        name="password" 
-                        placeholder="Password" 
-                        value={formData.password} 
-                        onChange={handleChange}  
-                    />
-                    {errors.password && <span style={{ color: 'red' }}>{errors.password}</span>}
-                </div>
-                <div className="form-group">
-                    <input 
-                        type="password" 
-                        name="confirmPassword" 
-                        placeholder="Confirm Password" 
-                        value={formData.confirmPassword} 
-                        onChange={handleChange}  
-                    />
-                    {errors.confirmPassword && <span style={{ color: 'red' }}>{errors.confirmPassword}</span>}
-                </div>
-                <div className="form-group">
-                    <select name="role" value={formData.role} onChange={handleChange} >
-                        <option value="">Select User Type...</option>
-                        <option value="Student">Student</option>
-                        <option value="Alumni">Alumni</option>
-                        <option value="Admin">Admin</option>
-                    </select>
-                    {errors.role && <span style={{ color: 'red' }}>{errors.role}</span>}
-                </div>
-                <div className="form-group">
-                    <input 
-                        type="text" 
-                        name="contactNumber" 
-                        placeholder="Contact Number" 
-                        value={formData.contactNumber} 
-                        onChange={handleChange}  
-                    />
-                    {errors.contactNumber && <span style={{ color: 'red' }}>{errors.contactNumber}</span>}
-                </div>
-                <div className="form-group">
-                    <select name="education" value={formData.education} onChange={handleChange}>
-                        <option value="">Select Education...</option>
-                        <option value="Graduation">Graduation</option>
-                        <option value="Masters">Masters</option>
-                        <option value="Diploma">Diploma</option>
-                        <option value="Degree">Degree</option>
-                    </select>
-                    {errors.education && <span style={{ color: 'red' }}>{errors.education}</span>}
-                </div>
-                <div className="form-group">
-                    <input 
-                        type="number" 
-                        name="yearOfGraduation" 
-                        min="2015" 
-                        max="2027" 
-                        placeholder="Year of Graduation" 
-                        value={formData.yearOfGraduation} 
-                        onChange={handleChange}  
-                    />
-                    {errors.yearOfGraduation && <span style={{ color: 'red' }}>{errors.yearOfGraduation}</span>}
-                </div>
-                <div className="form-group">
-                    <input 
-                        type="number" 
-                        name="workExperience" 
-                        placeholder="Work Experience" 
-                        value={formData.workExperience} 
-                        onChange={handleChange}  
-                    />
-                    {errors.workExperience && <span style={{ color: 'red' }}>{errors.workExperience}</span>}
-                </div>
-                <button type="submit" className="login-button">Register</button>
-                {successMessage && <span style={{ color: 'green' }}>{successMessage}</span>}
-                <div className="login-link">
-                    <p>Already have an account? </p>
-                </div>
-                <button type="button" className="register-button" onClick={redirectToLogin}>Login</button>
-            </form>
+        <div className="registration-container">
+            <div className="info-section">
+                <h2>INFORMATION</h2>
+                <p>
+    Registering for our events is quick and easy. Simply fill out the registration form with your details to secure your spot.
+</p>
+<p className="highlight">
+    Benefits of Registration: Gain exclusive access to event materials, receive timely updates, and connect with fellow participants.
+</p>
+<p>
+    Ensure to provide a valid email address as all important event information and updates will be sent to you via email.
+</p>
+<p className="highlight">
+    Join Us: By registering, you become part of a vibrant community eager to share knowledge and experiences. Don't miss out!
+</p>
+<p>
+    For any assistance during the registration process, our support team is always ready to help. Contact us at support@example.com.
+</p>
+
+                <button className="account-button" onClick={redirectToLogin}>Have An Account</button>
+            </div>
+            <div className="form-section">
+                <h2>REGISTER FORM</h2>
+                <form onSubmit={handleSubmit}>
+                    <div className="form-group">
+                        <input 
+                            type="text" 
+                            name="name" 
+                            placeholder="Full Name" 
+                            value={formData.name} 
+                            onChange={handleChange}  
+                        />
+                        {errors.name && <span style={{ color: 'red' }}>{errors.name}</span>}
+                    </div>
+                    <div className="form-group">
+                        <input 
+                            type="email" 
+                            name="email" 
+                            placeholder="Email Address" 
+                            value={formData.email} 
+                            onChange={handleChange}  
+                        />
+                        {errors.email && <span style={{ color: 'red' }}>{errors.email}</span>}
+                    </div>
+                    <div className="form-group">
+                        <input 
+                            type="password" 
+                            name="password" 
+                            placeholder="Password" 
+                            value={formData.password} 
+                            onChange={handleChange}  
+                        />
+                        {errors.password && <span style={{ color: 'red' }}>{errors.password}</span>}
+                    </div>
+                    <div className="form-group">
+                        <input 
+                            type="password" 
+                            name="confirmPassword" 
+                            placeholder="Confirm Password" 
+                            value={formData.confirmPassword} 
+                            onChange={handleChange}  
+                        />
+                        {errors.confirmPassword && <span style={{ color: 'red' }}>{errors.confirmPassword}</span>}
+                    </div>
+                    <div className="form-group">
+                        <select name="role" value={formData.role} onChange={handleChange} >
+                            <option value="">Select User Type...</option>
+                            <option value="Student">Student</option>
+                            <option value="Alumni">Alumni</option>
+                            <option value="Admin">Admin</option>
+                        </select>
+                        {errors.role && <span style={{ color: 'red' }}>{errors.role}</span>}
+                    </div>
+                    <div className="form-group">
+                        <input 
+                            type="text" 
+                            name="contactNumber" 
+                            placeholder="Contact Number" 
+                            value={formData.contactNumber} 
+                            onChange={handleChange}  
+                        />
+                        {errors.contactNumber && <span style={{ color: 'red' }}>{errors.contactNumber}</span>}
+                    </div>
+                    <div className="form-group">
+                        <select name="education" value={formData.education} onChange={handleChange}>
+                            <option value="">Select Education...</option>
+                            <option value="Graduation">Graduation</option>
+                            <option value="Masters">Masters</option>
+                            <option value="Diploma">Diploma</option>
+                            <option value="Degree">Degree</option>
+                        </select>
+                        {errors.education && <span style={{ color: 'red' }}>{errors.education}</span>}
+                    </div>
+                    <div className="form-group">
+                        <input 
+                            type="number" 
+                            name="yearOfGraduation" 
+                            min="2015" 
+                            max="2027" 
+                            placeholder="Year of Graduation" 
+                            value={formData.yearOfGraduation} 
+                            onChange={handleChange}  
+                        />
+                        {errors.yearOfGraduation && <span style={{ color: 'red' }}>{errors.yearOfGraduation}</span>}
+                    </div>
+                    <div className="form-group">
+                        <input 
+                            type="number" 
+                            name="workExperience" 
+                            placeholder="Work Experience" 
+                            value={formData.workExperience} 
+                            onChange={handleChange}  
+                        />
+                        {errors.workExperience && <span style={{ color: 'red' }}>{errors.workExperience}</span>}
+                    </div>
+                        <button type="submit" className="button-register">Register</button>
+                        {successMessage && <span style={{ color: 'green' }}>{successMessage}</span>}
+                    </form>
+            </div>
         </div>
     );
 }
+RegistrationForm.propTypes = {
+    updateTitle: PropTypes.func.isRequired,
+    history: PropTypes.shape({
+      push: PropTypes.func.isRequired
+    }).isRequired
+  };
 
 export default withRouter(RegistrationForm);

@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { withRouter } from "react-router-dom";
-import './login.css';
+import '../css/login.css';
+import PropTypes from 'prop-types';
+import { useAuth } from '../AuthContext.jsx'; // Import the custom hook to use AuthContext
 
 function LoginForm(props) {
     const [formData, setFormData] = useState({
@@ -11,6 +13,7 @@ function LoginForm(props) {
     const [errors, setErrors] = useState({});
     const [successMessage, setSuccessMessage] = useState(null);
     const [errorMessage, setErrorMessage] = useState(null);
+    const { setUser } = useAuth(); // Destructure setUser from useAuth
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -34,10 +37,7 @@ function LoginForm(props) {
         // Password validation
         if (!formData.password.trim()) {
             newErrors.password = "Password is required";
-        } 
-        // else if (formData.password.length < 8) {
-        //     newErrors.password = "Password must be at least 8 characters";
-        // }
+        }
 
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
@@ -83,6 +83,11 @@ function LoginForm(props) {
                 }
 
                 const { user } = responseData.data.login;
+                console.log(user);
+                
+                // Store user and token information
+                setUser(user);
+                // localStorage.setItem('token', token);
 
                 setSuccessMessage('Login successful. Redirecting to home page..');
                 setErrorMessage(null);
@@ -109,10 +114,26 @@ function LoginForm(props) {
     };
 
     return (
-        <div>
-            <div className="login-container">
-                <form className="login-form" onSubmit={handleSubmit}>
-                    <h2 className='login-header'>LOGIN</h2>
+        <div className="login-container">
+            <div className="info-section">
+                <h2>INFORMATION</h2>
+                <p>
+                    Welcome back! Log in to access your account and continue enjoying our services.
+                </p>
+                <p className="highlight">
+                    Forgot your password? No worries, use the "Forgot Password" link to reset it.
+                </p>
+                <p>
+                    Stay connected with us to get the latest updates and personalized recommendations.
+                </p>
+                <p className="highlight">
+                    Not a member yet? Join us today by registering for an account!
+                </p>
+                <button className="account-button" onClick={redirectToRegister}>Register</button>
+            </div>
+            <div className="form-section">
+                <h2>LOGIN FORM</h2>
+                <form onSubmit={handleSubmit}>
                     <div className="form-group">
                         <input 
                             type="email" 
@@ -133,21 +154,23 @@ function LoginForm(props) {
                         />
                         {errors.password && <span style={{ color: 'red' }}>{errors.password}</span>}
                     </div>
-                    <button type="submit" className="login-button">Login</button>
+                    <button type="submit" className="button-login">Login</button>
                     <p className="signup-link">
-                        Don't have an account?
+                        Don't have an account? <span onClick={redirectToRegister} style={{cursor: 'pointer', color: '#007bff'}}>Register here</span>
                     </p>
-                    <button type="button" className="register-button" onClick={redirectToRegister}>Register here</button>
                 </form>
-                <div className="alert alert-success mt-2" style={{ display: successMessage ? 'block' : 'none' }} role="alert">
-                    {successMessage}
-                </div>
-                <div className="alert alert-danger mt-2" style={{ display: errorMessage ? 'block' : 'none' }} role="alert">
-                    {errorMessage}
-                </div>
+                {successMessage && <div className="alert alert-success">{successMessage}</div>}
+                {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
             </div>
-        </div>    
-    )
+        </div>
+    );
 }
+
+LoginForm.propTypes = {
+    updateTitle: PropTypes.func.isRequired,
+    history: PropTypes.shape({
+      push: PropTypes.func.isRequired
+    }).isRequired
+};
 
 export default withRouter(LoginForm);

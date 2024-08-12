@@ -18,17 +18,20 @@ enum statusType {
   Deleted
 }
 
-type User{
+type User {
   _id: ID!
-  name : String!
-  email : String!
-  password : String!
-  role : roleType!
-  contactNumber : String!
-  education : educationType!
-  yearOfGraduation : String!
+  name: String!
+  email: String!
+  password: String!
+  role: roleType!
+  contactNumber: String!
+  education: educationType!
+  yearOfGraduation: String!
   workExperience: String!
   connections: String
+  pendingConnectionsAcceptor: String
+  pendingConnectionsRequestor: String
+  profileImage: String
   skills: String
   interests: String
   linkedInURL: String
@@ -37,15 +40,35 @@ type User{
   status: statusType
 }
 
-input UserInput{
-  name : String!
-  email : String!
-  password : String!
-  role : roleType!
-  contactNumber : String!
-  education : educationType!
-  yearOfGraduation : String!
+input UserInput {
+  name: String!
+  email: String!
+  password: String!
+  role: roleType!
+  contactNumber: String!
+  education: educationType!
+  yearOfGraduation: String!
   workExperience: String!
+}
+
+input UpdateUser {
+  name: String
+  email: String
+  password: String
+  role: roleType
+  contactNumber: String
+  education: educationType
+  yearOfGraduation: String
+  workExperience: String
+  connections: String
+  pendingConnectionsAcceptor: String
+  pendingConnectionsRequestor: String
+  skills: String
+  interests: String
+  linkedInURL: String
+  gitHubURL: String
+  socialMediaURL: String
+  profileImage: String
 }
 
 input LoginInput {
@@ -58,8 +81,23 @@ type AuthPayload {
   user: User!
 }
 
+type Query {
+  getUserById(id: ID!): User!
+}
+
 type Mutation {
   addUser(user: UserInput!): User!
+  blockUser(userId: String!): User
   login(credentials: LoginInput!): AuthPayload!
   logout: Boolean!
+  updateUser(id: ID!, user: UpdateUser!): User!
+  sendConnectionRequest(fromUserId: ID!, toUserId: ID!): User!
+  acceptConnectionRequest(fromUserId: ID!, toUserId: ID!): User!
+  rejectConnectionRequest(fromUserId: ID!, toUserId: ID!): User!
+}
+
+type Query {
+  singleUser(id: ID!): User
+  usersByIds(ids: [ID!]!): [User!]!
+  userList: [User!]!
 }
