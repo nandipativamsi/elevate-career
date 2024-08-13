@@ -134,7 +134,7 @@ app.post('/payment', async (req, res) => {
 
 app.use(
   session({
-    secret: "EaByDtUXFXu7VYT-mA6NuGh68jGA",
+    secret: "s3CR3T!@#$Key$#1234%^&*(9876)qwerty9876QWERTY!@#$%",
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({
@@ -142,7 +142,7 @@ app.use(
       ttl: 14 * 24 * 60 * 60, // 14 days expiry
     }),
     cookie: {
-      secure:true, 
+      secure: true, 
       maxAge: 1000 * 60 * 60 * 24, // 1 day
     },
   })
