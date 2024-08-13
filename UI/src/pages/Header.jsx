@@ -11,15 +11,15 @@ function Header(props) {
     const { user, setUser } = useAuth(); // Destructure user and setUser from useAuth
 
     useEffect(() => {
-        // Check if user session exists
-        axios.get('https://elevate-career.onrender.com/api/current_user', { withCredentials: true })
-            .then(response => {
-                setUser(response.data.user);
-            })
-            .catch(error => {
-                console.log('No active session found', error);
-            });
-    }, [setUser]);
+        if (user) {
+            // User is logged in, you can update your header state here if needed
+            console.log('User is logged in:', user);
+            // Perform any actions you need when the user is present
+        } else {
+            // User is not logged in
+            console.log('No user found');
+        }
+    }, [user]); // Dependency on user, will run when user changes
 
     const capitalize = (s) => {
         if (typeof s !== 'string') return ''
