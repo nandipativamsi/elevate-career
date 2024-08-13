@@ -127,7 +127,7 @@ app.post('/payment', async (req, res) => {
 app.use(session({
   secret: 'your-secret-key',
   resave: false,
-  saveUninitialized: false,
+  saveUninitialized: true,
   store: MongoStore.create({ mongoUrl: URI }),
   cookie: { maxAge: 1000 * 60 * 60 } // 1 hour
 }));
