@@ -59,7 +59,7 @@ const ViewEvents = () => {
         const variables = user?.role === 'Alumni' ? { userId: user._id } : {};
 
         try {
-            const response = await fetch('http://localhost:3000/graphql', {
+            const response = await fetch('https://elevate-career.onrender.com/graphql', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ query, variables }),
@@ -92,7 +92,7 @@ const ViewEvents = () => {
             `;
 
             try {
-                const response = await fetch('http://localhost:3000/graphql', {
+                const response = await fetch('https://elevate-career.onrender.com/graphql', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -131,7 +131,7 @@ const ViewEvents = () => {
             }
         `;
         try {
-            const response = await fetch('http://localhost:3000/graphql', {
+            const response = await fetch('https://elevate-career.onrender.com/graphql', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -192,7 +192,7 @@ const ViewEvents = () => {
         // Proceed with payment or registration
         if (selectedEvent.price !== 'Free') {
             try {
-                const response = await fetch('http://localhost:3000/payment', {
+                const response = await fetch('https://elevate-career.onrender.com/payment', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -221,7 +221,7 @@ const ViewEvents = () => {
             `;
     
             try {
-                const response = await fetch('http://localhost:3000/graphql', {
+                const response = await fetch('https://elevate-career.onrender.com/graphql', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({

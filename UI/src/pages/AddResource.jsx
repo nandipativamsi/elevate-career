@@ -30,7 +30,7 @@ const AddResource = () => {
                 `;
 
                 try {
-                    const response = await fetch('http://localhost:3000/graphql', {
+                    const response = await fetch('https://elevate-career.onrender.com/graphql', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ query, variables: { id } }),
@@ -86,7 +86,7 @@ const AddResource = () => {
                     const formData = new FormData();
                     formData.append('image', imageFile);
 
-                    const response = await fetch('http://localhost:3000/ResourceImage/upload', {
+                    const response = await fetch('https://elevate-career.onrender.com/ResourceImage/upload', {
                         method: 'POST',
                         body: formData,
                     });
@@ -120,7 +120,7 @@ const AddResource = () => {
                         }
                     `;
 
-                const response = await fetch('http://localhost:3000/graphql', {
+                const response = await fetch('https://elevate-career.onrender.com/graphql', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

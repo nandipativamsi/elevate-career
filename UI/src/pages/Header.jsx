@@ -11,15 +11,15 @@ function Header(props) {
     const { user, setUser } = useAuth(); // Destructure user and setUser from useAuth
 
     useEffect(() => {
-        // Check if user session exists
-        axios.get('http://localhost:3000/api/current_user', { withCredentials: true })
-            .then(response => {
-                setUser(response.data.user);
-            })
-            .catch(error => {
-                console.log('No active session found', error);
-            });
-    }, [setUser]);
+        if (user) {
+            // User is logged in, you can update your header state here if needed
+            console.log('User is logged in:', user);
+            // Perform any actions you need when the user is present
+        } else {
+            // User is not logged in
+            console.log('No user found');
+        }
+    }, [user]); // Dependency on user, will run when user changes
 
     const capitalize = (s) => {
         if (typeof s !== 'string') return ''
@@ -32,20 +32,9 @@ function Header(props) {
     }
 
     function handleLogout() {
-        axios.post('http://localhost:3000/api/logout', {}, { withCredentials: true })
-            .then(() => {
-                setUser(null); // Reset user state
-                // localStorage.removeItem('token'); // Optionally remove token from localStorage
-                props.history.push('/login');
-            })
-            .catch(error => {
-                console.log('Error logging out', error);
-                // Even if there is an error logging out from the server,
-                // we can still clear the user state and navigate to the login page
-                setUser(null);
-                // localStorage.removeItem('token'); // Optionally remove token from localStorage
-                props.history.push('/login');
-            });
+        setUser(null); // Reset user state
+        localStorage.removeItem('user'); // Clear user info from local storage
+        props.history.push('/login');
     }
 
     const toggleMenu = () => {

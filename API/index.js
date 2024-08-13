@@ -21,13 +21,13 @@ const saltRounds = 10;
 app.use(bodyParser.json());
 
 const corsOptions = {
-  origin: 'http://localhost:5173', 
+  origin: 'https://elevate-careers.onrender.com', 
   credentials: true, 
 };
 app.use(cors(corsOptions));
 
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', 'http://localhost:5173');
+  res.header('Access-Control-Allow-Origin', 'https://elevate-careers.onrender.com');
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
   res.header('Access-Control-Allow-Credentials', 'true');
@@ -110,8 +110,8 @@ app.post('/payment', async (req, res) => {
               }
           ],
           mode: 'payment',
-          success_url: 'http://localhost:5173/transactionSuccess',
-          cancel_url: 'http://localhost:5173/transactionFailure',
+          success_url: 'https://elevate-careers.onrender.com/transactionSuccess',
+          cancel_url: 'https://elevate-careers.onrender.com/transactionFailure',
           customer_email: userEmail, 
       });
 
@@ -127,10 +127,26 @@ app.post('/payment', async (req, res) => {
 app.use(session({
   secret: 'your-secret-key',
   resave: false,
-  saveUninitialized: false,
+  saveUninitialized: true,
   store: MongoStore.create({ mongoUrl: URI }),
   cookie: { maxAge: 1000 * 60 * 60 } // 1 hour
 }));
+
+// app.use(
+//   session({
+//     secret: "s3CR3T!@#$Key$#1234%^&*(9876)qwerty9876QWERTY!@#$%",
+//     resave: false,
+//     saveUninitialized: false,
+//     store: MongoStore.create({
+//       mongoUrl: process.env.MONGODB_URI, // Use your MongoDB connection string here
+//       ttl: 14 * 24 * 60 * 60, // 14 days expiry
+//     }),
+//     cookie: {
+//       secure: true, 
+//       maxAge: 1000 * 60 * 60 * 24, // 1 day
+//     },
+//   })
+// );
 
 function isAuthenticated(req, res, next) {
   if (req.session.user) {

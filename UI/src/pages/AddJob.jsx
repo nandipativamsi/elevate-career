@@ -41,7 +41,7 @@ const AddJob = () => {
                 `;
 
                 try {
-                    const response = await fetch('http://localhost:3000/graphql', {
+                    const response = await fetch('https://elevate-career.onrender.com/graphql', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ query, variables: { id } }),
@@ -97,7 +97,7 @@ const AddJob = () => {
                     const imageData = new FormData();
                     imageData.append('image', imageFile);
 
-                    const response = await fetch('http://localhost:3000/JobImage/upload', {
+                    const response = await fetch('https://elevate-career.onrender.com/JobImage/upload', {
                         method: 'POST',
                         body: imageData,
                     });
@@ -131,7 +131,7 @@ const AddJob = () => {
                         }
                     `;
 
-                const jobResponse = await fetch('http://localhost:3000/graphql', {
+                const jobResponse = await fetch('https://elevate-career.onrender.com/graphql', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
