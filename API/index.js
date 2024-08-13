@@ -124,29 +124,29 @@ app.post('/payment', async (req, res) => {
 
 
 
-// app.use(session({
-//   secret: 'your-secret-key',
-//   resave: false,
-//   saveUninitialized: true,
-//   store: MongoStore.create({ mongoUrl: URI }),
-//   cookie: { maxAge: 1000 * 60 * 60 } // 1 hour
-// }));
+app.use(session({
+  secret: 'your-secret-key',
+  resave: false,
+  saveUninitialized: true,
+  store: MongoStore.create({ mongoUrl: URI }),
+  cookie: { maxAge: 1000 * 60 * 60 } // 1 hour
+}));
 
-app.use(
-  session({
-    secret: "s3CR3T!@#$Key$#1234%^&*(9876)qwerty9876QWERTY!@#$%",
-    resave: false,
-    saveUninitialized: false,
-    store: MongoStore.create({
-      mongoUrl: process.env.MONGODB_URI, // Use your MongoDB connection string here
-      ttl: 14 * 24 * 60 * 60, // 14 days expiry
-    }),
-    cookie: {
-      secure: true, 
-      maxAge: 1000 * 60 * 60 * 24, // 1 day
-    },
-  })
-);
+// app.use(
+//   session({
+//     secret: "s3CR3T!@#$Key$#1234%^&*(9876)qwerty9876QWERTY!@#$%",
+//     resave: false,
+//     saveUninitialized: false,
+//     store: MongoStore.create({
+//       mongoUrl: process.env.MONGODB_URI, // Use your MongoDB connection string here
+//       ttl: 14 * 24 * 60 * 60, // 14 days expiry
+//     }),
+//     cookie: {
+//       secure: true, 
+//       maxAge: 1000 * 60 * 60 * 24, // 1 day
+//     },
+//   })
+// );
 
 function isAuthenticated(req, res, next) {
   if (req.session.user) {
