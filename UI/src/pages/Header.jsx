@@ -32,20 +32,9 @@ function Header(props) {
     }
 
     function handleLogout() {
-        axios.post('https://elevate-career.onrender.com/api/logout', {}, { withCredentials: true })
-            .then(() => {
-                setUser(null); // Reset user state
-                // localStorage.removeItem('token'); // Optionally remove token from localStorage
-                props.history.push('/login');
-            })
-            .catch(error => {
-                console.log('Error logging out', error);
-                // Even if there is an error logging out from the server,
-                // we can still clear the user state and navigate to the login page
-                setUser(null);
-                // localStorage.removeItem('token'); // Optionally remove token from localStorage
-                props.history.push('/login');
-            });
+        setUser(null); // Reset user state
+        localStorage.removeItem('user'); // Clear user info from local storage
+        props.history.push('/login');
     }
 
     const toggleMenu = () => {
