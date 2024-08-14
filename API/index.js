@@ -48,16 +48,16 @@ const createStorage = (folderPath) => {
   });
 };
 
-const jobImageStorage = createStorage('../UI/src/assets/JobImages');
+const jobImageStorage = createStorage('./assets/JobImages');
 const uploadJobImage = multer({ storage: jobImageStorage });
 
-const eventImageStorage = createStorage('../UI/src/assets/EventImages');
+const eventImageStorage = createStorage('./assets/EventImages');
 const uploadEventImage = multer({ storage: eventImageStorage });
 
-const resourceImageStorage = createStorage('../UI/src/assets/ResourceImages');
+const resourceImageStorage = createStorage('./assets/ResourceImages');
 const uploadResourceImage = multer({ storage: resourceImageStorage });
 
-const profileImageStorage = createStorage('../UI/src/assets/ProfileImages');
+const profileImageStorage = createStorage('./assets/ProfileImages');
 const uploadProfileImage = multer({ storage: profileImageStorage });
 
 app.post('/JobImage/upload', uploadJobImage.single('image'), (req, res) => {
