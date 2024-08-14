@@ -200,7 +200,7 @@ const ProfilePage = () => {
                                     {formData.profileImage && (
                                         <div>
                                             <img
-                                                src={`/src/assets/ProfileImages/${formData.profileImage}`}
+                                                src={`./assets/ProfileImages/${formData.profileImage}`}
                                                 alt="Profile"
                                                 style={{ width: '200px', height: 'auto' }}
                                             />
@@ -228,7 +228,7 @@ const ProfilePage = () => {
                             <Card className="profile-card z-index2">
                                 <Card.Body className="d-flex align-items-center justify-content-center flex-column">
                                     <img
-                                        src={formData.profileImage ? `/src/assets/ProfileImages/${formData.profileImage}` : defaultProfileImage}
+                                        src={formData.profileImage ? `./assets/ProfileImages/${formData.profileImage}` : defaultProfileImage}
                                         alt="Profile"
                                         className="profile-image"
                                     />

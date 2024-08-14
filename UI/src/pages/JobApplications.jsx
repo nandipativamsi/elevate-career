@@ -109,7 +109,7 @@ const JobApplications = () => {
             <div className="job-box flex-container">
                 <div className="job-posting-image">
                     <img
-                        src={job.image ? `/src/assets/JobImages/${job.image}` : jobPostingImg}
+                        src={job.image ? `./assets/JobImages/${job.image}` : jobPostingImg}
                         alt="job-posting"
                     />
                 </div>

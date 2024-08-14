@@ -237,7 +237,7 @@ const ResourceDetails = () => {
             <div className="resourceImg-container">
                 <img
                     className="resource-heroImg"
-                    src={resource.image ? `/src/assets/ResourceImages/${resource.image}` : defaultResourceImage}
+                    src={resource.image ? `./assets/ResourceImages/${resource.image}` : defaultResourceImage}
                     alt={resource.title}
                 />
             </div>

@@ -247,7 +247,7 @@ const ConnectionsPage = () => {
                             <Card.Body className="text-center">
                                 <Card.Img
                                     variant="top"
-                                    src={user.profileImage ? `/src/assets/ProfileImages/${user.profileImage}` : defaultProfileImage}
+                                    src={user.profileImage ? `./assets/ProfileImages/${user.profileImage}` : defaultProfileImage}
                                     className="connection-card-img rounded-circle w-50 mb-3"
                                 />
                                 <Card.Title>{user.name}</Card.Title>

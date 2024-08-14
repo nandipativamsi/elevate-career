@@ -207,7 +207,7 @@ const AddJob = () => {
                 {formData.image && (
                 <div>
                     <img
-                        src={`/src/assets/JobImages/${formData.image}`}
+                        src={`./assets/JobImages/${formData.image}`}
                         alt="Job Image"
                         style={{ width: '200px', height: 'auto' }}
                     />

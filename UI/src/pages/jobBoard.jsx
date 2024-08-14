@@ -194,7 +194,7 @@ const JobBoard = () => {
                                 <Link to={`/jobDetails/${job._id}`} className="job-box flex-container" key={job._id}>
                                     <div className="job-posting-image">
                                         <img
-                                            src={job.image ? `/src/assets/JobImages/${job.image}` : jobPostingImg}
+                                            src={job.image ? `./assets/JobImages/${job.image}` : jobPostingImg}
                                             alt="job-posting"
                                         />
                                     </div>
@@ -211,7 +211,7 @@ const JobBoard = () => {
                                 <div className="job-box flex-container" key={job._id}>
                                     <div className="job-posting-image">
                                         <img
-                                            src={job.image ? `/src/assets/JobImages/${job.image}` : jobPostingImg}
+                                            src={job.image ? `./assets/JobImages/${job.image}` : jobPostingImg}
                                             alt="job-posting"
                                         />
                                     </div>

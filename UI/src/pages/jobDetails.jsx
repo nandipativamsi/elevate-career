@@ -160,7 +160,7 @@ const JobDetails = () => {
             <section className="job-details-hero">
                 <img className="job-details-hero-image" src={bannerImage} alt="banner" />
                 <div className="job-details-company-logo-container">
-                    <img className="job-details-company-logo" src={job.image ? `/src/assets/JobImages/${job.image}` : jobPostingImg} alt="job posting"/>
+                    <img className="job-details-company-logo" src={job.image ? `./assets/JobImages/${job.image}` : jobPostingImg} alt="job posting"/>
                 </div>
                 <h1 className="job-details-company-name">{job.company}</h1>
                 <div className="job-details-button-container">

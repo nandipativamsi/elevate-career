@@ -238,7 +238,7 @@ const AddEvent = () => {
                 {formData.image && (
                 <div>
                     <img
-                        src={`/src/assets/EventImages/${formData.image}`}
+                        src={`./assets/EventImages/${formData.image}`}
                         alt="Event Image"
                         style={{ width: '200px', height: 'auto' }}
                     />

@@ -175,7 +175,7 @@ const AddResource = () => {
                 {formData.image && (
                     <div>
                         <img
-                            src={`/src/assets/ResourceImages/${formData.image}`}
+                            src={`./assets/ResourceImages/${formData.image}`}
                             alt="Resource Image"
                             style={{ width: '200px', height: 'auto' }}
                         />

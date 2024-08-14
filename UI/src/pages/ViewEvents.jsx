@@ -313,7 +313,7 @@ const ViewEvents = () => {
                     {filteredEvents.map(event => (
                         <Col xs={12} sm={6} md={4} lg={3} key={event._id} className="mb-4">
                             <Card className="event-card">
-                            <img className="card-img" src={event.image ? `../assets/EventImages/${event.image}` : heroImg} alt={event.title} />
+                            <img className="card-img" src={event.image ? `./assets/EventImages/${event.image}` : heroImg} alt={event.title} />
                                 <Card.Body>
                                     <Card.Title>{event.title}</Card.Title>
                                     <Card.Text className='d-flex justify-content-start align-items-center gap-2'>
@@ -365,7 +365,7 @@ const ViewEvents = () => {
         </Modal.Header>
         <Modal.Body>
             <img
-                src={selectedEvent.image ? `../assets/EventImages/${selectedEvent.image}` : heroImg}
+                src={selectedEvent.image ? `./assets/EventImages/${selectedEvent.image}` : heroImg}
                 alt={selectedEvent.title}
                 className="img-fluid mb-3"
             />

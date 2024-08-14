@@ -205,7 +205,7 @@ const ViewResources = () => {
                             <Card className="resource-card mb-4">
                                 <img
                                     className='resource-card-img'
-                                    src={resource.image ? `/src/assets/ResourceImages/${resource.image}` : defaultResourceImage}
+                                    src={resource.image ? `./assets/ResourceImages/${resource.image}` : defaultResourceImage}
                                     alt={resource.title}
                                 />
                                 <Card.Body>
