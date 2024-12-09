@@ -26,6 +26,8 @@
 
 .AddNewForm input[type="text"],
 .AddNewForm input[type="date"],
+.AddNewForm input[type="time"],
+.AddNewForm input[type="file"],
 .AddNewForm select,
 .AddNewForm textarea {
     width: 100%;

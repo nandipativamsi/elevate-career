@@ -1,0 +1,98 @@
+.job-details-container {
+    font-family: Arial, sans-serif;
+    color:black;
+    margin: 20px auto;
+    padding: 20px;
+    
+}
+
+.job-details-hero {
+    position: relative;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.job-details-hero-image {
+    width: 100%;
+    height: 350px;
+    object-fit:cover;
+}
+
+.job-details-company-logo-container{
+    height: 150px;
+}
+
+.job-details-company-logo {
+    position: relative;
+    transform: translate(0,-150px);
+    border: 15px solid white;
+    width: 300px;
+    height: auto;
+}
+
+
+.job-details-button-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.job-details-button {
+    background-color: #000;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.job-details-button-alumni {
+    background-color: #f2efe8;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.job-details-alumni-button{
+    margin-right: 10px;
+}
+
+.job-details-button:hover {
+    color: black;
+    background-color: #f2efe8;
+}
+
+.about-div{
+    font-size: large;
+    font-weight: bold;
+    background-color: #f2efe8;
+    padding:10px 5px;
+    margin: 20px 0px;
+}
+
+.job-details-content {
+    padding: 20px;
+}
+
+.job-details-title {
+    font-size: 2em;
+    margin-bottom: 10px;
+}
+
+
+.job-details-meta p {
+    margin: 5px 0;
+    font-size: 1em;
+}
+
+.job-details-description h2 {
+    font-size: 1.5em;
+    margin-top: 30px;
+    margin-bottom: 10px;
+}
+
+.job-details-description p {
+    font-size: 1em;
+    line-height: 1.5;
+    margin-bottom: 20px;
+    text-align: justify;
+}

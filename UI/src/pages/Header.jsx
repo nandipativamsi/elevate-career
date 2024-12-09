@@ -1,50 +1,46 @@
 import { useEffect, useState } from 'react';
 import { Link, withRouter } from "react-router-dom";
 import axios from 'axios';
-import { ACCESS_TOKEN_NAME } from '../constants/apiConstants';
 import { FaBars, FaTimes } from 'react-icons/fa';
-import './header.css'; 
-import logo from '../assets/logo.png'; 
+import '../css/header.css';
+import { useAuth } from '../AuthContext.jsx'; // Import the custom hook to use AuthContext
+import logo from '../assets/logo.webp';
 
 function Header(props) {
-    const [user, setUser] = useState(null);
+    const [menuOpen, setMenuOpen] = useState(false);
+    const { user, setUser } = useAuth(); // Destructure user and setUser from useAuth
 
     useEffect(() => {
-        // Check if user session exists
-        axios.get('http://localhost:3000/api/current_user', { withCredentials: true })
-            .then(response => {
-                setUser(response.data.user);
-            })
-            .catch(error => {
-                console.log('No active session found', error);
-            });
-    }, []);
+        if (user) {
+            // User is logged in, you can update your header state here if needed
+            console.log('User is logged in:', user);
+            // Perform any actions you need when the user is present
+        } else {
+            // User is not logged in
+            console.log('No user found');
+        }
+    }, [user]); // Dependency on user, will run when user changes
+
     const capitalize = (s) => {
         if (typeof s !== 'string') return ''
         return s.charAt(0).toUpperCase() + s.slice(1)
     }
-    let title = capitalize(props.location.pathname.substring(1, props.location.pathname.length))
+
+    let title = capitalize(props.location.pathname.substring(1, props.location.pathname.length));
     if (props.location.pathname === '/') {
-        title = 'Welcome'
+        title = 'Welcome';
     }
-    // function renderLogout() {
-    //     if (props.location.pathname === '/home') {
-    //         return (
-    //             <div className="ml-auto">
-    //                 <button className="btn btn-danger" onClick={() => handleLogout()}>Logout</button>
-    //             </div>
-    //         )
-    //     }
-    // }
+
     function handleLogout() {
-        localStorage.removeItem(ACCESS_TOKEN_NAME)
-        props.history.push('/login')
+        setUser(null); // Reset user state
+        localStorage.removeItem('user'); // Clear user info from local storage
+        props.history.push('/login');
     }
-    const [menuOpen, setMenuOpen] = useState(false);
 
     const toggleMenu = () => {
         setMenuOpen(!menuOpen);
     };
+
     return (
         <header className="header">
             <div className="logo-container">
@@ -58,10 +54,12 @@ function Header(props) {
                     <li><a href="/help-center">Help Center</a></li>
                     {user ? (
                         <>
-                            <li><a href="/addNew">Add New</a></li>
                             <li><a href="/jobboard">Job Board</a></li>
                             <li><a href="/viewEvents">Events</a></li>
                             <li><a href="/viewResources">Resources</a></li>
+                            <li><a href="/connections">Connections</a></li>
+                            <li><Link to={`/profile`}>Profile</Link></li>
+                            <li><a href="/addNew">Add New</a></li>
                             <li><a href="/" onClick={handleLogout}>Logout</a></li>
                             <li>Hello, {user.name}</li>
                         </>

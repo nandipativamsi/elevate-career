@@ -1,0 +1,88 @@
+.registration-container {
+  display: flex;
+  width: 800px;
+  margin: 50px auto;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.info-section {
+  background-color: #966100;
+  padding: 30px;
+  width: 50%;
+  color: white;
+}
+
+.info-section h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.info-section p {
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.info-section .highlight {
+  margin-top: 20px;
+  font-weight: bold;
+}
+
+.account-button {
+  background-color: #fff;
+  color: #000000;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.form-section {
+  background-color: #fff;
+  padding: 30px;
+  width: 50%;
+}
+
+.form-section h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+}
+
+.form-group input {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+.error-message {
+  color: #FF5252;
+  font-size: 12px;
+  margin-top: -10px;
+}
+
+.terms {
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+.terms input {
+  margin-right: 10px;
+}
+
+.button-register {
+  background-color: #000000;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}

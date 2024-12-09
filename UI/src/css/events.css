@@ -1,0 +1,111 @@
+/* jobboard.css */
+.event-hero-section{
+    position: relative;
+    background: none;
+    height: 84vh;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    gap: 25px;
+}
+.event-hero-section::before{
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('../assets/event1.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0.7;
+    z-index: 1;
+    width: 100%;
+    height: 67vh;
+
+}
+
+.event-hero-text-container{
+    width: 60%;
+    background-color: #f2efe8;
+    z-index: 2;
+    padding: 1rem;
+}
+
+.jobboard-filter-section {
+    background-color: #f8f9fa;
+}
+
+.reccomendation-tittle{
+    background-color: #f2efe8;
+    padding: 0.7rem;
+}
+
+.event-box-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.event-card {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #f2efe8 !important;
+    width: 100%;
+    height: 400px !important;
+}
+.card-img{
+    width: 100%;
+    min-height: 62.5%;
+    max-height: 62.5%;
+    object-fit: cover;
+}
+div.justify-content-center{
+    margin-left: 0px;
+    margin-right: 0px;
+}
+
+.event-card .card-body {
+    max-height: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.event-card .card-title,
+.event-card .card-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.registered-btn {
+    background-color: #6c757d; /* Example color for registered button */
+    color: white;
+    cursor: not-allowed;
+}
+
+.registered-btn:hover {
+    background-color: #5a6268; /* Darker color on hover */
+}
+
+.btn-registered {
+    background-color: #28a745; /* Green color */
+    border-color: #28a745;
+}
+
+@media (max-width: 768px) {
+    .event-hero-section{
+        height: 80vh;
+    }
+    .event-hero-section::before{
+        height: 60vh;
+    }
+ 
+    .event-hero-text-container{
+        width:90%;
+    }
+    .reccomendation-tittle{
+        font-size: 1.2rem;
+        padding: 0.5rem;
+    }
+}

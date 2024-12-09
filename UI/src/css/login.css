@@ -1,0 +1,139 @@
+body {
+  font-family: Arial, sans-serif;
+}
+
+/* .header {
+  font-size: 1.5rem;
+  color: #333;
+  text-align: center;
+  margin-bottom: 10px;
+} */
+
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #ffffff;
+  padding: 20px;
+  /* border: 1px solid #ccc; */
+  border-radius: 5px;
+}
+
+.login-form {
+  width: 100%;
+  max-width: 500px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+.login-button {
+  width: 100%;
+  padding: 10px;
+  background-color: #000000;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-top: 10px;
+}
+
+.login-button:hover {
+  background-color: #cfa24e;
+}
+
+.loading {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.collapsible-container {
+  margin: 20px;
+  text-align: center; /* Center the questions */
+}
+
+.collapsible {
+  cursor: pointer;
+  padding: 10px;
+  background-color: #f1f1f1;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 5px;
+  display: inline-block; /* To ensure the questions are centered */
+  width: 100%; /* Make the collapsible container full width */
+  max-width: 600px; /* Set a maximum width for the collapsible container */
+}
+
+.icon {
+  float: right;
+}
+
+.card-body-margin {
+  padding: 10px;
+}
+
+.info-section, .form-section {
+  flex: 1;
+  padding: 20px;
+  text-align: center;
+}
+
+.info-section h2, .form-section h2 {
+  margin-bottom: 20px;
+  color: #cfa24e;
+}
+
+.info-section p, .form-section p {
+  margin-bottom: 15px;
+}
+
+.highlight {
+  font-weight: bold;
+  color: #cfa24e;
+}
+
+.account-button, .button-login {
+  width: 100%;
+  padding: 10px;
+  background-color: #000000;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 3px;
+  margin-top: 10px;
+}
+
+.button-login:hover, .account-button:hover {
+  background-color: #cfa24e;
+}
+
+.alert {
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.alert-success {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.alert-danger {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.signup-link {
+  margin-top: 15px;
+  display: block;
+}
